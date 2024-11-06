@@ -1,36 +1,4 @@
 services:
-  postgres:
-    container_name: postgres-container
-    image: postgres
-    hostname: localhost
-    networks:
-      - backend-network
-    ports:
-      - "${POSTGRES_PORT:-5432}:5432"
-    volumes:
-      - ./db-postgres/postgres-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: ${POSTGRES_DB:-postgres}
-      PGDATA: ${PGDATA:-/var/lib/postgresql/data}
-    restart: unless-stopped
-
-  pgadmin:
-    container_name: pgadmin-container
-    image: dpage/pgadmin4
-    hostname: localhost
-    networks:
-      - backend-network
-    depends_on:
-      - postgres
-    ports:
-      - "${PGADMIN_PORT}:80"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@admin.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-root}
-    restart: unless-stopped
-
   app:
     container_name: spring-boot-container
     hostname: localhost

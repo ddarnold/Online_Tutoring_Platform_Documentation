@@ -1,0 +1,17 @@
+spring:
+    application:
+        name: thutorium
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: jdbc:postgresql://${INSTANCE_HOST}:${DB_PORT}/${DB_NAME}
+        username: ${DB_USER}
+        password: ${DB_PASS}
+        hikari:
+            data-source-properties:
+                socketFactory: "com.google.cloud.sql.postgres.SocketFactory"
+                cloudSqlInstance: "decoded-carport-440920-j9:europe-west3:thutorium-db"
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
