@@ -1,11 +1,13 @@
+version: '3.8'  # Always declare the version for explicit compatibility
+
 services:
   app:
     container_name: spring-boot-container
     hostname: localhost
     networks:
-      - backend-network
+      - app-network
     depends_on:
-      - postgres
+      - db
     build:
       context: ./spring-boot
       dockerfile: Dockerfile
@@ -14,8 +16,10 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+
 volumes:
   postgres-data:
+
 networks:
-  backend-network:
+  app-network:
     driver: bridge
