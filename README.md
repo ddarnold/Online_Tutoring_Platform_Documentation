@@ -18,14 +18,13 @@ Soon, we will have a docker image which will avoid the struggle with versions.
 ```bash
 git clone git@github.com:ddarnold/Online_Tutoring_Platform.git
 ```
-2. Go into irectory:
+2. Go into directory:
 ```bash
 cd Online_Tutoring_Platform
 ```
 3. Configure the `.env` File:
 ```bash
-cp .env.example .env 			# step1: Rename it
-
+cd backend 						# go into backend root directory
 # step2: Paste .env content into the file (Ask Arnold for it)
 ```
 4. Connect to THU VPN (database access is allowed only from THU IP):
@@ -35,7 +34,6 @@ sudo openconnect vpn.thu.de 	# or any other way you connect to VPN
 
 5. Run backend:
 ```bash
-cd backend 						# go into backend root directory
 mvn spring-boot:run 			# run using maven
 
 # Or if you have IntelliJ you can open the backend project and run it using Shift + F10
