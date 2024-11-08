@@ -50,8 +50,6 @@ mvn spring-boot:run 			# run using maven
 cd ../frontend 					# go into backend root directory
 npm install						# Install dependencies
 npm start						# Start the development server		
-
-# Or if you have IntelliJ you can open the backend project and run it using Shift + F10
 ```
 10. Voila!
 spring is on localhost:8080, try http://localhost:8080/sample for example
