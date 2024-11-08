@@ -44,7 +44,6 @@ mvn spring-boot:run 			# run using maven
 
 # Or if you have IntelliJ you can open the backend project and run it using Shift + F10
 ```
-
 9. Run frontend:
 ```bash
 cd ../frontend 					# go into backend root directory
