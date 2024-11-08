@@ -1,14 +1,12 @@
 ### Prerequisites
-- Docker
-- Docker Compose
 - JDK 21
 - Node.js v22.10.0(LTS)
 - npm
-- psql
+- psql (handy tool)
 
 ### Recommended IDE
-- BE: IntelliJ IDEA Ultimate (available with uni account) or Community Edition
-- FE: vs Code
+- backend: IntelliJ IDEA Ultimate (available with the uni account) or Community Edition
+- frontend: vsCode
 
 ## Build the project step-by-step
 Make sure you have the correct versions of the prerequisites if one is specified.
@@ -28,18 +26,26 @@ cd backend 						# go into backend root directory
 # step2: Paste .env content into the file (Ask Arnold for it)
 ```
 4. Connect to THU VPN (database access is allowed only from THU IP):
+Might not be needed in the future
 ```bash
 sudo openconnect vpn.thu.de 	# or any other way you connect to VPN
 ```
 
-5. Run backend:
+5. Set up Application Default Credentials for Cloud SQL
+https://cloud.google.com/docs/authentication/provide-credentials-adc#google-idp
+
+6. Send an email to arnodo01@thu.de from Google account you used in the previous step so I can verify you
+
+7. Wait for the verification confirmation from Arnold
+
+8. Run backend:
 ```bash
 mvn spring-boot:run 			# run using maven
 
 # Or if you have IntelliJ you can open the backend project and run it using Shift + F10
 ```
 
-6. Run frontend:
+9. Run frontend:
 ```bash
 cd ../frontend 					# go into backend root directory
 npm install						# Install dependencies
@@ -47,11 +53,11 @@ npm start						# Start the development server
 
 # Or if you have IntelliJ you can open the backend project and run it using Shift + F10
 ```
-5. Voila!
+10. Voila!
 spring is on localhost:8080, try http://localhost:8080/sample for example
 react is on localhost:3000
 
-6. If you want to query database directly:
+11. If you want to query database directly:
 ```bash
 psql "sslmode=require hostaddr=34.107.78.43 port=5432  user=postgres dbname=test"\
 # Enter the pass and use postgres syntax to query
