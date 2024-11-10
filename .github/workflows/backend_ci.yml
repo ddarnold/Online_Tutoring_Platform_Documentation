@@ -1,5 +1,5 @@
 name: Backend CI
-run-name: Run #${{ github.run_number }} - ${{ github.event_name }}
+run-name: "Backend CI: ${{ github.head_Ref }} by ${{ github.actor }}"
 
 on:
   workflow_dispatch:
@@ -30,6 +30,12 @@ jobs:
 
       - name: Add .env file
         run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Start Google Cloud SQL Proxy
+        uses: mattes/gce-cloudsql-proxy-action@v1
+        with:
+          creds: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          instance: decoded-carport-440920-j9:europe-west3:thutorium-db
 
       - name: Build with Maven
         run: mvn -B package --file pom.xml
