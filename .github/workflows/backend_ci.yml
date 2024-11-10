@@ -25,7 +25,11 @@ jobs:
         with:
             java-version: '21'
             distribution: 'temurin'
+            cache-dependency-path: backend/pom.xml
             cache: 'maven'
+
+      - name: Add .env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
 
       - name: Build with Maven
         run: mvn -B package --file pom.xml

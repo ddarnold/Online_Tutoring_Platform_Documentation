@@ -1,6 +1,6 @@
 ### Prerequisites
 - JDK 21
-- Node.js v22.10.0(LTS)
+- Node.js v20.x(LTS)
 - npm
 - psql (handy tool)
 
