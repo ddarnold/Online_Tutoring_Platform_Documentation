@@ -6,7 +6,7 @@ spring:
         url: jdbc:postgresql://${INSTANCE_HOST}:${DB_PORT}/${DB_NAME}
         username: ${DB_USER}
         password: ${DB_PASS}
-        # uncomment following lines for developing locally
+        # uncomment the following lines for developing locally
         # hikari:
         #     data-source-properties:
         #         socketFactory: "com.google.cloud.sql.postgres.SocketFactory"

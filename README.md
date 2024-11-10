@@ -1,3 +1,7 @@
+## NOTE 10.11.2024
+In order to fix the connection for the local development, please uncomment the lines for hikari connection in backend/src/main/resources/application.yml
+
+
 ### Prerequisites
 - JDK 21
 - Node.js v20.x(LTS)
