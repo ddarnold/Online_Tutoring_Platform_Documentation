@@ -8,16 +8,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity(name = "actors")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class SampleEntity {
-    @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Integer id;
-    private String first_name;
-    private String last_name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+
+  private String first_name;
+  private String last_name;
 }

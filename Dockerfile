@@ -1,5 +1,5 @@
 # Use the official Ubuntu base image
-FROM ubuntu:latest
+FROM ubuntu:24.04
 
 # Update package lists and install necessary tools
 RUN apt-get update && apt-get upgrade -y
