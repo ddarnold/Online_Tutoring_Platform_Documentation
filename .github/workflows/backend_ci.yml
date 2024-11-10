@@ -1,5 +1,5 @@
 name: Backend CI
-run-name: "Backend CI: ${{ github.head_Ref }} by ${{ github.actor }}"
+run-name: "Backend CI: ${{ github.ref_name }} by ${{ github.actor }}"
 
 on:
   workflow_dispatch:

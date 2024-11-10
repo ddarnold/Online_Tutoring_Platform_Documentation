@@ -1,5 +1,5 @@
 name: Frontend CI
-run-name: "Frontend CI: ${{ github.head_Ref }} by ${{ github.actor }}"
+run-name: "Frontend CI: ${{ github.ref_name }} by ${{ github.actor }}"
 
 on:
   workflow_dispatch:
