@@ -1,0 +1,32 @@
+name: Frontend CI
+run-name: Run #${{ github.run_number }} - ${{ github.event_name }}
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+          cache: 'npm'
+      - name: Clean Install
+        run: npm ci
+      - run: npm run build --if-present
+      - name: Test
+        run: npm test
