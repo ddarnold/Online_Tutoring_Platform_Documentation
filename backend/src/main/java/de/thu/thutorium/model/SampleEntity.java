@@ -1,14 +1,12 @@
-package de.thu.thutorium;
+package de.thu.thutorium.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "actors")
+@Table(name = "sample")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

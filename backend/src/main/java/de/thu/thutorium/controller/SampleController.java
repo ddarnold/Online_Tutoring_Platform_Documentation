@@ -1,6 +1,9 @@
-package de.thu.thutorium;
+package de.thu.thutorium.controller;
 
 import java.util.List;
+
+import de.thu.thutorium.model.SampleEntity;
+import de.thu.thutorium.service.SampleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
