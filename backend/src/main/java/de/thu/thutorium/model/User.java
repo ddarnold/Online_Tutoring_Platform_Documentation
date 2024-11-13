@@ -52,6 +52,7 @@ public class User {
    * database.
    */
   @Enumerated(EnumType.STRING)
+  @Column(name = "role", nullable = false)
   private UserRole role;
 
   /**
