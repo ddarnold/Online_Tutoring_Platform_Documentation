@@ -28,8 +28,8 @@ public final class SampleController {
    * Retrieves all sample entities.
    *
    * <p>This endpoint allows clients to fetch a list of all available sample entities. It supports
-   * Cross-Origin Resource Sharing (CORS) for requests from "<a href="http://localhost:3000">localhost:3000</a>" with a maximum
-   * age of 3600 seconds.
+   * Cross-Origin Resource Sharing (CORS) for requests from "<a
+   * href="http://localhost:3000">localhost:3000</a>" with a maximum age of 3600 seconds.
    *
    * @return a {@link ResponseEntity} containing a list of {@link SampleEntity} objects and an HTTP
    *     status of OK.
