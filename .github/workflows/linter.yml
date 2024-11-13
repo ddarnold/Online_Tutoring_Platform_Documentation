@@ -32,4 +32,6 @@ jobs:
       - name: Super-linter
         uses: super-linter/super-linter/slim@v7.1.0
         env:
+          JAVA_FILE_NAME: "google_checks.xml"
+          VALIDATE_ALL_CODEBASE: "false"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
