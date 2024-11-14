@@ -6,26 +6,30 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * Service class responsible for handling operations related to courses. This class interacts with
- * the {@link CourseRepository} to fetch courses based on specific criteria such as tutor's name.
- */
+/** Service class responsible for handling operations related to courses. */
 @Service
 public class CourseService {
 
   @Autowired private CourseRepository courseRepository;
 
   /**
-   * Finds a list of courses taught by a tutor based on the tutor's first and last names. This
-   * method queries the repository to retrieve all courses where the tutor's first and last name
-   * match the provided parameters.
+   * Finds courses by tutor's first and last name.
    *
    * @param firstName The tutor's first name.
    * @param lastName The tutor's last name.
-   * @return A list of {@link Course} objects taught by the tutor with the provided name. If no
-   *     courses are found, an empty list is returned.
+   * @return A list of {@link Course} objects taught by the tutor with the provided name.
    */
   public List<Course> findCoursesByTutorName(String firstName, String lastName) {
     return courseRepository.findByTutorFirstNameAndLastName(firstName, lastName);
+  }
+
+  /**
+   * Finds courses by tutor's full name.
+   *
+   * @param tutorName The full name of the tutor (e.g., "John Doe").
+   * @return A list of {@link Course} objects taught by the tutor with the provided full name.
+   */
+  public List<Course> findCoursesByFullTutorName(String tutorName) {
+    return courseRepository.findByTutorFullName(tutorName);
   }
 }

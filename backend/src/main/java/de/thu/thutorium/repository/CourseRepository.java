@@ -28,4 +28,14 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
       "SELECT c FROM Course c WHERE LOWER(c.tutor.firstName) LIKE LOWER(CONCAT('%', :firstName, '%')) AND LOWER(c.tutor.lastName) LIKE LOWER(CONCAT('%', :lastName, '%'))")
   List<Course> findByTutorFirstNameAndLastName(
       @Param("firstName") String firstName, @Param("lastName") String lastName);
+
+  /**
+   * Finds courses by the tutor's full name.
+   *
+   * @param tutorName The full name of the tutor (e.g., "John Doe").
+   * @return A list of {@link Course} objects taught by the tutor with the provided name.
+   */
+  @Query(
+      "SELECT c FROM Course c WHERE LOWER(CONCAT(c.tutor.firstName, ' ', c.tutor.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%'))")
+  List<Course> findByTutorFullName(@Param("tutorName") String tutorName);
 }
