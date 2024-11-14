@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 /**
  * Represents a course in the system. This entity is mapped to the "course" table in the database.
  * It contains details about the course such as its name, description, associated tutor, and
- * duration.
+ * duration.\
  */
 @Entity
 @Table(name = "course")
