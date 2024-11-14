@@ -38,4 +38,14 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
   @Query(
       "SELECT c FROM Course c WHERE LOWER(CONCAT(c.tutor.firstName, ' ', c.tutor.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%'))")
   List<Course> findByTutorFullName(@Param("tutorName") String tutorName);
+
+  /**
+   * Finds courses by a partial match on the course name. This method uses a custom JPQL query to
+   * search for courses where the name contains the specified string, case-insensitive.
+   *
+   * @param name The partial course name to search for.
+   * @return A list of {@link Course} objects with names that match the specified partial name.
+   */
+  @Query("SELECT c FROM Course c WHERE LOWER(c.courseName) LIKE LOWER(CONCAT('%', :name, '%'))")
+  List<Course> findByCourseName(@Param("name") String name);
 }

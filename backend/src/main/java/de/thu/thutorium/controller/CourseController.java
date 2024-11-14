@@ -42,4 +42,15 @@ public class CourseController {
     // If no parameters are provided, return an empty list or an appropriate response
     return List.of();
   }
+
+  /**
+   * Retrieves a list of courses based on a partial name match.
+   *
+   * @param name The partial name of the course to search for.
+   * @return A list of {@link Course} objects that match the specified partial name.
+   */
+  @GetMapping("/courses/search")
+  public List<Course> getCoursesByName(@RequestParam("name") String name) {
+    return courseService.findCoursesByName(name);
+  }
 }

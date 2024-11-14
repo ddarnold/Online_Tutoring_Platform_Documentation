@@ -32,4 +32,14 @@ public class CourseService {
   public List<Course> findCoursesByFullTutorName(String tutorName) {
     return courseRepository.findByTutorFullName(tutorName);
   }
+
+  /**
+   * Finds courses by a partial match on the course name.
+   *
+   * @param name The partial name of the course.
+   * @return A list of {@link Course} objects that match the specified name.
+   */
+  public List<Course> findCoursesByName(String name) {
+    return courseRepository.findByCourseName(name);
+  }
 }
