@@ -2,6 +2,7 @@ package de.thu.thutorium.controller;
 
 import de.thu.thutorium.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,6 +36,7 @@ public class UserController {
    * @response 42
    */
   @GetMapping("students/count")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public Long getStudentCount() {
     return userService.getStudentCount();
   }
@@ -48,6 +50,7 @@ public class UserController {
    * @response 15
    */
   @GetMapping("tutors/count")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public Long getTutorsCount() {
     return userService.getTutorCount();
   }

@@ -4,11 +4,12 @@ import de.thu.thutorium.model.Course;
 import de.thu.thutorium.service.CourseService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Controller class responsible for handling HTTP requests related to courses. /*/
+/** Controller class responsible for handling HTTP requests related to courses. / */
 @RestController
 public class CourseController {
 
@@ -24,6 +25,7 @@ public class CourseController {
    * @return a list of {@link Course} objects taught by the specified tutor.
    */
   @GetMapping("/courses/tutor")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public List<Course> getCoursesByTutor(
       @RequestParam(required = false) String firstName,
       @RequestParam(required = false) String lastName,
@@ -50,6 +52,7 @@ public class CourseController {
    * @return A list of {@link Course} objects that match the specified partial name.
    */
   @GetMapping("/courses/search")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public List<Course> getCoursesByName(@RequestParam("name") String name) {
     return courseService.findCoursesByName(name);
   }
