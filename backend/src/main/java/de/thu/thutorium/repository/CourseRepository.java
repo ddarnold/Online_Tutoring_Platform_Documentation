@@ -2,8 +2,6 @@ package de.thu.thutorium.repository;
 
 import de.thu.thutorium.model.Course;
 import java.util.List;
-
-import de.thu.thutorium.model.CourseCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,7 +36,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
    * @return A list of {@link Course} objects taught by the tutor with the provided name.
    */
   @Query(
-      "SELECT c FROM Course c WHERE LOWER(CONCAT(c.tutor.firstName, ' ', c.tutor.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%'))")
+      "SELECT c FROM Course c "
+          + "WHERE LOWER(CONCAT(c.tutor.firstName, ' ', c.tutor.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%')) "
+          + "OR LOWER(CONCAT(c.tutor.lastName, ' ', c.tutor.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%'))")
   List<Course> findByTutorFullName(@Param("tutorName") String tutorName);
 
   /**
@@ -49,19 +49,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
    * @return A list of {@link Course} objects with names that match the specified partial name.
    */
   @Query("SELECT c FROM Course c WHERE LOWER(c.courseName) LIKE LOWER(CONCAT('%', :name, '%'))")
-  List<Course> findByCourseName(@Param("name") String name);
-
-  /**
-   * Retrieves a list of all distinct course categories from the "course" table.
-   *
-   * <p>This method uses a custom JPQL query to select unique categories associated with the {@link
-   * Course} entity. The {@code SELECT DISTINCT} clause ensures that only unique {@link
-   * CourseCategory} values are returned. It is useful for scenarios where you need to display or
-   * filter courses by their categories.
-   *
-   * @return a {@link List} of {@link CourseCategory} enums representing all unique categories
-   *     available in the database.
-   */
-  @Query("SELECT DISTINCT c.category FROM Course c")
-  List<CourseCategory> findAllDistinctCategories();
+  List<Course> findCourseByName(@Param("name") String name);
 }

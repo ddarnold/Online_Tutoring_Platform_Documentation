@@ -1,7 +1,6 @@
 package de.thu.thutorium.service;
 
 import de.thu.thutorium.model.Course;
-import de.thu.thutorium.model.CourseCategory;
 import de.thu.thutorium.repository.CourseRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,22 +40,6 @@ public class CourseService {
    * @return A list of {@link Course} objects that match the specified name.
    */
   public List<Course> findCoursesByName(String name) {
-    return courseRepository.findByCourseName(name);
-  }
-
-  /**
-   * Retrieves a list of all distinct course categories from the database.
-   *
-   * <p>This method delegates the call to the {@link CourseRepository} to fetch unique course
-   * categories. It leverages the repository's custom query method to obtain a list of all available
-   * {@link CourseCategory} enums. This can be useful for populating dropdown menus or filtering
-   * courses by category in the application.
-   *
-   * @return a {@link List} of {@link CourseCategory} enums representing all unique course
-   *     categories present in the "course" table.
-   * @see CourseRepository#findAllDistinctCategories()
-   */
-  public List<CourseCategory> getAllDistinctCourseCategories() {
-    return courseRepository.findAllDistinctCategories();
+    return courseRepository.findCourseByName(name);
   }
 }
