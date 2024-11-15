@@ -2,6 +2,8 @@ package de.thu.thutorium.repository;
 
 import de.thu.thutorium.model.Course;
 import java.util.List;
+
+import de.thu.thutorium.model.CourseCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -48,4 +50,18 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
    */
   @Query("SELECT c FROM Course c WHERE LOWER(c.courseName) LIKE LOWER(CONCAT('%', :name, '%'))")
   List<Course> findByCourseName(@Param("name") String name);
+
+  /**
+   * Retrieves a list of all distinct course categories from the "course" table.
+   *
+   * <p>This method uses a custom JPQL query to select unique categories associated with the {@link
+   * Course} entity. The {@code SELECT DISTINCT} clause ensures that only unique {@link
+   * CourseCategory} values are returned. It is useful for scenarios where you need to display or
+   * filter courses by their categories.
+   *
+   * @return a {@link List} of {@link CourseCategory} enums representing all unique categories
+   *     available in the database.
+   */
+  @Query("SELECT DISTINCT c.category FROM Course c")
+  List<CourseCategory> findAllDistinctCategories();
 }

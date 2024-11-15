@@ -1,6 +1,7 @@
 package de.thu.thutorium.controller;
 
 import de.thu.thutorium.model.Course;
+import de.thu.thutorium.model.CourseCategory;
 import de.thu.thutorium.service.CourseService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,5 +56,24 @@ public class CourseController {
   @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public List<Course> getCoursesByName(@RequestParam("name") String name) {
     return courseService.findCoursesByName(name);
+  }
+
+  /**
+   * Retrieves a list of all distinct course categories available in the system. This endpoint is
+   * accessible via a GET request to "/courses/categories".
+   *
+   * <p>The method leverages the {@link CourseService} to fetch unique course categories from the
+   * database. It is annotated with {@code @CrossOrigin} to allow cross-origin requests from the
+   * specified origin, particularly useful for frontend applications running on a different server
+   * (e.g., a React app running on localhost:3000).
+   *
+   * @return a {@link List} of {@link CourseCategory} enums representing all unique course
+   *     categories present in the database.
+   * @see CourseService#getAllDistinctCourseCategories()
+   */
+  @GetMapping("/courses/categories")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+  public List<CourseCategory> getAllDCategories() {
+    return courseService.getAllDistinctCourseCategories();
   }
 }
