@@ -1,5 +1,6 @@
 package de.thu.thutorium.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,6 +45,7 @@ public class Course {
    */
   @ManyToOne
   @JoinColumn(name = "tutor_id", nullable = false)
+  @JsonBackReference
   private User tutor;
 
   /** The name of the course. This field is mandatory and cannot be null. */
