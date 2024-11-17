@@ -39,6 +39,9 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
+      - name: Run tests
+        run: mvn test --file pom.xml
+
       # - name: Maven Dependency Tree Dependency Submission
       #   uses: advanced-security/maven-dependency-submission-action@v4.1.1
       #   with:
