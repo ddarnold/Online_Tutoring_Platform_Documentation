@@ -69,4 +69,11 @@ public class User {
   @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonManagedReference
   private List<Course> courses;
+
+  /**
+   * The credentials associated with this user. This is the inverse side of a one-to-one
+   * relationship.
+   */
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private Credentials credentials;
 }
