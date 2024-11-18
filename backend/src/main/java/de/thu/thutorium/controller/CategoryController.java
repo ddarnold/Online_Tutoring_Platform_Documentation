@@ -2,47 +2,45 @@ package de.thu.thutorium.controller;
 
 import de.thu.thutorium.model.Category;
 import de.thu.thutorium.service.CategoryService;
+
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST controller for managing categories in the system. This controller provides endpoints for
- * retrieving category information.
- *
- * <p>The {@link CategoryController} class uses the {@link CategoryService} to fetch category data
- * and expose it through RESTful endpoints. It is annotated with {@link RestController} to indicate
- * that it is a Spring MVC controller for handling HTTP requests.
- *
- * @see CategoryService
- * @see Category
+ * REST controller for handling category-related requests.
+ * <p>
+ * This controller exposes endpoints for the frontend to interact with category data,
+ * such as retrieving all categories and their associated courses.
+ * <p>
+ * It uses CategoryService to handle the logic and database interaction behind
+ * these operations.
  */
 @RestController
 public class CategoryController {
 
-  /**
-   * Service responsible for handling category-related business logic. This service is injected into
-   * the controller using {@code @Autowired}.
-   */
-  @Autowired private CategoryService categoryService;
+    /**
+     * Injecting the service responsible for category operations.
+     */
+    @Autowired
+    private CategoryService categoryService;
 
-  /**
-   * Endpoint for retrieving all categories.
-   *
-   * <p>This method is mapped to a GET request at the URL {@code /search/categories}. It returns a
-   * list of all {@link Category} objects available in the system.
-   *
-   * <p>The endpoint is configured with {@code @CrossOrigin} to allow cross-origin requests from the
-   * specified frontend domain ({@code http://localhost:3000}), with a cache duration of 3600
-   * seconds (1 hour).
-   *
-   * @return a {@link List} of {@link Category} objects representing all categories.
-   */
-  @GetMapping("search/categories")
-  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
-  public List<Category> getAllCategories() {
-    return categoryService.getAllCategories();
-  }
+    /**
+     * Endpoint to retrieve all categories along with their associated courses.
+     * <p>
+     * This method is mapped to the GET request at /search/categories-with-courses,
+     * and it returns the full list of categories from the database.
+     * <p>
+     * CrossOrigin allows requests from the specified frontend URL.
+     *
+     * @return List of categories with associated courses.
+     */
+    @GetMapping("search/categories-with-courses")
+    @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+    public List<Category> getAllCategoriesWithCourses() {
+        return categoryService.getAllCategoriesWithCourses();
+    }
 }
