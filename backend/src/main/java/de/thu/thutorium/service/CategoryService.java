@@ -2,39 +2,45 @@ package de.thu.thutorium.service;
 
 import de.thu.thutorium.model.Category;
 import de.thu.thutorium.repository.CategoryRepository;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Service class responsible for managing category operations.
- * <p>
- * This class handles the business logic associated with the Category entity, acting
- * as an intermediary between the controller and the repository.
- * <p>
- * It leverages CategoryRepository to perform database operations such as fetching all
- * categories along with their associated courses.
+ * Service class for managing operations related to {@link Category} entities. This class acts as an
+ * intermediary between the controller and the repository layers, providing business logic and
+ * interaction with the database through the {@link CategoryRepository}.
+ *
+ * <p>This service is annotated with {@code @Service} to indicate that it's a Spring-managed service
+ * bean. It leverages dependency injection to automatically inject an instance of {@link
+ * CategoryRepository} using the {@code @Autowired} annotation.
+ *
+ * <p>Example usage:
+ *
+ * <pre>{@code
+ * @Autowired
+ * private CategoryService categoryService;
+ *
+ * List<Category> categories = categoryService.getAllCategories();
+ * }</pre>
+ *
+ * @see Category
+ * @see CategoryRepository
  */
 @Service
 public class CategoryService {
+  /** Repository for performing CRUD operations on {@link Category} entities. */
+  @Autowired private CategoryRepository categoryRepository;
 
-    /**
-     * Injecting the repository to perform CRUD operations on categories.
-     */
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    /**
-     * Fetches all categories along with their associated courses.
-     * <p>
-     * This method calls the custom query from the CategoryRepository to fetch categories
-     * and their courses, ensuring that the full list is returned.
-     *
-     * @return List of categories with associated courses.
-     */
-    public List<Category> getAllCategoriesWithCourses() {
-        return categoryRepository.findAllCategoriesWithCourses();
-    }
+  /**
+   * Retrieves a list of all available categories from the database.
+   *
+   * <p>This method uses the {@link CategoryRepository#findAllCategories()} method to fetch all
+   * categories. It returns an empty list if no categories are found.
+   *
+   * @return a {@link List} of {@link Category} objects representing all categories.
+   */
+  public List<Category> getAllCategories() {
+    return categoryRepository.findAllCategories();
+  }
 }
