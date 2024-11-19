@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,11 +57,19 @@ public class Course {
   @Column(name = "course_name", nullable = false)
   private String courseName;
 
-  /** A description of the course. This field is mandatory and cannot be null. */
-  @Column(name = "description", nullable = false)
-  private String description;
+  /**
+   * A short description of the course (1-2 sentences). This field is mandatory and cannot be null.
+   */
+  @Column(name = "description_short", nullable = false, length = 170)
+  private String descriptionShort;
 
-  /** The timestamp when the course was created. This field is mandatory and cannot be null. */
+  /** A long description of the course. This field is optional and can be null. */
+  @Column(name = "description_long", length = 500)
+  private String descriptionLong;
+
+  /**
+   * The timestamp when the course was created. This field is mandatory and cannot be {@code null}.
+   */
   @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
 
@@ -78,4 +88,28 @@ public class Course {
   @ManyToOne
   @JoinColumn(name = "course_category_id", nullable = false)
   private Category category;
+
+  /**
+   * Represents the list of ratings associated with this course.
+   *
+   * <p>This relationship is mapped by the {@code course} field in the {@link Rating} entity. The
+   * cascade type {@code CascadeType.ALL} ensures that all operations (such as persist and remove)
+   * are propagated to the associated ratings. Additionally, {@code orphanRemoval = true} guarantees
+   * that ratings that are no longer associated with this course will be automatically deleted.
+   *
+   * <p>If the course is deleted, all ratings associated with it will also be deleted due to the
+   * cascading operations defined in this relationship.
+   *
+   * <p>The {@link Rating} entity references the {@code course} field, and we use the
+   * {@code @JsonIgnoreProperties} annotation to prevent infinite recursion during serialization.
+   * This annotation ensures that the fields {@code course}, {@code tutor}, and {@code
+   * ratingsAsStudents} in the {@link Rating} entity are ignored during JSON serialization to avoid
+   * circular dependencies.
+   *
+   * @see Rating
+   * @see Course
+   */
+  @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnoreProperties({"course", "tutor", "ratingsAsStudents"})
+  private List<Rating> ratings;
 }

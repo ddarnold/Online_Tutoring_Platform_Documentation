@@ -2,7 +2,6 @@ package de.thu.thutorium.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -59,18 +58,53 @@ public class User {
   private LocalDateTime createdAt;
 
   /**
-   * The list of courses associated with this user if they are a tutor.
+   * Represents the list of courses associated with this user if they are a tutor.
    *
-   * <p>This relationship is mapped by the {@code tutor} field in the {@link Course} entity. It uses
-   * {@code CascadeType.ALL} to propagate all operations (like persist, remove) to the associated
-   * courses. {@code orphanRemoval = true} ensures that courses without a tutor reference are
-   * automatically deleted.
+   * <p>This relationship is mapped by the {@code tutor} field in the {@link Course} entity. The
+   * cascade type {@code CascadeType.ALL} ensures that all operations (such as persist and remove)
+   * are propagated to the associated courses. Additionally, {@code orphanRemoval = true} guarantees
+   * that courses that no longer have a tutor reference are automatically deleted.
    *
-   * <p>If the user is deleted, all their associated courses will be deleted as well.
+   * <p>If this user is deleted, all their associated courses will also be deleted due to the
+   * cascading operations defined in this relationship.
+   *
+   * @see Course
    */
   @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnoreProperties({"tutor"}) // Prevent including the tutor field within courses
+  @JsonIgnoreProperties({"ratingsAsTutor"})
   private List<Course> courses;
+
+  /**
+   * Represents the list of ratings that this user has received as a tutor.
+   *
+   * <p>This relationship is mapped by the {@code tutor} field in the {@link Rating} entity. The
+   * cascade type {@code CascadeType.ALL} ensures that all operations (such as persist and remove)
+   * are propagated to the associated ratings. Additionally, {@code orphanRemoval = true} guarantees
+   * that ratings that no longer reference this tutor are automatically deleted.
+   *
+   * <p>If this user is deleted, all their associated ratings as a tutor will also be deleted.
+   *
+   * @see Rating
+   */
+  @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnoreProperties({"student"})
+  private List<Rating> ratingsAsTutor; // Ratings received as a tutor
+
+  /**
+   * Represents the list of ratings that this user has given as a student.
+   *
+   * <p>This relationship is mapped by the {@code student} field in the {@link Rating} entity. The
+   * cascade type {@code CascadeType.ALL} ensures that all operations (such as persist and remove)
+   * are propagated to the associated ratings. Additionally, {@code orphanRemoval = true} guarantees
+   * that ratings that no longer reference this student are automatically deleted.
+   *
+   * <p>If this user is deleted, all their associated ratings as a student will also be deleted.
+   *
+   * @see Rating
+   */
+  @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnoreProperties({"tutor"})
+  private List<Rating> ratingsAsStudent; // Ratings given as a student
 
   /**
    * The credentials associated with this user. This is the inverse side of a one-to-one
