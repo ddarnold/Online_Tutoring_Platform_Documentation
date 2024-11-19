@@ -64,7 +64,7 @@ public class Course {
   private String descriptionShort;
 
   /** A long description of the course. This field is optional and can be null. */
-  @Column(name = "description_long", length = 500)
+  @Column(name = "description_long", length = 1500)
   private String descriptionLong;
 
   /**

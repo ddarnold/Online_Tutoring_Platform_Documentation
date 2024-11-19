@@ -71,17 +71,16 @@ public class Rating {
 
   /**
    * The rating value given by the student. This is a required field with a numerical value
-   * representing the rating score, typically ranging from 1.0 to 5.0, though the actual range can
-   * be customized.
+   * representing the rating score, ranging from 1.0 to 5.0
    */
   @Column(name = "points", nullable = false)
-  private Double points; // Rating value (e.g., 1.0 - 5.0)
+  private Integer points;
 
   /**
    * An optional textual review given by the student along with the rating points. The length of the
-   * review is capped at 500 characters.
+   * review is capped at 1000 characters.
    */
-  @Column(name = "review", length = 500)
+  @Column(name = "review", length = 1000)
   private String review; // Optional review text
 
   /**
