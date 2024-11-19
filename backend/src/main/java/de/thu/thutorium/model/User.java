@@ -1,6 +1,7 @@
 package de.thu.thutorium.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -68,7 +69,7 @@ public class User {
    * <p>If the user is deleted, all their associated courses will be deleted as well.
    */
   @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonManagedReference
+  @JsonIgnoreProperties({"tutor"}) // Prevent including the tutor field within courses
   private List<Course> courses;
 
   /**
