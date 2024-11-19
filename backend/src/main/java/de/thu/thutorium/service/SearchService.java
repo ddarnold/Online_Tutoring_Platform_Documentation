@@ -4,10 +4,9 @@ import de.thu.thutorium.model.Course;
 import de.thu.thutorium.model.User;
 import de.thu.thutorium.repository.CourseRepository;
 import de.thu.thutorium.repository.UserRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Service class responsible for handling search operations related to tutors and courses.

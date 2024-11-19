@@ -25,7 +25,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
    *     courses are found, an empty list is returned.
    */
   @Query(
-      "SELECT c FROM Course c WHERE LOWER(c.tutor.firstName) LIKE LOWER(CONCAT('%', :firstName, '%')) AND LOWER(c.tutor.lastName) LIKE LOWER(CONCAT('%', :lastName, '%'))")
+      "SELECT c FROM Course c WHERE LOWER(c.tutor.firstName) LIKE LOWER(CONCAT('%', :firstName,"
+          + " '%')) AND LOWER(c.tutor.lastName) LIKE LOWER(CONCAT('%', :lastName, '%'))")
   List<Course> findByTutorFirstNameAndLastName(
       @Param("firstName") String firstName, @Param("lastName") String lastName);
 
@@ -36,9 +37,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
    * @return A list of {@link Course} objects taught by the tutor with the provided name.
    */
   @Query(
-      "SELECT c FROM Course c "
-          + "WHERE LOWER(CONCAT(c.tutor.firstName, ' ', c.tutor.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%')) "
-          + "OR LOWER(CONCAT(c.tutor.lastName, ' ', c.tutor.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%'))")
+      "SELECT c FROM Course c WHERE LOWER(CONCAT(c.tutor.firstName, ' ', c.tutor.lastName)) LIKE"
+          + " LOWER(CONCAT('%', :tutorName, '%')) OR LOWER(CONCAT(c.tutor.lastName, ' ',"
+          + " c.tutor.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%'))")
   List<Course> findByTutorFullName(@Param("tutorName") String tutorName);
 
   /**
