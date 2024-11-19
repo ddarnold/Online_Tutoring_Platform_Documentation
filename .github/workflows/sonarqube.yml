@@ -1,4 +1,6 @@
 name: SonarQube Cloud
+run-name: "SonarQube: ${{ github.ref_name }} by ${{ github.actor }}"
+
 on:
   push:
     branches:
