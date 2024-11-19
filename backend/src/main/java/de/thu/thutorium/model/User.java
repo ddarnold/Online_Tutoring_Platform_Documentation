@@ -1,5 +1,6 @@
 package de.thu.thutorium.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
@@ -75,6 +76,6 @@ public class User {
    * relationship.
    */
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private Credentials credentials;
-
 }
