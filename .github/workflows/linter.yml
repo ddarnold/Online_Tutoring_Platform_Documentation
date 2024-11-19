@@ -11,35 +11,78 @@ on:
 permissions: {}
 
 jobs:
-  build:
-    name: Lint
+  backend-lint:
+    name: Backend Lint
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
       packages: read
-      # To report GitHub Actions status checks
       statuses: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # super-linter needs the full git history to get the
-          # list of files that changed across commits
           fetch-depth: 0
 
-      - name: Super-linter
-        uses: super-linter/super-linter/slim@v7.1.0
+      - name: Backend Linter
+        uses: super-linter/super-linter/slim@v7.2.0
         env:
           VALIDATE_JAVA: "true"
           JAVA_FILE_NAME: "google_checks.xml"
           VALIDATE_GOOGLE_JAVA_FORMAT: "true"
-          VALIDATE_JAVASCRIPT_ES: "true"
-          VALIDATE_JAVASCRIPT_PRETTIER: "true"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  frontend-lint:
+    name: Frontend Lint
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Frontend Linter
+        uses: super-linter/super-linter/slim@v7.2.0
+        env:
+          VALIDATE_JSX: "true"
+          VALIDATE_JSX_PRETTIER: "true"
           VALIDATE_HTML: "true"
-          VALDIATE_CSS: "true"
+          VALIDATE_HTML_PRETTIER: "true"
+          VALIDATE_CSS: "true" # Fixed typo from VALDIATE_CSS
+          VALIDATE_CSS_PRETTIER: "true"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  actions-lint:
+    name: GitHub Actions Lint
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Infrastructure Linter
+        uses: super-linter/super-linter/slim@v7.2.0
+        env:
           VALIDATE_GITHUB_ACTIONS: "true"
           VALIDATE_GITLEAKS: "true"
-          
+          VALIDATE_YAML: "true"
+          VALIDATE_YAML_PRETTIER: "true"
+          VALIDATE_MARKDOWN: "true"
+          VALIDATE_MARKDOWN_PRETTIER: "true"
+          VALIDATE_DOCKERFILE_HADOLINT: "true"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

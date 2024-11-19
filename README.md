@@ -2,7 +2,7 @@
 
 In order to fix the connection for the local development, please uncomment the lines for hikari connection in backend/src/main/resources/application.yml
 
-### Prerequisites
+## Prerequisites
 
 - JDK 21
 - Node.js v20.x(LTS)
@@ -34,7 +34,7 @@ cd Online_Tutoring_Platform
 3. Configure the `.env` File:
 
 ```bash
-cd backend 						# go into backend root directory
+cd backend # go into backend root directory
 # step2: Paste .env content into the file (Ask Arnold for it)
 ```
 
@@ -42,20 +42,20 @@ cd backend 						# go into backend root directory
    Might not be needed in the future
 
 ```bash
-sudo openconnect vpn.thu.de 	# or any other way you connect to VPN
+sudo openconnect vpn.thu.de # or any other way you connect to VPN
 ```
 
 5. Set up Application Default Credentials for Cloud SQL
-   https://cloud.google.com/docs/authentication/provide-credentials-adc#google-idp
+   [Configure ADC with your Google Account](https://cloud.google.com/docs/authentication/provide-credentials-adc#google-idp)
 
-6. Send an email to <arnodo01@thu.de/> from Google account you used in the previous step so I can verify you
+6. Send an email to [arnodo01@thu.de](arnodo01@thu.de) from Google account you used in the previous step so I can verify you
 
 7. Wait for the verification confirmation from Arnold
 
 8. Run backend:
 
 ```bash
-mvn spring-boot:run 			# run using maven
+mvn spring-boot:run # run using maven
 
 # Or if you have IntelliJ you can open the backend project and run it using Shift + F10
 ```
@@ -63,9 +63,9 @@ mvn spring-boot:run 			# run using maven
 9. Run frontend:
 
 ```bash
-cd ../frontend 					# go into backend root directory
-npm install						# Install dependencies
-npm start						# Start the development server
+cd ../frontend # go into backend root directory
+npm install # Install dependencies
+npm start # Start the development server
 ```
 
 10. Voila!
@@ -75,6 +75,6 @@ npm start						# Start the development server
 11. If you want to query database directly:
 
 ```bash
-psql "sslmode=require hostaddr=34.107.78.43 port=5432  user=postgres dbname=test"\
+psql "sslmode=require hostaddr=34.107.78.43 port=5432  user=postgres dbname=test"
 # Enter the pass and use postgres syntax to query
 ```
