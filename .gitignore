@@ -611,3 +611,6 @@ Temporary Items
 
 # add your custom gitignore here:
 .idea
+
+### database ###
+/database/
