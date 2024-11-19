@@ -2,12 +2,10 @@ package de.thu.thutorium.repository;
 
 import de.thu.thutorium.model.User;
 import de.thu.thutorium.model.UserRole;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -46,8 +44,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
    *     string.
    */
   @Query(
-      "SELECT u FROM User u WHERE u.role = 'TUTOR' "
-          + "AND (LOWER(CONCAT(u.firstName, ' ', u.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%')) "
-          + "OR LOWER(CONCAT(u.lastName, ' ', u.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%')))")
+      "SELECT u FROM User u WHERE u.role = 'TUTOR' AND (LOWER(CONCAT(u.firstName, ' ', u.lastName))"
+          + " LIKE LOWER(CONCAT('%', :tutorName, '%')) OR LOWER(CONCAT(u.lastName, ' ',"
+          + " u.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%')))")
   List<User> findByTutorFullName(@Param("tutorName") String tutorName);
 }
