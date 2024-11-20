@@ -1,4 +1,4 @@
-# Note: 20.11.2024
+# Note 20.11.2024
 
 **In order to use the local Docker setup:**
 
@@ -23,7 +23,7 @@ psql "sslmode=require hostaddr=34.107.78.43 port=5432  user=postgres dbname=test
 # Enter the pass and use postgres syntax to query
 ```
 
-# Build
+## Build
 
 Make sure you have the correct versions of the prerequisites if one is specified.
 
