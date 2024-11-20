@@ -1,0 +1,15 @@
+# To utilize the Local Docker Sandbox Database, please comment out the entire configuration below
+
+spring:
+  application:
+    name: thutorium
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${INSTANCE_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
