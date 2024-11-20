@@ -1,23 +1,45 @@
-# NOTE 10.11.2024
+# Note: 20.11.2024
 
-In order to fix the connection for the local development, please uncomment the lines for hikari connection in backend/src/main/resources/application.yml
+**In order to use the local Docker setup:**
 
-## Prerequisites
+1. Uncomment all lines in the file `/backend/src/main/resousrces/application.yml`
+2. Run the docker container using:
+
+```bash
+docker compose up --force-recreate --build --detach
+```
+
+Now you habe a local postgresql server, which will persist in `/database/data` folder.
+
+**In order to use the CloudSQL database:**
+
+1. Comment all lines in the file `/backend/src/main/resousrces/application.yml`
+2. Connect to the uni VPN
+3. Make sure you have the `/backend/.env` with CloudSQL credentials
+4. If you want to query CloudSQL database:
+
+```bash
+psql "sslmode=require hostaddr=34.107.78.43 port=5432  user=postgres dbname=test"
+# Enter the pass and use postgres syntax to query
+```
+
+# Build
+
+Make sure you have the correct versions of the prerequisites if one is specified.
+
+**Prerequisites**
 
 - JDK 21
 - Node.js v20.x(LTS)
 - npm
-- psql (handy tool)
+- Docker
 
-### Recommended IDE
+**Recommended IDE**
 
 - backend: IntelliJ IDEA Ultimate (available with the uni account) or Community Edition
 - frontend: Visual Studio Code
 
-## Build the project step-by-step
-
-Make sure you have the correct versions of the prerequisites if one is specified.
-Soon, we will have a docker image which will avoid the struggle with versions.
+## Steps
 
 1. Clone GitHub repository (be sure you set up SSH connection keys):
 
@@ -69,12 +91,7 @@ npm start # Start the development server
 ```
 
 10. Voila!
-    spring is on localhost:8080, try <http://localhost:8080/sample/> for example
-    react is on localhost:3000
 
-11. If you want to query database directly:
+Spring is on localhost:8080, try <http://localhost:8080/actuator/health>
 
-```bash
-psql "sslmode=require hostaddr=34.107.78.43 port=5432  user=postgres dbname=test"
-# Enter the pass and use postgres syntax to query
-```
+React is on localhost:3000
