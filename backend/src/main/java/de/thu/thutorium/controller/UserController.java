@@ -1,10 +1,10 @@
 package de.thu.thutorium.controller;
 
+import de.thu.thutorium.model.User;
 import de.thu.thutorium.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST controller for managing user-related endpoints.
@@ -53,5 +53,50 @@ public class UserController {
   @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public Long getTutorsCount() {
     return userService.getTutorCount();
+  }
+
+  /**
+   * Retrieves the account details of a user based on their user ID.
+   *
+   * @param userId the unique identifier of the user, extracted from the query parameter
+   * @return the {@link User} object containing the account details
+   * @throws IllegalArgumentException if {@code userId} is null
+   * @see UserService#findByUserId(Long)
+   */
+  @GetMapping("account")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+  public User getAccount(@RequestParam Long userId) {
+    return userService.findByUserId(userId);
+  }
+
+  /**
+   * Updates the details of an existing user based on their user ID.
+   *
+   * <p>The method accepts the updated user details in the request body and the user ID as a query
+   * parameter. It calls the service layer to perform the update and returns an appropriate HTTP
+   * response.
+   *
+   * @param userId the unique identifier of the user to be updated, extracted from the query
+   *     parameter
+   * @param updatedUser the {@link User} object containing the updated details, extracted from the
+   *     request body
+   * @return a {@link ResponseEntity} containing the updated {@link User} object with an HTTP 200
+   *     status if the update is successful, or an HTTP 404 status with {@code null} if the user is
+   *     not found
+   * @throws IllegalArgumentException if {@code userId} or {@code updatedUser} is null
+   * @see UserService#updateUser(Long, User)
+   */
+  @PutMapping("account")
+  public ResponseEntity<User> updateUser(
+      @RequestParam Long userId, // Extract userId from query parameter
+      @RequestBody User updatedUser) {
+
+    // Call the service to update the user based on the userId
+    try {
+      User updated = userService.updateUser(userId, updatedUser);
+      return ResponseEntity.ok(updated); // Return the updated user with HTTP 200 status
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(404).body(null); // Return 404 if user not found
+    }
   }
 }
