@@ -29,67 +29,51 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Rating {
 
-  /** The unique identifier for the rating. This is the primary key of the rating entity. */
+  /** Primary key of the Rating table, automatically generated. */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "rating_id")
   private Long ratingId;
 
   /**
-   * The student who gave the rating. This relationship is mapped by the {@code student_id} field in
-   * the {@link Rating} entity. The student's ratings as both a tutor and a student are ignored
-   * during serialization to avoid circular references.
-   *
-   * @see User
+   * The user who is receiving the rating. Can be a tutor or course instructor. Mapped as a foreign
+   * key to the User table.
+   */
+  @ManyToOne
+  @JoinColumn(name = "rated_user_id")
+  @JsonIgnoreProperties({"ratings", "credentials", "courses"})
+  private User ratedUser;
+
+  /**
+   * The user who created the rating, typically a student. Mapped as a foreign key to the User
+   * table.
    */
   @ManyToOne
   @JoinColumn(name = "student_id", nullable = false)
-  @JsonIgnoreProperties({"ratingsAsTutor", "ratingsAsStudent", "courses", "credentials"})
-  private User student; // The student creating the rating
+  @JsonIgnoreProperties({"ratings", "credentials", "courses"})
+  private User student;
 
   /**
-   * The tutor being rated, if applicable. This is an optional field and will only be populated if
-   * the rating is for a tutor. The tutor's ratings as a student, tutor, their courses, and
-   * credentials are ignored during serialization to avoid circular references.
-   *
-   * @see User
-   */
-  @ManyToOne
-  @JoinColumn(name = "tutor_id")
-  @JsonIgnoreProperties({"ratingsAsTutor", "ratingsAsStudent", "courses", "credentials"})
-  private User tutor;
-
-  /**
-   * The course being rated, if applicable. This is an optional field and will only be populated if
-   * the rating is for a course.
-   *
-   * @see Course
+   * The course associated with the rating. This field is optional. Mapped as a foreign key to the
+   * Course table.
    */
   @ManyToOne
   @JoinColumn(name = "course_id")
   private Course course;
 
-  /**
-   * The rating value given by the student. This is a required field with a numerical value
-   * representing the rating score, ranging from 1.0 to 5.0
-   */
+  /** The numerical rating points, in the range of 1 to 5. */
   @Column(name = "points", nullable = false)
   private Integer points;
 
-  /**
-   * An optional textual review given by the student along with the rating points. The length of the
-   * review is capped at 1000 characters.
-   */
+  /** Optional review text provided by the student. Maximum length is 1000 characters. */
   @Column(name = "review", length = 1000)
-  private String review; // Optional review text
+  private String review;
 
   /**
-   * The type of rating (e.g., for a tutor or a course). This is an enum value that distinguishes
-   * the rating target (either tutor or course).
-   *
-   * @see RatingType
+   * The type of the rating, indicating whether it applies to a tutor or a course. Stored as an
+   * enumerated string.
    */
   @Enumerated(EnumType.STRING)
   @Column(name = "rating_type", nullable = false)
-  private RatingType ratingType; // Enum to identify the rating target
+  private RatingType ratingType;
 }

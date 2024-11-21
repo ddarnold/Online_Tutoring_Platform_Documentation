@@ -74,37 +74,10 @@ public class User {
   @JsonIgnoreProperties({"ratingsAsTutor"})
   private List<Course> courses;
 
-  /**
-   * Represents the list of ratings that this user has received as a tutor.
-   *
-   * <p>This relationship is mapped by the {@code tutor} field in the {@link Rating} entity. The
-   * cascade type {@code CascadeType.ALL} ensures that all operations (such as persist and remove)
-   * are propagated to the associated ratings. Additionally, {@code orphanRemoval = true} guarantees
-   * that ratings that no longer reference this tutor are automatically deleted.
-   *
-   * <p>If this user is deleted, all their associated ratings as a tutor will also be deleted.
-   *
-   * @see Rating
-   */
-  @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnoreProperties({"student"})
-  private List<Rating> ratingsAsTutor; // Ratings received as a tutor
-
-  /**
-   * Represents the list of ratings that this user has given as a student.
-   *
-   * <p>This relationship is mapped by the {@code student} field in the {@link Rating} entity. The
-   * cascade type {@code CascadeType.ALL} ensures that all operations (such as persist and remove)
-   * are propagated to the associated ratings. Additionally, {@code orphanRemoval = true} guarantees
-   * that ratings that no longer reference this student are automatically deleted.
-   *
-   * <p>If this user is deleted, all their associated ratings as a student will also be deleted.
-   *
-   * @see Rating
-   */
-  @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnoreProperties({"tutor"})
-  private List<Rating> ratingsAsStudent; // Ratings given as a student
+  /** List of ratings related to this user, either as a tutor or a student. */
+  @OneToMany(mappedBy = "ratedUser", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnoreProperties({"ratedUser"})
+  private List<Rating> ratings;
 
   /**
    * The credentials associated with this user. This is the inverse side of a one-to-one
