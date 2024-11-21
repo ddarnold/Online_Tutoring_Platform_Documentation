@@ -87,7 +87,7 @@ public class User {
    * @see Rating
    */
   @OneToMany(mappedBy = "tutor", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnoreProperties({"student"})
+  @JsonIgnoreProperties({"student", "tutor"})
   private List<Rating> ratingsAsTutor; // Ratings received as a tutor
 
   /**
