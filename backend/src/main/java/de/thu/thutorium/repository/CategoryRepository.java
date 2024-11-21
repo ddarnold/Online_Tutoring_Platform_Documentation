@@ -4,7 +4,9 @@ import de.thu.thutorium.model.Category;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import de.thu.thutorium.model.Course;
 
 /**
  * Repository interface for performing CRUD operations on {@link Category} entities.
@@ -44,4 +46,15 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
    */
   @Query("SELECT c FROM Category c")
   List<Category> findAllCategories();
+
+  /**
+   * Repository interface for performing CRUD operations related to categories and courses.
+   *
+   * <p>This custom query method retrieves courses by the category name using a JPQL query.
+   *
+   * @param categoryName The name of the category for which courses need to be fetched.
+   * @return a {@link List} of {@link Course} objects belonging to the specified category.
+   */
+  @Query("SELECT c FROM Course c WHERE c.category.categoryName = :categoryName")
+  List<Course> findCoursesByCategoryName(@Param("categoryName") String categoryName);
 }

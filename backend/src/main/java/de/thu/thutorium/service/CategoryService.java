@@ -1,6 +1,7 @@
 package de.thu.thutorium.service;
 
 import de.thu.thutorium.model.Category;
+import de.thu.thutorium.model.Course;
 import de.thu.thutorium.repository.CategoryRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,19 @@ public class CategoryService {
    */
   public List<Category> getAllCategories() {
     return categoryRepository.findAllCategories();
+  }
+
+  /**
+   * Service class for managing category-related operations. This class provides business logic for
+   * fetching courses by category.
+   *
+   * <p>This service communicates with the {@link CategoryRepository} to retrieve courses based on
+   * the given category name.
+   *
+   * @param categoryName The name of the category for which courses need to be fetched.
+   * @return a {@link List} of {@link Course} objects belonging to the given category.
+   */
+  public List<Course> getCoursesByCategory(String categoryName) {
+    return categoryRepository.findCoursesByCategoryName(categoryName);
   }
 }
