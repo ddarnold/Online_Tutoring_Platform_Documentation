@@ -1,6 +1,8 @@
 name: Deploy Javadoc
+run-name: "Publish Javadoc: ${{ github.ref_name }} by ${{ github.actor }}"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
@@ -13,6 +15,7 @@ jobs:
       contents: write # if you have a protection rule on your repository, you'll need to give write permission to the workflow.
     steps:
       - name: Deploy JavaDoc 🚀
+        working-directory: ./backend
         uses: MathieuSoysal/Javadoc-publisher.yml@v2.5.0
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
