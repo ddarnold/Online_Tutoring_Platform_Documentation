@@ -90,7 +90,7 @@ public class CourseControllerTest {
   }
 
   @Test
-  public void testGetCoursesByCategory() throws Exception {
+  void testGetCoursesByCategory() throws Exception {
     String categoryName = "Science";
 
     when(courseService.getCoursesByCategory(categoryName))

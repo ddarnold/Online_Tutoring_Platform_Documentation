@@ -50,7 +50,7 @@ public class UserControllerTest {
   }
 
   @Test
-  public void testGetAccount() throws Exception {
+  void testGetAccount() throws Exception {
     Long userId = 1L;
 
     // Mock a User object
