@@ -47,4 +47,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
           + " LIKE LOWER(CONCAT('%', :tutorName, '%')) OR LOWER(CONCAT(u.lastName, ' ',"
           + " u.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%')))")
   List<User> findByTutorFullName(@Param("tutorName") String tutorName);
+
+  /**
+   * Retrieves a {@link User} entity by its unique identifier.
+   *
+   * @param userId The unique identifier of the user to be retrieved.
+   * @return The {@link User} entity with the specified user ID, or {@code null} if no user is found.
+   */
+  @Query("SELECT u FROM User u WHERE u.userId = :userId")
+  User findByUserId(@Param("userId") Long userId);
 }

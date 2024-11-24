@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import de.thu.thutorium.model.User;
 import de.thu.thutorium.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,30 @@ public class UserControllerTest {
 
     // Verify interaction with the mock
     verify(userService, times(1)).getTutorCount();
+  }
+
+  @Test
+  public void testGetAccount() throws Exception {
+    Long userId = 1L;
+
+    // Mock a User object
+    User user = new User();
+    user.setUserId(userId);
+    user.setFirstName("John");
+    user.setLastName("Doe");
+
+    // Mock behavior of the UserService
+    when(userService.findByUserId(userId)).thenReturn(user);
+
+    // Perform the GET request and verify the response
+    mockMvc
+            .perform(get("/account").param("userId", String.valueOf(userId)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.userId").value(1))
+            .andExpect(jsonPath("$.firstName").value("John"))
+            .andExpect(jsonPath("$.lastName").value("Doe"));
+
+    // Verify interaction with the mock
+    verify(userService, times(1)).findByUserId(userId);
   }
 }

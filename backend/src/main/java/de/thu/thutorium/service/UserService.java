@@ -1,6 +1,7 @@
 package de.thu.thutorium.service;
 
 import de.thu.thutorium.model.UserRole;
+import de.thu.thutorium.model.User;
 import de.thu.thutorium.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,16 @@ public class UserService {
    */
   public Long getTutorCount() {
     return userRepository.countByRole(UserRole.TUTOR);
+  }
+
+  /**
+   * Finds and retrieves a user by their unique user ID.
+   *
+   * @param userId the unique identifier of the user to retrieve
+   * @return the {@link User} object if found
+   * @throws IllegalArgumentException if {@code userId} is null
+   */
+  public User findByUserId(Long userId) {
+    return userRepository.findByUserId(userId);
   }
 }
