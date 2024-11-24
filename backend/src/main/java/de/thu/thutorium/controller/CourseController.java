@@ -4,10 +4,7 @@ import de.thu.thutorium.model.Course;
 import de.thu.thutorium.service.CourseService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /** Controller class responsible for handling HTTP requests related to courses. / */
 @RestController
@@ -55,5 +52,19 @@ public class CourseController {
   @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public List<Course> getCoursesByName(@RequestParam("name") String name) {
     return courseService.findCoursesByName(name);
+  }
+
+  /**
+   * Retrieves a list of courses based on the specified category name. This endpoint is cross-origin
+   * enabled for requests from "http://localhost:3000" and allows preflight requests to be cached
+   * for up to 3600 seconds.
+   *
+   * @param categoryName The name of the category for which courses are to be retrieved.
+   * @return A list of {@link Course} objects that belong to the specified category.
+   */
+  @GetMapping("/courses/category/{categoryName}")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+  public List<Course> getCoursesByCategory(@PathVariable String categoryName) {
+    return courseService.getCoursesByCategory(categoryName);
   }
 }

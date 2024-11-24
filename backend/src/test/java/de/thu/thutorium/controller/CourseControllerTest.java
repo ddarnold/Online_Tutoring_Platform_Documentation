@@ -88,4 +88,21 @@ public class CourseControllerTest {
 
     verify(courseService, times(1)).findCoursesByName(partialName);
   }
+
+  @Test
+  public void testGetCoursesByCategory() throws Exception {
+    String categoryName = "Science";
+
+    when(courseService.getCoursesByCategory(categoryName))
+        .thenReturn(Collections.singletonList(sampleCourse));
+
+    mockMvc
+        .perform(get("/courses/category/{categoryName}", categoryName))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].courseId").value(1))
+        .andExpect(jsonPath("$[0].courseName").value("Mathematics"))
+        .andExpect(jsonPath("$[0].category.categoryName").value("Science"));
+
+    verify(courseService, times(1)).getCoursesByCategory(categoryName);
+  }
 }

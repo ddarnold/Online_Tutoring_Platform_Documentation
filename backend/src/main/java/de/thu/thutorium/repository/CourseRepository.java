@@ -51,4 +51,14 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
    */
   @Query("SELECT c FROM Course c WHERE LOWER(c.courseName) LIKE LOWER(CONCAT('%', :name, '%'))")
   List<Course> findCourseByName(@Param("name") String name);
+
+  /**
+   * Finds courses by matching the category name. This method uses a custom JPQL query to search for
+   * courses that belong to a specific category, identified by its name.
+   *
+   * @param categoryName The name of the category to search for.
+   * @return A list of {@link Course} objects that belong to the specified category.
+   */
+  @Query("SELECT c FROM Course c WHERE c.category.categoryName = :categoryName")
+  List<Course> findCoursesByCategoryName(@Param("categoryName") String categoryName);
 }

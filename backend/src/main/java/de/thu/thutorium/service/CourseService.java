@@ -42,4 +42,15 @@ public class CourseService {
   public List<Course> findCoursesByName(String name) {
     return courseRepository.findCourseByName(name);
   }
+
+  /**
+   * Fetches a list of courses belonging to the specified category by delegating the query to the
+   * repository layer.
+   *
+   * @param categoryName The name of the category for which courses are to be fetched.
+   * @return A list of {@link Course} objects that belong to the specified category.
+   */
+  public List<Course> getCoursesByCategory(String categoryName) {
+    return courseRepository.findCoursesByCategoryName(categoryName);
+  }
 }
