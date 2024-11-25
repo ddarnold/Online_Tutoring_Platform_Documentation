@@ -59,4 +59,19 @@ public class UserService {
   public User findByUserId(Long userId) {
     return userRepository.findByUserId(userId);
   }
+
+  /**
+   * Retrieves a {@link User} entity representing a tutor by their unique identifier.
+   *
+   * <p>This method fetches the {@link User} entity associated with the provided tutor ID by
+   * delegating to the {@code findByTutorId} repository method. If no tutor exists with the
+   * specified ID, the repository method returns {@code null}.
+   *
+   * @param tutorId the unique identifier of the tutor to be retrieved.
+   * @return the {@link User} entity corresponding to the specified tutor ID, or {@code null} if no
+   *     such tutor is found.
+   */
+  public User getTutorByID(Long tutorId) {
+    return userRepository.findByTutorId(tutorId);
+  }
 }

@@ -70,4 +70,17 @@ public class UserController {
   public User getAccount(@RequestParam Long userId) {
     return userService.findByUserId(userId);
   }
+
+  /**
+   * Retrieves the details of a tutor based on their unique ID.
+   *
+   * @param tutorId the unique identifier of the tutor, provided as a query parameter
+   * @return the {@link User} object representing the tutor
+   * @see UserService#getTutorByID(Long)
+   */
+  @GetMapping("tutor")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+  public User getTutor(@RequestParam Long tutorId) {
+    return userService.getTutorByID(tutorId);
+  }
 }
