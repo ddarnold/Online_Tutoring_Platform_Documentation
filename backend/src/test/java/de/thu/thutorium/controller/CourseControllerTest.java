@@ -8,9 +8,11 @@ import de.thu.thutorium.model.Course;
 import de.thu.thutorium.model.User;
 import de.thu.thutorium.model.Category;
 import de.thu.thutorium.service.CourseService;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,71 +23,92 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(CourseController.class)
 public class CourseControllerTest {
 
-  @Autowired private MockMvc mockMvc;
+    @Autowired
+    private MockMvc mockMvc;
 
-  @MockBean private CourseService courseService; // MockBean for Spring context injection
+    @MockBean
+    private CourseService courseService; // MockBean for Spring context injection
 
-  private Course sampleCourse;
+    private Course sampleCourse;
 
-  @BeforeEach
-  public void setUp() {
-    // Create a mock User (tutor)
-    User tutor = new User();
-    tutor.setUserId(1L);
-    tutor.setFirstName("John");
-    tutor.setLastName("Doe");
+    @BeforeEach
+    public void setUp() {
+        // Create a mock User (tutor)
+        User tutor = new User();
+        tutor.setUserId(1L);
+        tutor.setFirstName("John");
+        tutor.setLastName("Doe");
 
-    // Create a mock Category
-    Category category = new Category();
-    category.setCategoryId(1L);
-    category.setCategoryName("Science");
+        // Create a mock Category
+        Category category = new Category();
+        category.setCategoryId(1L);
+        category.setCategoryName("Science");
 
-    // Create a mock Course
-    sampleCourse =
-        new Course(
-            1L,
-            tutor,
-            "Mathematics",
-            "A short description",
-            "A long description",
-            LocalDateTime.now(),
-            LocalDate.of(2024, 1, 10),
-            LocalDate.of(2024, 6, 15),
-            category,
-            Collections.emptyList());
-  }
+        // Create a mock Course
+        sampleCourse =
+                new Course(
+                        1L,
+                        tutor,
+                        "Mathematics",
+                        "A short description",
+                        "A long description",
+                        LocalDateTime.now(),
+                        LocalDate.of(2024, 1, 10),
+                        LocalDate.of(2024, 6, 15),
+                        category,
+                        Collections.emptyList());
+    }
 
-  @Test
-  public void testGetCoursesByTutor_withFirstNameAndLastName() throws Exception {
-    String firstName = "John";
-    String lastName = "Doe";
+    @Test
+    public void testGetCoursesByTutor_withFirstNameAndLastName() throws Exception {
+        String firstName = "John";
+        String lastName = "Doe";
 
-    when(courseService.findCoursesByTutorName(firstName, lastName))
-        .thenReturn(Collections.singletonList(sampleCourse));
+        when(courseService.findCoursesByTutorName(firstName, lastName))
+                .thenReturn(Collections.singletonList(sampleCourse));
 
-    mockMvc
-        .perform(get("/courses/tutor").param("firstName", firstName).param("lastName", lastName))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].courseId").value(1))
-        .andExpect(jsonPath("$[0].courseName").value("Mathematics"))
-        .andExpect(jsonPath("$[0].tutor.firstName").value("John"));
+        mockMvc
+                .perform(get("/courses/tutor").param("firstName", firstName).param("lastName", lastName))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].courseId").value(1))
+                .andExpect(jsonPath("$[0].courseName").value("Mathematics"))
+                .andExpect(jsonPath("$[0].tutor.firstName").value("John"));
 
-    verify(courseService, times(1)).findCoursesByTutorName(firstName, lastName);
-  }
+        verify(courseService, times(1)).findCoursesByTutorName(firstName, lastName);
+    }
 
-  @Test
-  public void testGetCoursesByName() throws Exception {
-    String partialName = "Math";
+    @Test
+    public void testGetCoursesByName() throws Exception {
+        String partialName = "Math";
 
-    when(courseService.findCoursesByName(partialName))
-        .thenReturn(Collections.singletonList(sampleCourse));
+        when(courseService.findCoursesByName(partialName))
+                .thenReturn(Collections.singletonList(sampleCourse));
 
-    mockMvc
-        .perform(get("/courses/search").param("name", partialName))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].courseId").value(1))
-        .andExpect(jsonPath("$[0].courseName").value("Mathematics"));
+        mockMvc
+                .perform(get("/courses/search").param("name", partialName))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].courseId").value(1))
+                .andExpect(jsonPath("$[0].courseName").value("Mathematics"));
 
-    verify(courseService, times(1)).findCoursesByName(partialName);
-  }
+        verify(courseService, times(1)).findCoursesByName(partialName);
+    }
+
+    @Test
+    public void testGetCourseById() throws Exception {
+        Long courseId = 1L;
+
+        Course sampleCourse = new Course();
+        sampleCourse.setCourseId(courseId);
+        sampleCourse.setCourseName("Mathematics");
+
+        when(courseService.findCourseById(courseId)).thenReturn(sampleCourse);
+
+        mockMvc
+                .perform(get("/course").param("id", String.valueOf(courseId)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.courseId").value(1))
+                .andExpect(jsonPath("$.courseName").value("Mathematics"));
+
+        verify(courseService, times(1)).findCourseById(courseId);
+    }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 /**
  * Repository interface for managing {@link Course} entities. This interface extends {@link
@@ -51,4 +52,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
    */
   @Query("SELECT c FROM Course c WHERE LOWER(c.courseName) LIKE LOWER(CONCAT('%', :name, '%'))")
   List<Course> findCourseByName(@Param("name") String name);
+
+  @Query("SELECT c FROM Course c WHERE c.courseId = :id")
+  Course findCourseById(@Param("id") Long id);
 }

@@ -3,6 +3,8 @@ package de.thu.thutorium.service;
 import de.thu.thutorium.model.Course;
 import de.thu.thutorium.repository.CourseRepository;
 import java.util.List;
+
+import jakarta.persistence.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +43,9 @@ public class CourseService {
    */
   public List<Course> findCoursesByName(String name) {
     return courseRepository.findCourseByName(name);
+  }
+
+  public Course findCourseById(Long id) {
+    return courseRepository.findCourseById(id);
   }
 }
