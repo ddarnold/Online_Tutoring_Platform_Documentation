@@ -53,4 +53,13 @@ public class CourseService {
   public List<Course> getCoursesByCategory(String categoryName) {
     return courseRepository.findCoursesByCategoryName(categoryName);
   }
+
+  /**
+   * Retrieves the total count of courses from the repository.
+   *
+   * @return the total number of courses as a {@code Long}.
+   */
+  public Long getTotalCountOfCourses() {
+    return courseRepository.countAllCourses();
+  }
 }

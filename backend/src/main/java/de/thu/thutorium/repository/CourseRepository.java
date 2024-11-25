@@ -61,4 +61,12 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
    */
   @Query("SELECT c FROM Course c WHERE c.category.categoryName = :categoryName")
   List<Course> findCoursesByCategoryName(@Param("categoryName") String categoryName);
+
+  /**
+   * Retrieves the total number of courses in the database.
+   *
+   * @return the total count of courses as a {@code Long}.
+   */
+  @Query("SELECT COUNT(c) from Course c")
+  Long countAllCourses();
 }

@@ -67,4 +67,16 @@ public class CourseController {
   public List<Course> getCoursesByCategory(@PathVariable String categoryName) {
     return courseService.getCoursesByCategory(categoryName);
   }
+
+  /**
+   * Handles a GET request to retrieve the total count of courses. Allows cross-origin requests from
+   * "http://localhost:3000" with a maximum age of 3600 seconds.
+   *
+   * @return the total number of courses as a {@code Long}.
+   */
+  @GetMapping("/courses/count")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+  public Long getCoursesCount() {
+    return courseService.getTotalCountOfCourses();
+  }
 }
