@@ -97,7 +97,7 @@ public class CourseControllerTest {
         .thenReturn(Collections.singletonList(sampleCourse));
 
     mockMvc
-        .perform(get("/courses/category/{categoryName}", categoryName))
+        .perform(get("/search/category/{categoryName}", categoryName))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].courseId").value(1))
         .andExpect(jsonPath("$[0].courseName").value("Mathematics"))

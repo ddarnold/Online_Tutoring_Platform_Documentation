@@ -62,7 +62,7 @@ public class CourseController {
    * @param categoryName The name of the category for which courses are to be retrieved.
    * @return A list of {@link Course} objects that belong to the specified category.
    */
-  @GetMapping("/courses/category/{categoryName}")
+  @GetMapping("/search/category/{categoryName}")
   @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public List<Course> getCoursesByCategory(@PathVariable String categoryName) {
     return courseService.getCoursesByCategory(categoryName);

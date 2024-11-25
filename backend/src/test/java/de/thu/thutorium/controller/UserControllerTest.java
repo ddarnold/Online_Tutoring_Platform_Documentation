@@ -91,7 +91,7 @@ public class UserControllerTest {
 
     // Perform the GET request and verify the response
     mockMvc
-            .perform(get("/tutor").param("tutorId", String.valueOf(tutorId)))
+            .perform(get("/tutor").param("id", String.valueOf(tutorId)))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.userId").value(2))
             .andExpect(jsonPath("$.firstName").value("Jane"))
