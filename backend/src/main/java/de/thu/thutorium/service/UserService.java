@@ -1,6 +1,7 @@
 package de.thu.thutorium.service;
 
 import de.thu.thutorium.model.UserRole;
+import de.thu.thutorium.model.User;
 import de.thu.thutorium.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,5 +47,31 @@ public class UserService {
    */
   public Long getTutorCount() {
     return userRepository.countByRole(UserRole.TUTOR);
+  }
+
+  /**
+   * Finds and retrieves a user by their unique user ID.
+   *
+   * @param userId the unique identifier of the user to retrieve
+   * @return the {@link User} object if found
+   * @throws IllegalArgumentException if {@code userId} is null
+   */
+  public User findByUserId(Long userId) {
+    return userRepository.findByUserId(userId);
+  }
+
+  /**
+   * Retrieves a {@link User} entity representing a tutor by their unique identifier.
+   *
+   * <p>This method fetches the {@link User} entity associated with the provided tutor ID by
+   * delegating to the {@code findByTutorId} repository method. If no tutor exists with the
+   * specified ID, the repository method returns {@code null}.
+   *
+   * @param tutorId the unique identifier of the tutor to be retrieved.
+   * @return the {@link User} entity corresponding to the specified tutor ID, or {@code null} if no
+   *     such tutor is found.
+   */
+  public User getTutorByID(Long tutorId) {
+    return userRepository.findByTutorId(tutorId);
   }
 }

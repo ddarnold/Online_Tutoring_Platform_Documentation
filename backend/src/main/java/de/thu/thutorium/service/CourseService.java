@@ -45,7 +45,29 @@ public class CourseService {
     return courseRepository.findCourseByName(name);
   }
 
+
   public Course findCourseById(Long id) {
     return courseRepository.findCourseById(id);
+  }
+
+  /**
+   * Fetches a list of courses belonging to the specified category by delegating the query to the
+   * repository layer.
+   *
+   * @param categoryName The name of the category for which courses are to be fetched.
+   * @return A list of {@link Course} objects that belong to the specified category.
+   */
+  public List<Course> getCoursesByCategory(String categoryName) {
+    return courseRepository.findCoursesByCategoryName(categoryName);
+  }
+
+  /**
+   * Retrieves the total count of courses from the repository.
+   *
+   * @return the total number of courses as a {@code Long}.
+   */
+  public Long getTotalCountOfCourses() {
+    return courseRepository.countAllCourses();
+
   }
 }

@@ -1,9 +1,11 @@
 package de.thu.thutorium.controller;
 
+import de.thu.thutorium.model.User;
 import de.thu.thutorium.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -53,5 +55,32 @@ public class UserController {
   @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public Long getTutorsCount() {
     return userService.getTutorCount();
+  }
+
+  /**
+   * Retrieves the account details of a user based on their user ID.
+   *
+   * @param userId the unique identifier of the user, extracted from the query parameter
+   * @return the {@link User} object containing the account details
+   * @throws IllegalArgumentException if {@code userId} is null
+   * @see UserService#findByUserId(Long)
+   */
+  @GetMapping("account")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+  public User getAccount(@RequestParam Long userId) {
+    return userService.findByUserId(userId);
+  }
+
+  /**
+   * Retrieves the details of a tutor based on their unique ID.
+   *
+   * @param id the unique identifier of the tutor, provided as a query parameter
+   * @return the {@link User} object representing the tutor
+   * @see UserService#getTutorByID(Long)
+   */
+  @GetMapping("tutor")
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
+  public User getTutor(@RequestParam Long id) {
+    return userService.getTutorByID(id);
   }
 }
