@@ -31,17 +31,20 @@ public class SearchControllerTest {
   @BeforeEach
   public void setUp() {
     // Mock User (Tutor)
-    mockTutor =
-        new User(
-            1L,
-            "John",
-            "Doe",
-            UserRole.TUTOR,
-            true,
-            LocalDateTime.now(),
-            Collections.emptyList(),
-            Collections.emptyList(),
-            null);
+
+    mockTutor = new User(
+            1L,                                  // userId
+            "John",                              // firstName
+            "Doe",                               // lastName
+            UserRole.TUTOR,                      // role
+            true,                                // isVerified
+            LocalDateTime.now(),                 // createdAt
+            Collections.emptyList(),             // courses
+            Collections.emptyList(),             // ratings
+            "john.doe@example.com",              // email
+            "hashed_password_example",           // hashedPassword
+            "Experienced tutor in mathematics"   // tutor_description
+    );
 
     // Mock Course
     mockCourse =

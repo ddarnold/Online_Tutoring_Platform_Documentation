@@ -79,11 +79,15 @@ public class User {
   @JsonIgnoreProperties({"ratedUser"})
   private List<Rating> ratings;
 
-  /**
-   * The credentials associated with this user. This is the inverse side of a one-to-one
-   * relationship.
-   */
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-  @JsonIgnore
-  private Credentials credentials;
+  /** The user's email, used for login. This field must be unique. */
+  @Column(name = "email_address", nullable = false, unique = true)
+  private String email;
+
+  /** The hashed password for authentication. This field is mandatory. */
+  @Column(name = "hashed_password", nullable = false)
+  private String hashedPassword;
+
+  /** A long description of the tutor. This field is optional and can be null. */
+  @Column(name = "tutor_description", length = 1500)
+  private String tutor_description;
 }
