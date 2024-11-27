@@ -1,0 +1,8 @@
+import React from "react";
+import NavBar from "../components/Navbar";
+
+function MyCourses() {
+  return <NavBar isLoggedIn={false} currentPage={document.location.pathname} />;
+}
+
+export default MyCourses;

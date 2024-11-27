@@ -27,6 +27,7 @@ public class SearchController {
    *     criteria.
    */
   @GetMapping
+  @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public List<Object> search(
       @RequestParam(required = false) String tutorName,
       @RequestParam(required = false) String courseName) {
