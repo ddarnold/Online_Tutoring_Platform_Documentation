@@ -8,6 +8,7 @@ import de.thu.thutorium.database.dbObjects.UniversityDBO;
 import de.thu.thutorium.database.repositories.AddressRepository;
 import de.thu.thutorium.database.repositories.UniversityRepository;
 import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
+import de.thu.thutorium.exceptions.SpringErrorPayload;
 import de.thu.thutorium.services.interfaces.AddressService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -69,7 +70,12 @@ public class AddressServiceImpl implements AddressService {
       return addressTOMapper.toDTO(savedAddress);
     } else {
       throw new ResourceAlreadyExistsException(
-          "Error: Address already exists with the university " + universityDBO.getUniversityName());
+              new SpringErrorPayload(
+                      "Address exists",
+                      "Address already exists with the university " + universityDBO.getUniversityName(),
+                      409)
+                      .toString()
+      );
     }
   }
 }

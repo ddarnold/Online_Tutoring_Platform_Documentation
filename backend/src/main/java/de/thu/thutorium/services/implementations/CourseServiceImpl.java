@@ -7,6 +7,8 @@ import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
 import de.thu.thutorium.database.repositories.CourseRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
+import de.thu.thutorium.exceptions.ResourceNotFoundException;
+import de.thu.thutorium.exceptions.SpringErrorPayload;
 import de.thu.thutorium.services.interfaces.CourseService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Implementation of the {@link CourseService} interface that provides various methods for
@@ -37,17 +40,22 @@ public class CourseServiceImpl implements CourseService {
    * Finds a course by its unique ID.
    *
    * <p>This method retrieves the course with the given {@code id} from the {@link CourseRepository}
-   * and maps it to a {@link CourseTO} object using the {@link CourseTOMapper}. If no course is found
-   * for the provided ID, it returns {@code null}.
+   * and maps it to a {@link CourseTO} object using the {@link CourseTOMapper}.
    *
    * @param id the unique ID of the course to retrieve.
-   * @return a {@link CourseTO} representing the course with the given ID, or {@code null} if no
-   *     such course is found.
+   * @return a {@link CourseTO} representing the course with the given ID
+   * @throws ResourceNotFoundException, if the course does not exist in the database.
    */
   @Override
   public CourseTO findCourseById(Long id) {
-    CourseDBO course = courseRepository.findCourseById(id);
-    return courseMapper.toDTO(course);
+    Optional<CourseDBO> courseOptional = Optional.ofNullable(courseRepository.findCourseById(id));
+    return courseMapper.toDTO(courseOptional.orElseThrow(() -> new ResourceNotFoundException(
+            new SpringErrorPayload(
+                    "Course not found",
+                    "The course with ID " + id + " does not exist in the system.",
+                    404
+            ).toString()
+    )));
   }
 
   /**

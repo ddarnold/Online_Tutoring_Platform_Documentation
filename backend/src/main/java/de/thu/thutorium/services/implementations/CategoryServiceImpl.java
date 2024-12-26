@@ -6,10 +6,12 @@ import de.thu.thutorium.database.DBOMappers.CourseCategoryDBOMapper;
 import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import de.thu.thutorium.database.repositories.CategoryRepository;
 import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
+import de.thu.thutorium.exceptions.ResourceNotFoundException;
 import de.thu.thutorium.services.interfaces.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -50,7 +52,6 @@ public class CategoryServiceImpl implements CategoryService {
     // Check if the courseCategoryDBO already exists (by name)
     // If yes, Throw ResourceAlreadyExistsException
     // Save to DB
-
     Optional<CourseCategoryDBO> categoryDBOOptional =
         Optional.ofNullable(
             courseCategoryRepository.findCourseCategoryDBOByCategoryName(
@@ -71,15 +72,18 @@ public class CategoryServiceImpl implements CategoryService {
    * @param categoryId the ID of the course category to be updated
    * @param courseCategory the data transfer object containing the updated details of the course
    *     category
-   * @return an {@link Optional} containing the updated course category as a {@link
-   *     CourseCategoryTO}, or empty if not found
+   * @return an {@link CourseCategoryTO} containing the updated course category.
+   * @throws ResourceNotFoundException, if the searched category does not exist in the database.
    */
   @Override
-  public Optional<CourseCategoryTO> updateCourseCategory(
-      int categoryId, CourseCategoryTO courseCategory) {
-    // Check if the courseCategory exists => throw Not found exception
-    // Update and return the courseCategoryTO
-    return Optional.empty();
+  public CourseCategoryTO updateCourseCategory(Long categoryId, @Valid CourseCategoryTO courseCategory) {
+    Optional<CourseCategoryDBO> courseCategoryOptional = courseCategoryRepository.findById(categoryId);
+    CourseCategoryDBO existingCategory = courseCategoryOptional.orElseThrow(() -> new ResourceNotFoundException("Error: Course Category with id "
+            + categoryId + " not found!"));
+    existingCategory.setCategoryName(courseCategory.getCategoryName());
+    existingCategory.setCreatedOn(LocalDateTime.now());
+    CourseCategoryDBO savedCategoryDBO = courseCategoryRepository.save(existingCategory);
+    return courseCategoryTOMapper.toDTO(savedCategoryDBO);
   }
 
   /**

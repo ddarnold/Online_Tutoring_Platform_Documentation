@@ -52,6 +52,14 @@ public class CourseCategoryDBO {
   private LocalDateTime createdOn = LocalDateTime.now();
 
   /**
+   * Limit the timestamp only until seconds
+   */
+  @PrePersist
+  protected void onCreate() {
+    this.createdOn = LocalDateTime.now().withNano(0);
+  }
+
+  /**
    * The user (admin) who created the course category.
    *
    * <p>Defines a many-to-one relationship with {@link UserDBO}.The counterpart is denoted by a
