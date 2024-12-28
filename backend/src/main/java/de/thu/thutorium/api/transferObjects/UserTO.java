@@ -19,43 +19,51 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserTO {
-  /**
-   * The unique identifier of the user.
-   *
-   * <p>This field holds the ID of the user, which is typically used to identify the user in the
-   * system.
-   */
-  private Long userId;
+    /**
+     * The unique identifier of the user.
+     *
+     * <p>This field holds the ID of the user, which is typically used to identify the user in the
+     * system.
+     */
+    private Long userId;
 
-  /**
-   * The first name of the user.
-   *
-   * <p>This field stores the first name of the user, which is a part of their personal information.
-   */
-  @NotEmpty(message = "The firstname cannot be empty")
-  private String firstName;
+    /**
+     * The first name of the user.
+     *
+     * <p>This field stores the first name of the user, which is a part of their personal information.
+     */
+    @NotEmpty(message = "The firstname cannot be empty")
+    private String firstName;
 
-  /**
-   * The last name of the user.
-   *
-   * <p>This field stores the last name of the user, which is another part of their personal
-   * information.
-   */
-  @NotEmpty(message = "The last name cannot be empty")
-  private String lastName;
+    /**
+     * The last name of the user.
+     *
+     * <p>This field stores the last name of the user, which is another part of their personal
+     * information.
+     */
+    @NotEmpty(message = "The last name cannot be empty")
+    private String lastName;
 
-  /**
-   * The email address of the user.
-   *
-   * <p>This field contains the email address of the user, which is used for communication purposes
-   * and may be used as a unique identifier.
-   */
-  @Email(message = "Email should be valid")
-  @NotEmpty(message = "Email cannot be empty")
-  private String email;
+    /**
+     * The full name of the user, which is a combination of the first name and last
+     * name.
+     */
+    private String fullName;
 
-  /** The affiliation of the user. */
-  private AffiliationTO affiliation;
+    /**
+     * The email address of the user.
+     *
+     * <p>This field contains the email address of the user, which is used for communication purposes
+     * and may be used as a unique identifier.
+     */
+    @Email(message = "Email should be valid")
+    @NotEmpty(message = "Email cannot be empty")
+    private String email;
 
-  private String description;
+    /**
+     * The affiliation of the user.
+     */
+    private AffiliationTO affiliation;
+
+    private String description;
 }

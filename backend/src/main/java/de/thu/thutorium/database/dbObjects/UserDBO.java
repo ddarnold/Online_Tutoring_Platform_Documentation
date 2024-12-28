@@ -42,6 +42,22 @@ public class UserDBO implements UserDetails {
   @Column(name = "last_name", nullable = false)
   private String lastName;
 
+  /**
+   * The full name of the user, which is a combination of the first name and last
+   * name.
+   * This field is not persisted in the database.
+   */
+  @Transient
+  private String fullName;
+
+  /**
+   * Initializes transient fields after the entity is loaded from the database.
+   */
+  @PostLoad
+  private void onLoad() {
+    this.fullName = firstName + " " + lastName;
+  }
+
   /** The user's email, used for login. This field must be unique. */
   @Column(name = "email_address", nullable = false, unique = true)
   private String email;
