@@ -1,6 +1,6 @@
 package de.thu.thutorium.services.implementations;
 
-import de.thu.thutorium.api.transferObjects.common.MessageTO;
+import de.thu.thutorium.api.transferObjects.MessageTO;
 import de.thu.thutorium.database.dbObjects.ChatDBO;
 import de.thu.thutorium.database.dbObjects.MessageDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;

@@ -1,12 +1,12 @@
-package de.thu.thutorium.api.transferObjects.common;
+package de.thu.thutorium.api.transferObjects;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 /**
- * Data Transfer Object (DTO) representing a rating given to a course by a student.
+ * Data Transfer Object (DTO) representing a rating given to a tutor by a student.
  *
- * <p>This class is used to transfer information related to a course's rating, including the rating
+ * <p>This class is used to transfer information related to a tutor's rating, including the rating
  * points, review text, the timestamp when the rating was created, and basic information about the
  * student who provided the rating.
  */
@@ -14,30 +14,31 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RatingCourseTO {
+public class RatingTutorTO {
     /**
      * The unique identifier for the rating.
      *
      * <p>This field represents the unique ID for the rating, which is typically used for identifying
      * and retrieving specific ratings from the system.
      */
-    @NotNull(message = "The rating id cannot be null")
+    @NotNull
     private Long ratingId;
 
     /**
-     * The rating points given to the course.
+     * The rating points given to the tutor.
      *
      * <p>This field stores the numeric value representing the rating points given by the student.
      * Typically, this might be a value between 1 and 5, depending on the rating system.
      */
-    @NotNull(message = "The points cannot be null")
+    @NotNull(message = "Points cannot be null")
     private Double points;
 
     /**
      * The review text provided by the student.
      *
-     * <p>This field contains the feedback or comments written by the student regarding the course. It
-     * may include details such as the course content, teaching quality, and overall experience.
+     * <p>This field contains the feedback or comments written by the student regarding the tutor's
+     * performance. It may include details such as the tutor's teaching style, effectiveness, and
+     * overall experience.
      */
     private String review;
 

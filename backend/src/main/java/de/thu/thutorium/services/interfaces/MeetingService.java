@@ -1,6 +1,6 @@
 package de.thu.thutorium.services.interfaces;
 
-import de.thu.thutorium.api.transferObjects.common.MeetingTO;
+import de.thu.thutorium.api.transferObjects.MeetingTO;
 import org.springframework.stereotype.Service;
 
 /**

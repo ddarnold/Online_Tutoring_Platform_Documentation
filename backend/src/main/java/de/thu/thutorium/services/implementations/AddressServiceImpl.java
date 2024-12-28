@@ -1,7 +1,7 @@
 package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.AddressTOMapper;
-import de.thu.thutorium.api.transferObjects.common.AddressTO;
+import de.thu.thutorium.api.transferObjects.AddressTO;
 import de.thu.thutorium.database.DBOMappers.AddressDBOMapper;
 import de.thu.thutorium.database.dbObjects.AddressDBO;
 import de.thu.thutorium.database.dbObjects.UniversityDBO;

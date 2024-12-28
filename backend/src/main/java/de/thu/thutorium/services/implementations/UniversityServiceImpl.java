@@ -2,7 +2,7 @@ package de.thu.thutorium.services.implementations;
 
 
 import de.thu.thutorium.api.TOMappers.UniversityTOMapper;
-import de.thu.thutorium.api.transferObjects.common.UniversityTO;
+import de.thu.thutorium.api.transferObjects.UniversityTO;
 import de.thu.thutorium.database.DBOMappers.UniversityDBOMapper;
 import de.thu.thutorium.database.dbObjects.UniversityDBO;
 import de.thu.thutorium.database.repositories.UniversityRepository;

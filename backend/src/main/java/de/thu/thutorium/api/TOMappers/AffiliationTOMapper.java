@@ -1,6 +1,6 @@
 package de.thu.thutorium.api.TOMappers;
 
-import de.thu.thutorium.api.transferObjects.common.AffiliationTO;
+import de.thu.thutorium.api.transferObjects.AffiliationTO;
 import de.thu.thutorium.database.dbObjects.AffiliationDBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

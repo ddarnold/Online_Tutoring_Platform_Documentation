@@ -1,6 +1,6 @@
 package de.thu.thutorium.api.controllers;
 
-import de.thu.thutorium.api.transferObjects.common.UserTO;
+import de.thu.thutorium.api.transferObjects.UserTO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
 import de.thu.thutorium.services.interfaces.UserService;
 import de.thu.thutorium.swagger.CommonApiResponses;

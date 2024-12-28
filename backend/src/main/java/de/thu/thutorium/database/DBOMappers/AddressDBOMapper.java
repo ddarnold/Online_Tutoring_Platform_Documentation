@@ -1,6 +1,6 @@
 package de.thu.thutorium.database.DBOMappers;
 
-import de.thu.thutorium.api.transferObjects.common.AddressTO;
+import de.thu.thutorium.api.transferObjects.AddressTO;
 import de.thu.thutorium.database.dbObjects.AddressDBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

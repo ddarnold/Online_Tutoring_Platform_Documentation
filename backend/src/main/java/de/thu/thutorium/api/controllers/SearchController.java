@@ -1,8 +1,8 @@
 package de.thu.thutorium.api.controllers;
 
-import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
-import de.thu.thutorium.api.transferObjects.common.CourseTO;
-import de.thu.thutorium.api.transferObjects.common.TutorTO;
+import de.thu.thutorium.api.transferObjects.CourseCategoryTO;
+import de.thu.thutorium.api.transferObjects.CourseTO;
+import de.thu.thutorium.api.transferObjects.TutorTO;
 import de.thu.thutorium.services.implementations.SearchServiceImpl;
 import de.thu.thutorium.services.interfaces.CourseService;
 import de.thu.thutorium.services.interfaces.SearchService;
@@ -107,7 +107,7 @@ public class SearchController {
 
   /**
    * Converts a {@link CourseCategoryTO} (representing a course category in the database) to a
-   * {@link de.thu.thutorium.api.transferObjects.common.CourseCategoryTO}.
+   * {@link CourseCategoryTO}.
    *
    * <p>This method maps the {@code categoryName} field of the {@code CourseCategoryDBO} to the
    * {@code categoryName} field in the {@code CourseCategoryDTO}.

@@ -1,6 +1,6 @@
 package de.thu.thutorium.database.DBOMappers;
 
-import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
+import de.thu.thutorium.api.transferObjects.CourseCategoryTO;
 import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import org.springframework.stereotype.Component;
 

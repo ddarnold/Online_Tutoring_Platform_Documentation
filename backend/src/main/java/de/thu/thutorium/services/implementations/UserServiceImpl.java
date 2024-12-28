@@ -1,7 +1,7 @@
 package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.UserTOMapper;
-import de.thu.thutorium.api.transferObjects.common.UserTO;
+import de.thu.thutorium.api.transferObjects.UserTO;
 import de.thu.thutorium.database.DBOMappers.AffiliationDBOMapper;
 import de.thu.thutorium.database.dbObjects.AffiliationDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;

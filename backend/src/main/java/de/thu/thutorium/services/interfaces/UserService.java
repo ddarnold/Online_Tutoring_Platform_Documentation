@@ -1,6 +1,6 @@
 package de.thu.thutorium.services.interfaces;
 
-import de.thu.thutorium.api.transferObjects.common.UserTO;
+import de.thu.thutorium.api.transferObjects.UserTO;
 
 /**
  * The {@code UserService} interface provides methods for managing and retrieving user data.

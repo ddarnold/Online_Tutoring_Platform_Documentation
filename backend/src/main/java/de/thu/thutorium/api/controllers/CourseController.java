@@ -1,6 +1,6 @@
 package de.thu.thutorium.api.controllers;
 
-import de.thu.thutorium.api.transferObjects.common.CourseTO;
+import de.thu.thutorium.api.transferObjects.CourseTO;
 import de.thu.thutorium.exceptions.ResourceNotFoundException;
 import de.thu.thutorium.exceptions.SpringErrorPayload;
 import de.thu.thutorium.services.interfaces.CourseService;

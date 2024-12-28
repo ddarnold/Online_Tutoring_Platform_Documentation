@@ -1,4 +1,4 @@
-package de.thu.thutorium.api.transferObjects.common;
+package de.thu.thutorium.api.transferObjects;
 
 import de.thu.thutorium.database.dbObjects.enums.MeetingStatus;
 import de.thu.thutorium.database.dbObjects.enums.MeetingType;

@@ -1,6 +1,6 @@
 package de.thu.thutorium.services.interfaces;
 
-import de.thu.thutorium.api.transferObjects.common.CourseTO;
+import de.thu.thutorium.api.transferObjects.CourseTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

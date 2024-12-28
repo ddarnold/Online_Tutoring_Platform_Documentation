@@ -1,7 +1,7 @@
 package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.CourseTOMapper;
-import de.thu.thutorium.api.transferObjects.common.CourseTO;
+import de.thu.thutorium.api.transferObjects.CourseTO;
 import de.thu.thutorium.database.DBOMappers.CourseDBOMapper;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;

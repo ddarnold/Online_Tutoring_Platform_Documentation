@@ -1,6 +1,6 @@
 package de.thu.thutorium.database.DBOMappers;
 
-import de.thu.thutorium.api.transferObjects.common.CourseTO;
+import de.thu.thutorium.api.transferObjects.CourseTO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

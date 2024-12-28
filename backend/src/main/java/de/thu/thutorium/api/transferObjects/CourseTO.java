@@ -1,4 +1,4 @@
-package de.thu.thutorium.api.transferObjects.common;
+package de.thu.thutorium.api.transferObjects;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

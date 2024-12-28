@@ -1,6 +1,6 @@
 package de.thu.thutorium.api.TOMappers;
 
-import de.thu.thutorium.api.transferObjects.common.RatingCourseTO;
+import de.thu.thutorium.api.transferObjects.RatingCourseTO;
 import de.thu.thutorium.database.dbObjects.RatingCourseDBO;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -15,7 +15,7 @@ import org.mapstruct.Mapping;
  * the mapping process, providing type-safe and efficient conversion between these two objects.
  *
  * <p>The {@code uses} attribute specifies that the {@link UserTOMapper} will be used to map the
- * {@code student} field of {@link RatingCourseDBO} to {@link de.thu.thutorium.api.transferObjects.common.UserTO} in the {@code
+ * {@code student} field of {@link RatingCourseDBO} to {@link de.thu.thutorium.api.transferObjects.UserTO} in the {@code
  * RatingCourseDTO}.
  *
  * <p>Note: The {@code componentModel = "spring"} annotation indicates that MapStruct will generate

@@ -1,6 +1,6 @@
 package de.thu.thutorium.services.interfaces;
 
-import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
+import de.thu.thutorium.api.transferObjects.CourseCategoryTO;
 import org.springframework.stereotype.Service;
 
 /**

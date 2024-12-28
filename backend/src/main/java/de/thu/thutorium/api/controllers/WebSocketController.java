@@ -1,7 +1,7 @@
 package de.thu.thutorium.api.controllers;
 
-import de.thu.thutorium.api.transferObjects.common.ChatCreateTO;
-import de.thu.thutorium.api.transferObjects.common.MessageTO;
+import de.thu.thutorium.api.transferObjects.ChatCreateTO;
+import de.thu.thutorium.api.transferObjects.MessageTO;
 import de.thu.thutorium.services.interfaces.ChatService;
 import de.thu.thutorium.services.interfaces.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
