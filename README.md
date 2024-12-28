@@ -1,6 +1,47 @@
 
 # THUtorium
 An online tutoring platform exclusively for THU students from THU students.
+
+## Installing the development project
+
+### Prerequisites
+- Software development Kit:
+   - JAVA 17 or higher
+- Build Tool:
+   - MAVEN 3.9 or higher
+- Integrated Development Environment:
+  - IntelliJ IDEA (Recommended)
+- Optional:
+   - API development and testing tool:
+      - POSTMAN
+
+### Steps:
+1. Delete any existing versions of the project
+2. Clone the Online_Tutoring_platform from the [github repository](https://github.com/ddarnold/Online_Tutoring_Platform.git).
+3. Add the .env file at the root folder with **at least(!!)** the following parameters:
+- DB_NAME
+- DB_PASSWORD
+- DB_URL
+- DB_USER
+- JWT_SECRET_KEY
+- JWT_DURATION_IN_MILLISECONDS
+
+Contact [Nikolai Ivanov](mailto:ivanni01@thu.de) or [Jossin Antony](antojo01@thu.de) for the values of the parameters.
+4. Pass the correct environment variables to the IDE (IntelliJ IDEA) - ***Edit configurations -> User Environment variables***.
+
+
+***Attention***:
+- The **.env** database url contains ***'database'*** and the port address of the docker database container;
+- whereas the **IDE** environment variables contain ***'localhost'*** and the respective port number in the database URL.
+
+5. ***Install dependencies:***
+From the root folder, access:
+   - ./backend -> MVN install
+   - ./frontend -> NPM install
+   - ./webrtc -> NPM install
+
+6. Proceed with docker configurations.
+
 ## Docker
 
 ### Prerequisites
@@ -94,3 +135,13 @@ Identical environment variables should be set in the IDE to match those in Docke
 - **Frontend**: Available at [http://localhost](http://localhost) on port 80 (served by Nginx, not React's development server).
 - **Database**: Available at [http://localhost:5431](http://localhost:5431) (Ensure match with parameters in .env file)
 - **Webrtc server**: Available at [http://localhost:5000](http://localhost:5000)
+
+
+### Connecting with the local database from the IDE:
+- From the addon database section/icon in the IntelliJ IDE:
+   - create a new datasource
+   - select postgresql
+   - Pass the database credentials for the localhost deployment- Database name, username, password, URL (localhost URL) amnd the respective port number.
+   - Test connection
+   - Save connection.
+
