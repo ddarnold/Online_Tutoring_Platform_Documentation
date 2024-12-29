@@ -4,6 +4,10 @@ import de.thu.thutorium.database.dbObjects.MeetingDBO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * Repository interface for {@link MeetingDBO} entities.
  *
@@ -18,4 +22,11 @@ import org.springframework.stereotype.Repository;
  * mechanism.
  */
 @Repository
-public interface MeetingRepository extends JpaRepository<MeetingDBO, Long> { }
+public interface MeetingRepository extends JpaRepository<MeetingDBO, Long> {
+    List<MeetingDBO> findByMeetingDateAndRoomNumAndMeetingTimeLessThanEqualAndMeetingTimeGreaterThanEqual(
+            LocalDate meetingDate,
+            String roomNum,
+            LocalDateTime newMeetingEnd,
+            LocalDateTime newMeetingStart
+    );
+}

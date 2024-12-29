@@ -47,7 +47,8 @@ public class SecurityConfig {
                         "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/webjars/**",
-                        "/v3/api-docs.yaml")
+                        "/v3/api-docs.yaml",
+                        "/chat/**")
                     .permitAll()
                     .requestMatchers("/student/**")
                     .hasRole("STUDENT")
@@ -111,6 +112,14 @@ public class SecurityConfig {
     source.registerCorsConfiguration("/swagger-ui/**", swaggerConfiguration);
     source.registerCorsConfiguration("/v3/api-docs/**", swaggerConfiguration);
     source.registerCorsConfiguration("/v3/api-docs.yaml", swaggerConfiguration);
+
+    // chat
+    CorsConfiguration chatCorsConfig = new CorsConfiguration();
+    chatCorsConfig.setAllowedOrigins(List.of("*"));
+    chatCorsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+    chatCorsConfig.setAllowedHeaders(List.of("*"));
+    chatCorsConfig.setAllowCredentials(true);
+    source.registerCorsConfiguration("/chat/**", chatCorsConfig);
 
     return source;
   }

@@ -1,3 +1,4 @@
+
 services:
 
   database:
@@ -20,7 +21,7 @@ services:
     container_name: otp-frontend
     build:
       context: ./frontend
-      dockerfile: Dockerfile  
+      dockerfile: Dockerfile
       args:
         buildType: build-dc
     ports:
@@ -49,7 +50,7 @@ services:
       context: ./webrtc
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "5001:5000"
     restart: no
     volumes:
       - ./webrtc:/app

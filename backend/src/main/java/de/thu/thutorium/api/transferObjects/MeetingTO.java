@@ -2,6 +2,7 @@ package de.thu.thutorium.api.transferObjects;
 
 import de.thu.thutorium.database.dbObjects.enums.MeetingStatus;
 import de.thu.thutorium.database.dbObjects.enums.MeetingType;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -45,4 +46,7 @@ public class MeetingTO {
     /** The address ID where the meeting is being held. */
     @NotNull(message = "Address ID cannot be null")
     private Long addressId;
+
+    @NotEmpty(message = "Room number cant be empty")
+    private String roomNum;
 }

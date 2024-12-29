@@ -97,7 +97,7 @@ public class MeetingDBO {
    * relationship. The counterpart is denoted by a List<MeetingDBO> meetings in {@link AddressDBO}.
    */
   @ManyToOne
-  @JoinColumn(name = "address_id", unique = true)
+  @JoinColumn(name = "address_id")
   private AddressDBO address;
 
   /**

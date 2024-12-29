@@ -16,6 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
  * Service implementation for managing meetings.
  *
@@ -68,6 +71,30 @@ public class MeetingServiceImpl implements MeetingService {
                 () ->
                     new EntityNotFoundException(
                         "Address not found with ID: " + meetingTO.getAddressId()));
+
+    // Calculate new meeting's time range
+    LocalDateTime newMeetingStart = meetingTO.getMeetingTime();
+    LocalDateTime newMeetingEnd = newMeetingStart.plusMinutes(meetingTO.getDuration());
+
+    // Fetch potential overlaps
+    List<MeetingDBO> overlappingMeetings =
+        meetingRepository
+            .findByMeetingDateAndRoomNumAndMeetingTimeLessThanEqualAndMeetingTimeGreaterThanEqual(
+                meetingTO.getMeetingDate(), meetingTO.getRoomNum(), newMeetingEnd, newMeetingStart);
+
+    // Check for actual overlaps
+    for (MeetingDBO existingMeeting : overlappingMeetings) {
+      LocalDateTime existingMeetingStart = existingMeeting.getMeetingTime();
+      LocalDateTime existingMeetingEnd =
+          existingMeetingStart.plusMinutes(existingMeeting.getDuration());
+
+      if (newMeetingStart.isBefore(existingMeetingEnd)
+          && newMeetingEnd.isAfter(existingMeetingStart)) {
+        throw new IllegalArgumentException(
+            "A meeting is already scheduled during the requested time in room "
+                + meetingTO.getRoomNum());
+      }
+    }
 
     MeetingDBO meetingDBO = meetingMapper.toEntity(meetingTO);
 
