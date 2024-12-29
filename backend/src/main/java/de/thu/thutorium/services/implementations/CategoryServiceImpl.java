@@ -2,7 +2,7 @@ package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.CourseCategoryTOMapper;
 import de.thu.thutorium.api.transferObjects.CourseCategoryTO;
-import de.thu.thutorium.database.DBOMappers.CourseCategoryDBOMapper;
+import de.thu.thutorium.database.DBOMappers.CategoryDBOMapper;
 import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import de.thu.thutorium.database.repositories.CategoryRepository;
 import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
@@ -28,15 +28,15 @@ import java.util.Optional;
 @Service
 public class CategoryServiceImpl implements CategoryService {
   private final CategoryRepository courseCategoryRepository;
-  private final CourseCategoryDBOMapper courseCategoryDBOMapper;
+  private final CategoryDBOMapper categoryDBOMapper;
   private final CourseCategoryTOMapper courseCategoryTOMapper;
 
   public CategoryServiceImpl(
       CategoryRepository courseCategoryRepository,
-      CourseCategoryDBOMapper courseCategoryDBOMapper,
+      CategoryDBOMapper categoryDBOMapper,
       CourseCategoryTOMapper courseCategoryTOMapper) {
     this.courseCategoryRepository = courseCategoryRepository;
-    this.courseCategoryDBOMapper = courseCategoryDBOMapper;
+    this.categoryDBOMapper = categoryDBOMapper;
     this.courseCategoryTOMapper = courseCategoryTOMapper;
   }
 
@@ -53,15 +53,14 @@ public class CategoryServiceImpl implements CategoryService {
     // If yes, Throw ResourceAlreadyExistsException
     // Save to DB
     Optional<CourseCategoryDBO> categoryDBOOptional =
-        Optional.ofNullable(
             courseCategoryRepository.findCourseCategoryDBOByCategoryName(
-                courseCategory.getCategoryName()));
+                courseCategory.getCategoryName());
     categoryDBOOptional.ifPresent(
         (category) -> {
           throw new ResourceAlreadyExistsException(
               "Category \"" + category.getCategoryName() + "\" already exists!");
         });
-    CourseCategoryDBO categoryDBO = courseCategoryDBOMapper.toDBO(courseCategory);
+    CourseCategoryDBO categoryDBO = categoryDBOMapper.toDBO(courseCategory);
     CourseCategoryDBO savedCategoryDBO = courseCategoryRepository.save(categoryDBO);
     return courseCategoryTOMapper.toDTO(savedCategoryDBO);
   }

@@ -98,13 +98,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserTO findByUserId(Long userId) {
         // Fetch UserDBO from the repository
-        UserDBO user = userRepository.findByUserId(userId);
+        Optional<UserDBO> user = userRepository.findUserDBOByUserId(userId);
 
-        if (user != null) {
-            // Map UserDBO to UserBaseDTO
-            return userMapper.toDTO(user);
-        }
-        return null;
+        // Map UserDBO to UserBaseDTO
+        return user.map(userMapper::toDTO).orElseThrow(() -> new EntityNotFoundException(new SpringErrorPayload(
+                "User does not exist",
+                "User with ID " + userId + " does not exist in database.",
+                404
+        ).toString()));
     }
 
     /**

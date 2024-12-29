@@ -69,4 +69,10 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
           "SELECT c FROM CourseDBO c JOIN c.courseCategories cc WHERE LOWER(cc.categoryName) = LOWER(:categoryName)")
   List<CourseDBO> findCoursesByCategoryName(@Param("categoryName") String categoryName);
 
+  /**
+   * Checks if a course exists in the database from its name.
+   * @param courseName to be searched
+   * @return {@code boolean} value indicating if the searched course exists
+   */
+  boolean existsByCourseName(String courseName);
 }

@@ -1,9 +1,12 @@
 package de.thu.thutorium.api.transferObjects;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Data Transfer Object (DTO) representing a course in the system.
@@ -30,8 +33,11 @@ public class CourseTO {
   private String courseName;
 
   /** The tutor who created the course. */
-  @NotNull(message = "Tutor cannot be empty.")
+  @NotNull(message = "Tutor ID cannot be empty.")
   private Long tutorId;
+
+  /** The tutor's name who created the course. */
+  private String tutorName;
 
   /**
    * A short description of the course.
@@ -65,5 +71,15 @@ public class CourseTO {
    */
   private LocalDate endDate;
 
+  /**
+   * The average rating of the course.
+   */
   private Double averageRating;
+
+  /**
+   * The list of course categories for a course.
+   */
+  @NotEmpty(message = "Course categories cannot be empty.")
+  @Valid
+  private List<CourseCategoryTO> courseCategories;
 }

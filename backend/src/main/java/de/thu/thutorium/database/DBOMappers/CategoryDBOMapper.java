@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * {@link CourseCategoryDBO}.
  */
 @Component
-public class CourseCategoryDBOMapper {
+public class CategoryDBOMapper {
     /**
      * Converts an {@link CourseCategoryTO} object to an {@link CourseCategoryDBO} object.
      */

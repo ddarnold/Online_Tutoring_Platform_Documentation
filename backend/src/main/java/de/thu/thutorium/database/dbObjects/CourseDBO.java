@@ -61,7 +61,7 @@ public class CourseDBO {
   /**
    * A short description of the course (1-2 sentences). This field is mandatory and cannot be null.
    */
-  @Column(name = "description_short", nullable = false)
+  @Column(name = "description_short")
   private String descriptionShort;
 
   /** A long description of the course. This field is optional and can be null. */
@@ -71,7 +71,7 @@ public class CourseDBO {
   /**
    * The timestamp when the course was created. This field is mandatory and cannot be {@code null}.
    */
-  @Column(name = "created_on", nullable = false)
+  @Column(name = "created_on")
   private LocalDateTime createdOn;
 
   /** The start date of the course. This field is optional and can be {@code null}. */
@@ -91,6 +91,28 @@ public class CourseDBO {
   @OneToMany(mappedBy = "course", orphanRemoval = true)
   @Builder.Default
   private List<RatingCourseDBO> receivedCourseRatings = new ArrayList<>();
+
+  /**
+   * The average rating of the course.
+   * This field is not persisted in the database.
+   */
+  @Transient
+  private Double averageRating;
+
+  /**
+   * Initializes transient fields after the entity is loaded from the database.
+   */
+  @PostLoad
+  private void onLoad() {
+    if (receivedCourseRatings != null && !receivedCourseRatings.isEmpty()) {
+      double sum = receivedCourseRatings.stream()
+              .mapToDouble(RatingCourseDBO::getPoints)
+              .sum();
+      this.averageRating = sum / receivedCourseRatings.size();
+    } else {
+      this.averageRating = 0.0;
+    }
+  }
 
   /**
    * Meetings received for a course.
@@ -113,7 +135,8 @@ public class CourseDBO {
 
   /** The list of course categories for a course. */
   @ManyToMany(mappedBy = "courses")
-  private List<CourseCategoryDBO> courseCategories;
+  @Builder.Default
+  private List<CourseCategoryDBO> courseCategories = new ArrayList<>();
 
   /** Constructs a CourseDBO object with empty lists. */
   public CourseDBO() {

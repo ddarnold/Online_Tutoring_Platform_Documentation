@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class AdminController {
 
     /**
@@ -181,6 +183,7 @@ public class AdminController {
     public ResponseEntity<?> createCourseCategory(
             @Valid @RequestBody CourseCategoryTO courseCategory) {
         try {
+            log.info("In course category controller");
             CourseCategoryTO created = categoryService.createCourseCategory(courseCategory);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (ResourceAlreadyExistsException ex) {

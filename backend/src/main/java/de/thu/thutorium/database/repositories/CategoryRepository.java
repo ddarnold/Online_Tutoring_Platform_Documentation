@@ -3,10 +3,10 @@ package de.thu.thutorium.database.repositories;
 import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for performing CRUD operations on {@link CourseCategoryDBO} entities.
@@ -31,8 +31,7 @@ public interface CategoryRepository extends JpaRepository<CourseCategoryDBO, Lon
    * @return the {@link CourseCategoryDBO} entity matching the provided name, or {@code null} if no
    *     match is found.
    */
-  @Query("SELECT c FROM CourseCategoryDBO c WHERE c.categoryName = :categoryName")
-  CourseCategoryDBO findByName(@Param("categoryName") String categoryName);
+  Optional<CourseCategoryDBO> findCourseCategoryDBOByCategoryName(String categoryName);
 
   /**
    * Finds all categories that are associated with at least one course.
@@ -46,6 +45,4 @@ public interface CategoryRepository extends JpaRepository<CourseCategoryDBO, Lon
   List<CourseCategoryDBO> findCategoriesWithCourses();
 
   boolean existsByCategoryName(String categoryName);
-
-  CourseCategoryDBO findCourseCategoryDBOByCategoryName(String categoryName);
 }

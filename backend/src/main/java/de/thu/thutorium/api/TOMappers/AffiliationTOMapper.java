@@ -20,6 +20,7 @@ public interface AffiliationTOMapper {
      */
     @Mappings({
             @Mapping(source = "university.universityName", target = "universityName"),
+            @Mapping(source = "affiliationType", target = "affiliationType"),
     })
     AffiliationTO toDTO(AffiliationDBO affiliation);
 }
