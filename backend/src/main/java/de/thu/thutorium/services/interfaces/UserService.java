@@ -69,4 +69,11 @@ public interface UserService {
    */
   UserTO updateUser(Long id, UserTO user);
 
+  /**
+   * Enrolls a student in a course
+   *
+   * @param studentId  the id of the student
+   * @param courseId  the id of the course
+   */
+  void enrollCourse(Long studentId, Long courseId);
 }

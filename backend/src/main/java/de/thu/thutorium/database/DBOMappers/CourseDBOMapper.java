@@ -17,9 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * Mapper interface for converting between {@link CourseTO} and {@link CourseDBO}.
- *
- * <p>This interface uses MapStruct to map data transfer objects (DTOs) to database objects (DBOs)
+ * Mapper class for converting between {@link CourseTO} and {@link CourseDBO}.
  */
 @Component
 @RequiredArgsConstructor

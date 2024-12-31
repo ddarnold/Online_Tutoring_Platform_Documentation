@@ -144,7 +144,7 @@ public class UserDBO implements UserDetails {
    * cascading operations defined in this relationship. The counterpart is denoted by a Set<UserDBO>
    * called 'participants' in the {@link CourseDBO}.
    */
-  @ManyToMany(fetch = FetchType.LAZY)
+  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
       name = "course_students",
       joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "user_id"),

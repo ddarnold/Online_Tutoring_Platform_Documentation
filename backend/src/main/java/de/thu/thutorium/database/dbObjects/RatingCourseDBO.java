@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RatingCourseDBO {
   /** Primary key of the Rating table, automatically generated. */
   @Id
@@ -57,6 +58,7 @@ public class RatingCourseDBO {
   private String review;
 
   /** The timestamp when the rating was created. */
-  @Column(name = "created_at", nullable = false)
+  @Column(name = "created_at")
+  @Builder.Default
   private LocalDateTime createdAt = LocalDateTime.now();
 }

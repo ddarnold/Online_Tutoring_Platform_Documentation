@@ -17,12 +17,22 @@ import lombok.*;
 public class RatingCourseTO {
     /**
      * The unique identifier for the rating.
-     *
-     * <p>This field represents the unique ID for the rating, which is typically used for identifying
-     * and retrieving specific ratings from the system.
      */
-    @NotNull(message = "The rating id cannot be null")
     private Long ratingId;
+
+    /**
+     * Basic information about the student who gave the rating.
+     */
+    @NotNull(message = "The student ID cannot be empty")
+    private Long studentId;
+    private String studentName;
+
+    /**
+     * Basic information about the Course which received the rating who gave the rating.
+     */
+    @NotNull(message = "The course ID cannot be empty")
+    private Long courseId;
+    private String courseName;
 
     /**
      * The rating points given to the course.
@@ -41,11 +51,4 @@ public class RatingCourseTO {
      */
     private String review;
 
-    /**
-     * Basic information about the student who gave the rating.
-     *
-     * <p>This field contains a {@code UserDTO} object that represents the student who provided
-     * the rating. The student's basic information (such as their name) is included in this object.
-     */
-    private UserTO student;
 }

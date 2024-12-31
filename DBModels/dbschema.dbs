@@ -206,14 +206,14 @@
 			</fk>
 		</table>
 		<table name="rating_course" prior="course_rating" >
+			<column name="rating_id" type="bigint" jt="-5" mandatory="y" />
 			<column name="student_id" type="bigint" jt="-5" mandatory="y" />
 			<column name="course_id" type="bigint" jt="-5" mandatory="y" />
 			<column name="points" type="numeric" jt="2" />
 			<column name="review" prior="description" type="text" jt="12" />
 			<column name="created_at" type="timestamp" jt="93" />
-			<index name="pk_rating" unique="PRIMARY_KEY" >
-				<column name="course_id" />
-				<column name="student_id" />
+			<index name="pk_rating_course" unique="PRIMARY_KEY" >
+				<column name="rating_id" />
 			</index>
 			<fk name="fk_rating_user_account" to_schema="public" to_table="user_account" >
 				<fk_column name="student_id" pk="user_id" />

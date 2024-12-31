@@ -52,7 +52,7 @@ public class CourseServiceImpl implements CourseService {
      */
     @Override
     public CourseTO findCourseById(Long id) {
-        Optional<CourseDBO> courseOptional = Optional.ofNullable(courseRepository.findCourseById(id));
+        Optional<CourseDBO> courseOptional = courseRepository.findCourseDBOByCourseId(id);
         return courseMapper.toDTO(courseOptional.orElseThrow(() -> new ResourceNotFoundException(
                 new SpringErrorPayload(
                         "Course not found",

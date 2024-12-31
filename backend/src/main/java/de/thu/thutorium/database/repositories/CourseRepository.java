@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for managing {@link CourseDBO} entities. This interface extends {@link
@@ -53,11 +54,10 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
   /**
    * Finds a course by its ID.
    *
-   * @param id The ID of the course to search for.
+   * @param courseId The ID of the course to search for.
    * @return The {@link CourseDBO} with the specified ID.
    */
-  @Query("SELECT c FROM CourseDBO c WHERE c.courseId = :id")
-  CourseDBO findCourseById(@Param("id") Long id);
+  Optional<CourseDBO> findCourseDBOByCourseId(Long courseId);
 
   /**
    * Finds courses by matching the category name.
@@ -75,4 +75,5 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
    * @return {@code boolean} value indicating if the searched course exists
    */
   boolean existsByCourseName(String courseName);
+
 }

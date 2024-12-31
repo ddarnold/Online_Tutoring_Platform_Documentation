@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 /**
- * A MapStruct mapper interface for converting {@link AffiliationTO} to
+ * A mapper class for converting {@link AffiliationTO} to
  * {@link AffiliationDBO}.
  *
  */

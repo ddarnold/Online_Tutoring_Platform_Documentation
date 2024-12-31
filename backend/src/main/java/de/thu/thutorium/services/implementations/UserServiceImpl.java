@@ -4,14 +4,19 @@ import de.thu.thutorium.api.TOMappers.UserTOMapper;
 import de.thu.thutorium.api.transferObjects.UserTO;
 import de.thu.thutorium.database.DBOMappers.AffiliationDBOMapper;
 import de.thu.thutorium.database.dbObjects.AffiliationDBO;
+import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
 import de.thu.thutorium.database.dbObjects.enums.Role;
 import de.thu.thutorium.database.repositories.AffiliationRepository;
+import de.thu.thutorium.database.repositories.CourseRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
+import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
 import de.thu.thutorium.exceptions.SpringErrorPayload;
 import de.thu.thutorium.services.interfaces.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -26,30 +31,14 @@ import java.util.Optional;
  * {@link UserTOMapper} to map data between {@link UserDBO} and {@link UserTO}.
  */
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
     private final UserTOMapper userMapper;
     private final AffiliationDBOMapper affiliationDBOMapper;
     private final AffiliationRepository affiliationRepository;
-
-    /**
-     * Constructs a new instance of {@link UserServiceImpl}.
-     *
-     * @param userRepository the {@link UserRepository} instance used to access user data
-     * @param userMapper     the {@link UserTOMapper} instance used for mapping between database and
-     *                       transfer objects
-     */
-    public UserServiceImpl(
-            UserRepository userRepository,
-            UserTOMapper userMapper,
-            AffiliationDBOMapper affiliationDBOMapper,
-            AffiliationRepository affiliationRepository) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.affiliationDBOMapper = affiliationDBOMapper;
-        this.affiliationRepository = affiliationRepository;
-    }
 
     /**
      * Returns the total number of students in the system.
@@ -141,21 +130,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Long userId) {
-        // Check if the user exists before attempting to delete
-        UserDBO user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException(
-                        new SpringErrorPayload(
-                                "Username not found",
-                                "User not found with ID: " + userId,
-                                404)
-                                .toString()
-                )
-        );
 
-        // Delete the user from the repository
-        userRepository.delete(user);
     }
 
     @Override
+    @Transactional
     public UserTO updateUser(Long id, UserTO user) {
         Optional<UserDBO> existingUserOptional = userRepository.findById(id);
         if (existingUserOptional.isPresent()) {
@@ -193,5 +172,50 @@ public class UserServiceImpl implements UserService {
                             .toString()
             );
         }
+    }
+
+    /**
+     * Enrolls a user in a course
+     *
+     * <p>This method enrolls a user in a course, provide both the entities already exist in the database.
+     * Checks are additionally provided to check if the user is already enrolled in the course;
+     * and that the user has student authorizations,
+     *
+     * @param studentId the unique ID of the student who wants to enroll.
+     * @param courseId the course in which the student enrolls.
+     * @throws EntityNotFoundException if no user or course is found with the provided parameters.
+     * @throws IllegalArgumentException if teh user does not have a STUDENT role.
+     */
+    @Override
+    @Transactional
+    public void enrollCourse(Long studentId, Long courseId) {
+        // Fetch the student and handle the case where the student is not found
+        UserDBO student = userRepository.findUserDBOByUserId(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Student with id " + studentId + " not found"));
+
+        //Checking if a user is enrolled as a student:
+        //Redundant because:
+        // - Only a student can access the 'student/**' link to enroll in the course according to the
+        // security config settings.
+        boolean isStudent = student.getRoles().stream()
+                .anyMatch((role) -> role.getRoleName().equals(Role.STUDENT));
+
+        if (!isStudent) {
+            throw new IllegalArgumentException("The user is not authorized as a student!");
+        }
+
+        // Fetch the course and handle the case where the course is not found
+        CourseDBO course = courseRepository.findCourseDBOByCourseId(courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Course with id " + courseId + " not found"));
+
+        // Check if the student is already enrolled in the course
+        if (student.getStudentCourses().contains(course)) {
+            throw new ResourceAlreadyExistsException("Student with id "
+                    + studentId
+                    + " is already enrolled in course with id "
+                    + courseId);
+        }
+        student.getStudentCourses().add(course);
+        userRepository.save(student);
     }
 }
