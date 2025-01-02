@@ -78,7 +78,7 @@ public class CourseCategoryDBO {
    * cascading action is not specified here because the course categories are set by the admin. Can
    * the tutors also set their own course categories?
    */
-  @ManyToMany
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
   @JoinTable(
       name = "courses_categories",
       joinColumns = @JoinColumn(name = "category_id"),

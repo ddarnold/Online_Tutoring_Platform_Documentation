@@ -46,12 +46,11 @@ public class CategoryServiceImpl implements CategoryService {
    * @param courseCategory the data transfer object containing the details of the course category to
    *     be created
    * @return the created course category as a {@link CourseCategoryTO}
+   * @throws ResourceAlreadyExistsException if the category already exists by name
    */
   @Override
   public CourseCategoryTO createCourseCategory(@Valid CourseCategoryTO courseCategory) {
     // Check if the courseCategoryDBO already exists (by name)
-    // If yes, Throw ResourceAlreadyExistsException
-    // Save to DB
     Optional<CourseCategoryDBO> categoryDBOOptional =
             courseCategoryRepository.findCourseCategoryDBOByCategoryName(
                 courseCategory.getCategoryName());
@@ -77,7 +76,8 @@ public class CategoryServiceImpl implements CategoryService {
   @Override
   public CourseCategoryTO updateCourseCategory(Long categoryId, @Valid CourseCategoryTO courseCategory) {
     Optional<CourseCategoryDBO> courseCategoryOptional = courseCategoryRepository.findById(categoryId);
-    CourseCategoryDBO existingCategory = courseCategoryOptional.orElseThrow(() -> new ResourceNotFoundException("Error: Course Category with id "
+    CourseCategoryDBO existingCategory = courseCategoryOptional.orElseThrow(
+            () -> new ResourceNotFoundException("Error: Course Category with id "
             + categoryId + " not found!"));
     existingCategory.setCategoryName(courseCategory.getCategoryName());
     existingCategory.setCreatedOn(LocalDateTime.now());

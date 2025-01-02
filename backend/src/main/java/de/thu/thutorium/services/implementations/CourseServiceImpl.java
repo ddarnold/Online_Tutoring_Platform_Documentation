@@ -3,8 +3,10 @@ package de.thu.thutorium.services.implementations;
 import de.thu.thutorium.api.TOMappers.CourseTOMapper;
 import de.thu.thutorium.api.transferObjects.CourseTO;
 import de.thu.thutorium.database.DBOMappers.CourseDBOMapper;
+import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
+import de.thu.thutorium.database.repositories.CategoryRepository;
 import de.thu.thutorium.database.repositories.CourseRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
 import de.thu.thutorium.exceptions.ResourceNotFoundException;
@@ -19,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +39,7 @@ import java.util.Optional;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final CategoryRepository categoryRepository;
     private final CourseDBOMapper courseDBMapper;
     private final CourseTOMapper courseMapper;
     private final UserRepository userRepository;
@@ -53,13 +57,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseTO findCourseById(Long id) {
         Optional<CourseDBO> courseOptional = courseRepository.findCourseDBOByCourseId(id);
-        return courseMapper.toDTO(courseOptional.orElseThrow(() -> new ResourceNotFoundException(
-                new SpringErrorPayload(
-                        "Course not found",
-                        "The course with ID " + id + " does not exist in the system.",
-                        404
-                ).toString()
-        )));
+        return courseMapper.toDTO(courseOptional.orElseThrow(
+                () -> new EntityNotFoundException("The course with ID " + id + " does not exist in the system.")));
     }
 
     /**
@@ -104,15 +103,16 @@ public class CourseServiceImpl implements CourseService {
     public CourseTO createCourse(@Valid CourseTO course) {
         //Check if the course already exists
         if (courseRepository.existsByCourseName(course.getCourseName())) {
-            throw new EntityExistsException(new SpringErrorPayload(
-                    "Course exists",
-                    "Course " + course.getCourseName() + " already exists.",
-                    409
-            ).toString());
+            throw new EntityExistsException("Course " + course.getCourseName() + " already exists.");
         }
 
         // Create CourseDBO from CourseTO using the mapper
         CourseDBO courseDBO = courseDBMapper.toDBO(course);
+
+        //Update the course categories resolution table from the owning side (category)
+        courseDBO.getCourseCategories().forEach(category -> {
+           category.getCourses().add(courseDBO);
+       });
 
         // Set the createdOn timestamp to the current time
         courseDBO.setCreatedOn(LocalDateTime.now());

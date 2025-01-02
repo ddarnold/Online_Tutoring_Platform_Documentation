@@ -86,7 +86,7 @@ public class AdminController {
                     content =
                     @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = SpringErrorPayload.class)
+                            schema = @Schema(implementation = String.class)
                     )
             )
     })
@@ -128,7 +128,7 @@ public class AdminController {
                     content =
                     @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = SpringErrorPayload.class)
+                            schema = @Schema(implementation = String.class)
                     )
             )
     })
@@ -137,7 +137,7 @@ public class AdminController {
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
             userService.deleteUser(id);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (UsernameNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         } catch (Exception ex) {
@@ -160,8 +160,8 @@ public class AdminController {
             summary = "Create a new course category.",
             description =
                     "Allows an admin to create a new course category in the system. "
-                            + "This endpoint accepts a course category object and saves it to the database. "
-                            + "If the category already exists, an appropriate error message is returned.",
+                    + "This endpoint accepts a course category object and saves it to the database. "
+                    + "If the category already exists, an appropriate error message is returned.",
             tags = {"Course Category Endpoints"})
     @ApiResponses({
             @ApiResponse(
@@ -177,13 +177,12 @@ public class AdminController {
                     content =
                     @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = SpringErrorPayload.class)
+                            schema = @Schema(implementation = String.class)
                     ))})
     @PostMapping("course/create-course-category")
     public ResponseEntity<?> createCourseCategory(
             @Valid @RequestBody CourseCategoryTO courseCategory) {
         try {
-            log.info("In course category controller");
             CourseCategoryTO created = categoryService.createCourseCategory(courseCategory);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (ResourceAlreadyExistsException ex) {
@@ -203,7 +202,7 @@ public class AdminController {
      * @param courseCategory    the {@code CourseCategoryTO} object containing the course category data
      * @return a {@code ResponseEntity} containing the updated {@code CourseCategoryTO} object and a
      * {@link HttpStatus#CREATED} status
-     * @throws de.thu.thutorium.exceptions.ResourceNotFoundException, if the searched course category does not exist.
+     * @throws ResourceNotFoundException, if the searched course category does not exist.
      */
     @Operation(
             summary = "Update an existing course category.",
@@ -227,7 +226,7 @@ public class AdminController {
                     content =
                     @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = SpringErrorPayload.class))
+                            schema = @Schema(implementation = String.class))
 
             )})
     @PostMapping("course/update-course-category/{courseCategoryID}")

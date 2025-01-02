@@ -52,7 +52,7 @@ public class CourseController {
                   content =
                   @Content(
                           mediaType = "application/json",
-                          schema = @Schema(implementation = SpringErrorPayload.class)
+                          schema = @Schema(implementation = String.class)
                   )
           )
   })

@@ -4,6 +4,7 @@ import de.thu.thutorium.api.transferObjects.CourseTO;
 import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.RoleDBO;
+import de.thu.thutorium.database.dbObjects.UserDBO;
 import de.thu.thutorium.database.dbObjects.enums.Role;
 import de.thu.thutorium.database.repositories.CategoryRepository;
 import de.thu.thutorium.database.repositories.RoleRepository;
@@ -35,14 +36,30 @@ public class CourseDBOMapper {
      */
     public CourseDBO toDBO(CourseTO course) {
         List<CourseCategoryDBO> courseCategories = new ArrayList<>();
+        Optional<UserDBO> tutor;
 
         //check if the user exists with TUTOR role from its ID
-        RoleDBO tutorRole = roleRepository.findByRoleName(Role.TUTOR);
-        Set<RoleDBO> tutorRoles = new HashSet<>();
-        tutorRoles.add(tutorRole);
-        if (!userRepository.existsByUserIdAndRolesContaining(course.getTutorId(), tutorRoles)) {
-            throw new EntityNotFoundException("Tutor not found with id " + course.getTutorId());
-        }
+//        RoleDBO tutorRole = roleRepository.findByRoleName(Role.TUTOR);
+//        Set<RoleDBO> tutorRoles = new HashSet<>();
+//        tutorRoles.add(tutorRole);
+//        if (!userRepository.existsByUserIdAndRolesContaining(course.getTutorId(), tutorRoles)) {
+//            throw new EntityNotFoundException("Tutor not found with id " + course.getTutorId());
+//        }
+
+        tutor = userRepository.findUserDBOByUserId(course.getTutorId());
+        tutor.ifPresentOrElse(
+                (user) -> {
+                    boolean isTutor =  user.getRoles().stream().anyMatch(
+                            role -> role.getRoleName().equals(Role.TUTOR));
+                    if (!isTutor) {
+                        throw new IllegalArgumentException("User with id " + course.getTutorId()
+                                + " does not have tutor authorizations!");
+                    }
+                }, () -> {
+                    throw new EntityNotFoundException("User not found with id " + course.getTutorId());
+                }
+        );
+
 
         //Throw error if the associated course categories are not found; else fetch those categories
         if (course.getCourseCategories() != null) {
@@ -54,7 +71,7 @@ public class CourseDBOMapper {
 
         return CourseDBO.builder()
                 .courseName(course.getCourseName())
-                .tutor(userRepository.findUserDBOByUserId(course.getTutorId()).get())
+                .tutor(tutor.get())
                 .descriptionShort(course.getDescriptionShort())
                 .descriptionLong(course.getDescriptionLong())
                 .startDate(course.getStartDate())

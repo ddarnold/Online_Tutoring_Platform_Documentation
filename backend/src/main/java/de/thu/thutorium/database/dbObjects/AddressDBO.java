@@ -34,6 +34,7 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
+@EntityListeners(DBPreProcess.class) //Save all string fields in all entities in lower case
 public class AddressDBO {
 
   /**
@@ -100,26 +101,4 @@ public class AddressDBO {
     this.meetings = new ArrayList<>();
   }
 
-  /**
-   * Ensure all {@code String} fields are trimmed of leading and trailing whitespaces and converted
-   * to lowercase before being persisted in the database.
-   */
-  @PrePersist
-  @PreUpdate
-  private void preprocessFields() {
-    Field[] fields = this.getClass().getDeclaredFields();
-    for (Field field : fields) {
-      if (field.getType().equals(String.class)) {
-        field.setAccessible(true);
-        try {
-          String value = (String) field.get(this);
-          if (value != null) {
-            field.set(this, value.trim().toLowerCase());
-          }
-        } catch (IllegalAccessException e) {
-          throw new RuntimeException();
-        }
-      }
-    }
-  }
 }

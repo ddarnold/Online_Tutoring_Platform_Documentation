@@ -130,7 +130,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Long userId) {
-
+        userRepository.findUserDBOByUserId(userId).ifPresentOrElse(userRepository::delete,
+                () -> { throw new EntityNotFoundException("User with ID " + userId + " does not exist in database.");});
     }
 
     @Override
