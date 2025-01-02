@@ -1,6 +1,6 @@
 package de.thu.thutorium.services.implementations;
 
-import de.thu.thutorium.api.TOMappers.MeetingToMapper;
+import de.thu.thutorium.api.TOMappers.MeetingTOMapper;
 import de.thu.thutorium.api.TOMappers.UserTOMapper;
 import de.thu.thutorium.api.transferObjects.common.UserTO;
 import de.thu.thutorium.database.DBOMappers.AffiliationDBOMapper;
@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
   private final UserTOMapper userMapper;
   private final AffiliationDBOMapper affiliationDBOMapper;
   private final AffiliationRepository affiliationRepository;
-  private final MeetingToMapper meetingMapper;
+  private final MeetingTOMapper meetingMapper;
 
   /**
    * Constructs a new instance of {@link UserServiceImpl}.
@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
       UserTOMapper userMapper,
       AffiliationDBOMapper affiliationDBOMapper,
       AffiliationRepository affiliationRepository,
-      MeetingToMapper meetingMapper) {
+      MeetingTOMapper meetingMapper) {
     this.userRepository = userRepository;
     this.userMapper = userMapper;
     this.affiliationDBOMapper = affiliationDBOMapper;

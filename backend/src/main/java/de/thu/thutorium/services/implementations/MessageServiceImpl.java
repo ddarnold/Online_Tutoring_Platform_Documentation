@@ -119,11 +119,10 @@ public class MessageServiceImpl implements MessageService {
    * {@link MessageTO}.
    *
    * @param messageId the ID of the message to be marked as read
-   * @return the updated message as a {@link MessageTO}
    * @throws RuntimeException if the message cannot be found based on the provided ID
    */
   @Override
-  public MessageTO markAsRead(Long messageId) {
+  public void markAsRead(Long messageId) {
     // Find the message by ID
     MessageDBO messageDBO =
         messageRepository
@@ -136,17 +135,6 @@ public class MessageServiceImpl implements MessageService {
 
     // Save the updated message
     messageRepository.save(messageDBO);
-
-    // Map the updated entity back to a DTO and return it
-    return new MessageTO(
-        messageDBO.getMessageId(),
-        messageDBO.getSender().getUserId(), // Return the senderId
-        messageDBO.getReceiver().getUserId(), // Return the receiverId
-        messageDBO.getChat().getChatId(), // Return the chatId from the saved message
-        messageDBO.getMessageContent(),
-        messageDBO.getSendAt(),
-        messageDBO.getReadAt(),
-        messageDBO.getIsRead());
   }
 
   @Override

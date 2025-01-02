@@ -3,9 +3,7 @@ package de.thu.thutorium.api.controllers;
 import de.thu.thutorium.api.transferObjects.common.MeetingTO;
 import de.thu.thutorium.api.transferObjects.common.UserTO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
-import de.thu.thutorium.services.interfaces.ChatService;
 import de.thu.thutorium.services.interfaces.MeetingService;
-import de.thu.thutorium.services.interfaces.MessageService;
 import de.thu.thutorium.services.interfaces.UserService;
 import de.thu.thutorium.swagger.CommonApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
@@ -193,10 +191,11 @@ public class UserController {
   private Long getAuthenticatedUserId() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication == null || !authentication.isAuthenticated()) {
-      throw new AuthenticationException("User is not authenticated") {};
+      throw new AuthenticationException("User is not authenticated") { };
     }
+
     UserDBO userDetails = (UserDBO) authentication.getPrincipal();
     return userDetails.getUserId();
   }
 
- }
+}

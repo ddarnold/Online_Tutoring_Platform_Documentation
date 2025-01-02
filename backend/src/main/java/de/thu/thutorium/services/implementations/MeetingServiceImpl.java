@@ -1,6 +1,6 @@
 package de.thu.thutorium.services.implementations;
 
-import de.thu.thutorium.api.TOMappers.MeetingToMapper;
+import de.thu.thutorium.api.TOMappers.MeetingTOMapper;
 import de.thu.thutorium.api.transferObjects.common.MeetingTO;
 import de.thu.thutorium.database.DBOMappers.MeetingDBMapper;
 import de.thu.thutorium.database.dbObjects.AddressDBO;
@@ -17,9 +17,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service implementation for managing meetings.
@@ -37,8 +37,7 @@ public class MeetingServiceImpl implements MeetingService {
   private final CourseRepository courseRepository;
   private final AddressRepository addressRepository;
   private final MeetingDBMapper meetingDBMapper;
-  private final MeetingToMapper meetingTOMapper;
-
+  private final MeetingTOMapper meetingTOMapper;
 
   /**
    * Creates a new meeting based on the provided {@link MeetingTO}.
@@ -76,29 +75,17 @@ public class MeetingServiceImpl implements MeetingService {
                     new EntityNotFoundException(
                         "Address not found with ID: " + meetingTO.getAddressId()));
 
-    // Calculate new meeting's time range
-    LocalDateTime newMeetingStart = meetingTO.getMeetingTime();
-    LocalDateTime newMeetingEnd = newMeetingStart.plusMinutes(meetingTO.getDuration());
-
-    // Fetch potential overlaps
-    List<MeetingDBO> overlappingMeetings =
-        meetingRepository
-            .findByMeetingDateAndRoomNumAndMeetingTimeLessThanEqualAndMeetingTimeGreaterThanEqual(
-                meetingTO.getMeetingDate(), meetingTO.getRoomNum(), newMeetingEnd, newMeetingStart);
-
-    // Check for actual overlaps
-    for (MeetingDBO existingMeeting : overlappingMeetings) {
-      LocalDateTime existingMeetingStart = existingMeeting.getMeetingTime();
-      LocalDateTime existingMeetingEnd =
-          existingMeetingStart.plusMinutes(existingMeeting.getDuration());
-
-      if (newMeetingStart.isBefore(existingMeetingEnd)
-          && newMeetingEnd.isAfter(existingMeetingStart)) {
-        throw new IllegalArgumentException(
-            "A meeting is already scheduled during the requested time in room "
-                + meetingTO.getRoomNum());
-      }
-    }
+    List<UserDBO> participants =
+        meetingTO.getParticipantIds().stream()
+            .map(
+                participantId ->
+                    userRepository
+                        .findById(participantId)
+                        .orElseThrow(
+                            () ->
+                                new EntityNotFoundException(
+                                    "Participant not found with ID: " + participantId)))
+            .collect(Collectors.toList());
 
     MeetingDBO meetingDBO = meetingDBMapper.toEntity(meetingTO);
 
@@ -106,6 +93,8 @@ public class MeetingServiceImpl implements MeetingService {
     meetingDBO.setTutor(tutor);
     meetingDBO.setCourse(course);
     meetingDBO.setAddress(address);
+    meetingDBO.setParticipants(participants);
+    participants.forEach(participant -> participant.getMeetings().add(meetingDBO));
 
     meetingRepository.save(meetingDBO);
   }
@@ -147,10 +136,10 @@ public class MeetingServiceImpl implements MeetingService {
   public void updateMeeting(Long meetingId, MeetingTO meetingTO) {
     // Fetch the existing meeting
     MeetingDBO existingMeeting =
-        meetingRepository
-            .findById(meetingId)
-            .orElseThrow(
-                () -> new EntityNotFoundException("Meeting not found with ID: " + meetingId));
+            meetingRepository
+                    .findById(meetingId)
+                    .orElseThrow(
+                            () -> new EntityNotFoundException("Meeting not found with ID: " + meetingId));
 
     // Update fields
     existingMeeting.setMeetingDate(meetingTO.getMeetingDate());
@@ -161,31 +150,58 @@ public class MeetingServiceImpl implements MeetingService {
 
     // Update associated objects (tutor, course, and address)
     UserDBO tutor =
-        userRepository
-            .findById(meetingTO.getTutorId())
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        "Tutor not found with ID: " + meetingTO.getTutorId()));
+            userRepository
+                    .findById(meetingTO.getTutorId())
+                    .orElseThrow(
+                            () ->
+                                    new EntityNotFoundException(
+                                            "Tutor not found with ID: " + meetingTO.getTutorId()));
     existingMeeting.setTutor(tutor);
 
     CourseDBO course =
-        courseRepository
-            .findById(meetingTO.getCourseId())
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        "Course not found with ID: " + meetingTO.getCourseId()));
+            courseRepository
+                    .findById(meetingTO.getCourseId())
+                    .orElseThrow(
+                            () ->
+                                    new EntityNotFoundException(
+                                            "Course not found with ID: " + meetingTO.getCourseId()));
     existingMeeting.setCourse(course);
 
     AddressDBO address =
-        addressRepository
-            .findById(meetingTO.getAddressId())
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        "Address not found with ID: " + meetingTO.getAddressId()));
+            addressRepository
+                    .findById(meetingTO.getAddressId())
+                    .orElseThrow(
+                            () ->
+                                    new EntityNotFoundException(
+                                            "Address not found with ID: " + meetingTO.getAddressId()));
     existingMeeting.setAddress(address);
+
+    // Update participants
+    List<UserDBO> newParticipants =
+            meetingTO.getParticipantIds().stream()
+                    .map(participantId ->
+                            userRepository
+                                    .findById(participantId)
+                                    .orElseThrow(() ->
+                                            new EntityNotFoundException("Participant not found with ID: " + participantId)))
+                    .collect(Collectors.toList());
+
+    // Remove participants who are no longer part of the meeting
+    existingMeeting.getParticipants().forEach(participant -> {
+      if (!newParticipants.contains(participant)) {
+        participant.getMeetings().remove(existingMeeting); // Remove this meeting from the participant's list
+      }
+    });
+
+    // Add new participants
+    newParticipants.forEach(participant -> {
+      if (!existingMeeting.getParticipants().contains(participant)) {
+        participant.getMeetings().add(existingMeeting); // Add this meeting to the participant's list
+      }
+    });
+
+    // Set the updated list of participants
+    existingMeeting.setParticipants(newParticipants);
 
     // Save the updated meeting
     meetingRepository.save(existingMeeting);
@@ -206,7 +222,8 @@ public class MeetingServiceImpl implements MeetingService {
   @Override
   public List<MeetingTO> getMeetingsForUser(Long userId) {
     // Get both participated and scheduled meetings
-    List<MeetingDBO> participatedMeetings = meetingRepository.findParticipatedMeetingsByUserId(userId);
+    List<MeetingDBO> participatedMeetings =
+        meetingRepository.findParticipatedMeetingsByUserId(userId);
     List<MeetingDBO> scheduledMeetings = meetingRepository.findScheduledMeetingsByTutorId(userId);
 
     // Combine both lists

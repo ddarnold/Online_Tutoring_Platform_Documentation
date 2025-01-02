@@ -162,4 +162,18 @@ public class WebSocketController {
     List<MessageTO> messages = messageService.getMessagesByChatId(chatId);
     return ResponseEntity.ok(messages);
   }
+
+  @Operation(
+      summary = "Mark a message as read",
+      description = "Updates the message status to read and sets the read timestamp.",
+      tags = {"Message Operations"})
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Message marked as read successfully"),
+    @ApiResponse(responseCode = "404", description = "Message not found")
+  })
+  @PutMapping("/message/{messageId}/read")
+  public ResponseEntity<String> markMessageAsRead(@PathVariable Long messageId) {
+    messageService.markAsRead(messageId);
+    return ResponseEntity.ok("Message marked as read successfully.");
+  }
 }
