@@ -16,7 +16,6 @@ import de.thu.thutorium.services.interfaces.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -130,8 +129,12 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void deleteUser(Long userId) {
-        userRepository.findUserDBOByUserId(userId).ifPresentOrElse(userRepository::delete,
-                () -> { throw new EntityNotFoundException("User with ID " + userId + " does not exist in database.");});
+        userRepository.findUserDBOByUserId(userId)
+                .ifPresentOrElse(userRepository::delete,
+                () -> {
+                    throw new EntityNotFoundException("User with ID " + userId + " does not exist in database.");
+                }
+        );
     }
 
     @Override

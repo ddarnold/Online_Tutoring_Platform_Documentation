@@ -1,9 +1,7 @@
 package de.thu.thutorium.database.repositories;
 
-import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.RoleDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
-import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -77,6 +75,4 @@ public interface UserRepository extends JpaRepository<UserDBO, Long> {
           + "(LOWER(CONCAT(u.firstName, ' ', u.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%')) OR "
           + "LOWER(CONCAT(u.lastName, ' ', u.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%')))")
   List<UserDBO> findByTutorFullName(@Param("tutorName") String tutorName);
-
-  boolean existsByUserIdAndRolesContaining(Long userId, Set<RoleDBO> roles);
 }

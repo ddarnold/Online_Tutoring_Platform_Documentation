@@ -3,7 +3,6 @@ package de.thu.thutorium.database.dbObjects;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 

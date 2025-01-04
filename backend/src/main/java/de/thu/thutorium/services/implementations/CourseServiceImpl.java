@@ -2,15 +2,17 @@ package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.CourseTOMapper;
 import de.thu.thutorium.api.transferObjects.CourseTO;
+import de.thu.thutorium.api.transferObjects.RatingCourseTO;
 import de.thu.thutorium.database.DBOMappers.CourseDBOMapper;
-import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
+import de.thu.thutorium.database.dbObjects.RatingCourseDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
+import de.thu.thutorium.database.dbObjects.enums.Role;
 import de.thu.thutorium.database.repositories.CategoryRepository;
 import de.thu.thutorium.database.repositories.CourseRepository;
+import de.thu.thutorium.database.repositories.RatingCourseRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
-import de.thu.thutorium.exceptions.ResourceNotFoundException;
-import de.thu.thutorium.exceptions.SpringErrorPayload;
+import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
 import de.thu.thutorium.services.interfaces.CourseService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,10 +20,10 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +45,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseDBOMapper courseDBMapper;
     private final CourseTOMapper courseMapper;
     private final UserRepository userRepository;
+    private final RatingCourseRepository ratingCourseRepository;
 
     /**
      * Finds a course by its unique ID.
@@ -52,7 +55,7 @@ public class CourseServiceImpl implements CourseService {
      *
      * @param id the unique ID of the course to retrieve.
      * @return a {@link CourseTO} representing the course with the given ID
-     * @throws ResourceNotFoundException, if the course does not exist in the database.
+     * @throws EntityNotFoundException, if the course does not exist in the database.
      */
     @Override
     public CourseTO findCourseById(Long id) {
@@ -111,8 +114,8 @@ public class CourseServiceImpl implements CourseService {
 
         //Update the course categories resolution table from the owning side (category)
         courseDBO.getCourseCategories().forEach(category -> {
-           category.getCourses().add(courseDBO);
-       });
+            category.getCourses().add(courseDBO);
+        });
 
         // Set the createdOn timestamp to the current time
         courseDBO.setCreatedOn(LocalDateTime.now());
@@ -178,5 +181,72 @@ public class CourseServiceImpl implements CourseService {
 
         // Save the updated course
         courseRepository.save(existingCourse);
+    }
+
+    /**
+     * User rates an existing course.
+     *
+     * <p>This method allows a student to rate an existing course. If the course or the
+     * student is not found, an {@link EntityNotFoundException} is thrown.
+     *
+     * @param ratingCourseTO the {@link RatingCourseTO} which contains details of the review.
+     * @throws EntityNotFoundException if the course with the provided ID or the student with
+     *                                 the provided ID is not found
+     */
+    @Override
+    public void rateCourse(RatingCourseTO ratingCourseTO) {
+        RatingCourseDBO courseRating = null;
+        Long studentId = ratingCourseTO.getStudentId();
+        Long courseId = ratingCourseTO.getCourseId();
+        Double points = ratingCourseTO.getPoints();
+        String review = "";
+        if (ratingCourseTO.getReview() != null && !ratingCourseTO.getReview().isEmpty()) {
+            review = ratingCourseTO.getReview();
+        }
+
+        // Fetch the student and handle the case where the student is not found
+        UserDBO student = userRepository.findUserDBOByUserId(studentId)
+                .orElseThrow(() -> new EntityNotFoundException("Student with id " + studentId + " not found"));
+
+        //Checking if a user is enrolled as a student:
+        boolean isStudent = student.getRoles().stream()
+                .anyMatch((role) -> role.getRoleName().equals(Role.STUDENT));
+
+        if (!isStudent) {
+            throw new IllegalArgumentException("The user is not authorized as a student!");
+        }
+
+        // Fetch the course and handle the case where the course is not found
+        CourseDBO course = courseRepository.findCourseDBOByCourseId(courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Course with id " + courseId + " not found"));
+
+        // Check if the student is already enrolled in the course
+        if (!student.getStudentCourses().contains(course)) {
+            throw new ResourceAlreadyExistsException("Student with id "
+                    + studentId
+                    + " is not enrolled in course with id "
+                    + courseId);
+        }
+
+        List<RatingCourseDBO> courseRatingDBOExisting = ratingCourseRepository
+                .findByCourse_CourseIdAndStudent_UserId(courseId,
+                        studentId,
+                        Limit.of(1));
+
+        if (courseRatingDBOExisting.isEmpty()) {
+            courseRating = RatingCourseDBO.builder()
+                    .course(course)
+                    .student(student)
+                    .review(review)
+                    .points(points)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+        } else {
+            courseRating = courseRatingDBOExisting.get(0);
+            courseRating.setReview(review);
+            courseRating.setPoints(points);
+            courseRating.setCreatedAt(LocalDateTime.now());
+        }
+        ratingCourseRepository.save(courseRating);
     }
 }

@@ -1,21 +1,13 @@
 package de.thu.thutorium.database.DBOMappers;
 
-import de.thu.thutorium.api.transferObjects.CourseTO;
 import de.thu.thutorium.api.transferObjects.RatingCourseTO;
 import de.thu.thutorium.database.dbObjects.*;
-import de.thu.thutorium.database.dbObjects.enums.Role;
-import de.thu.thutorium.database.repositories.CategoryRepository;
 import de.thu.thutorium.database.repositories.CourseRepository;
-import de.thu.thutorium.database.repositories.RoleRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
-import de.thu.thutorium.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 /**
  * Mapper interface for converting {@link RatingCourseTO} to {@link RatingCourseDBO}.
@@ -45,7 +37,10 @@ public class RatingCourseDBOMapper {
 
         // Check if the student is enrolled in the course
         if (!student.getStudentCourses().contains(course)) {
-            throw new EntityNotFoundException("Student with id " + courseRating.getStudentId() + " is not enrolled in course with id " + courseRating.getCourseId());
+            throw new EntityNotFoundException("Student with id "
+                    + courseRating.getStudentId()
+                    + " is not enrolled in course with id "
+                    + courseRating.getCourseId());
         }
 
         return RatingCourseDBO.builder()

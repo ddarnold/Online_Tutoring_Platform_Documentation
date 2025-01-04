@@ -3,7 +3,6 @@ package de.thu.thutorium.database.DBOMappers;
 import de.thu.thutorium.api.transferObjects.CourseTO;
 import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
-import de.thu.thutorium.database.dbObjects.RoleDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
 import de.thu.thutorium.database.dbObjects.enums.Role;
 import de.thu.thutorium.database.repositories.CategoryRepository;
@@ -39,13 +38,6 @@ public class CourseDBOMapper {
         Optional<UserDBO> tutor;
 
         //check if the user exists with TUTOR role from its ID
-//        RoleDBO tutorRole = roleRepository.findByRoleName(Role.TUTOR);
-//        Set<RoleDBO> tutorRoles = new HashSet<>();
-//        tutorRoles.add(tutorRole);
-//        if (!userRepository.existsByUserIdAndRolesContaining(course.getTutorId(), tutorRoles)) {
-//            throw new EntityNotFoundException("Tutor not found with id " + course.getTutorId());
-//        }
-
         tutor = userRepository.findUserDBOByUserId(course.getTutorId());
         tutor.ifPresentOrElse(
                 (user) -> {

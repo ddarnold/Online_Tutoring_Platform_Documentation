@@ -1,6 +1,8 @@
 package de.thu.thutorium.database.dbObjects;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -51,6 +53,8 @@ public class RatingCourseDBO {
 
   /** The rating points given by the student. */
   @Column(name = "points", nullable = false)
+  @Min(0)
+  @Max(10)
   private Double points;
 
   /** The review text provided by the student. */
@@ -61,4 +65,10 @@ public class RatingCourseDBO {
   @Column(name = "created_at")
   @Builder.Default
   private LocalDateTime createdAt = LocalDateTime.now();
+
+  public RatingCourseDBO(UserDBO student, CourseDBO course) {
+    this.student = student;
+    this.course = course;
+    this.createdAt = LocalDateTime.now();
+  }
 }

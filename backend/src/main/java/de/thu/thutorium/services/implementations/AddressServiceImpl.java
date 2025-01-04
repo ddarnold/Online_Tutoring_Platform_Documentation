@@ -7,8 +7,6 @@ import de.thu.thutorium.database.dbObjects.AddressDBO;
 import de.thu.thutorium.database.dbObjects.UniversityDBO;
 import de.thu.thutorium.database.repositories.AddressRepository;
 import de.thu.thutorium.database.repositories.UniversityRepository;
-import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
-import de.thu.thutorium.exceptions.SpringErrorPayload;
 import de.thu.thutorium.services.interfaces.AddressService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.transaction.Transactional;

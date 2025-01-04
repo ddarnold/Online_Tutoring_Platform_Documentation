@@ -2,7 +2,6 @@ package de.thu.thutorium.api.TOMappers;
 
 import de.thu.thutorium.api.transferObjects.RatingCourseTO;
 import de.thu.thutorium.database.dbObjects.RatingCourseDBO;
-import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

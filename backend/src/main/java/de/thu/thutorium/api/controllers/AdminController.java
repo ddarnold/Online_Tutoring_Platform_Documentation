@@ -4,7 +4,6 @@ import de.thu.thutorium.api.transferObjects.AddressTO;
 import de.thu.thutorium.api.transferObjects.CourseCategoryTO;
 import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
 import de.thu.thutorium.exceptions.ResourceNotFoundException;
-import de.thu.thutorium.exceptions.SpringErrorPayload;
 import de.thu.thutorium.services.interfaces.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
