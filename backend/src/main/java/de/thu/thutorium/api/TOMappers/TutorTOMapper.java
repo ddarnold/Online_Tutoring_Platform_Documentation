@@ -1,6 +1,6 @@
 package de.thu.thutorium.api.TOMappers;
 
-import de.thu.thutorium.api.transferObjects.TutorTO;
+import de.thu.thutorium.api.transferObjects.common.TutorTO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

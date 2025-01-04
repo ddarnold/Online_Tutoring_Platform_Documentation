@@ -1,7 +1,7 @@
 package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.CourseCategoryTOMapper;
-import de.thu.thutorium.api.transferObjects.CourseCategoryTO;
+import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
 import de.thu.thutorium.database.DBOMappers.CategoryDBOMapper;
 import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import de.thu.thutorium.database.repositories.CategoryRepository;

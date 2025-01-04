@@ -1,6 +1,6 @@
 package de.thu.thutorium.database.DBOMappers;
 
-import de.thu.thutorium.api.transferObjects.ChatCreateTO;
+import de.thu.thutorium.api.transferObjects.common.ChatCreateTO;
 import de.thu.thutorium.database.dbObjects.ChatDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
 import org.springframework.stereotype.Component;

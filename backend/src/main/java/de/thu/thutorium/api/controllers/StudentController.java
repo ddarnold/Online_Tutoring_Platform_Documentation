@@ -1,6 +1,6 @@
 package de.thu.thutorium.api.controllers;
 
-import de.thu.thutorium.api.transferObjects.RatingCourseTO;
+import de.thu.thutorium.api.transferObjects.common.RatingCourseTO;
 import de.thu.thutorium.services.implementations.UserServiceImpl;
 import de.thu.thutorium.services.interfaces.CourseService;
 import de.thu.thutorium.swagger.CommonApiResponses;

@@ -1,6 +1,6 @@
 package de.thu.thutorium.database.DBOMappers;
 
-import de.thu.thutorium.api.transferObjects.AffiliationTO;
+import de.thu.thutorium.api.transferObjects.common.AffiliationTO;
 import de.thu.thutorium.database.dbObjects.AffiliationDBO;
 import de.thu.thutorium.database.dbObjects.UniversityDBO;
 import de.thu.thutorium.database.dbObjects.enums.AffiliationType;

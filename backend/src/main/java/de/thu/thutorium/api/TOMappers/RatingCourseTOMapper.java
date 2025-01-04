@@ -1,6 +1,6 @@
 package de.thu.thutorium.api.TOMappers;
 
-import de.thu.thutorium.api.transferObjects.RatingCourseTO;
+import de.thu.thutorium.api.transferObjects.common.RatingCourseTO;
 import de.thu.thutorium.database.dbObjects.RatingCourseDBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

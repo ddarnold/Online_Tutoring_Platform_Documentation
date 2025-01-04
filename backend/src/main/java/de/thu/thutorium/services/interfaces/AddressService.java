@@ -1,6 +1,6 @@
 package de.thu.thutorium.services.interfaces;
 
-import de.thu.thutorium.api.transferObjects.AddressTO;
+import de.thu.thutorium.api.transferObjects.common.AddressTO;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 

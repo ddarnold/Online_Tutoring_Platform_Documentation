@@ -3,9 +3,9 @@ package de.thu.thutorium.services.implementations;
 import de.thu.thutorium.api.TOMappers.CourseCategoryTOMapper;
 import de.thu.thutorium.api.TOMappers.CourseTOMapper;
 import de.thu.thutorium.api.TOMappers.TutorTOMapper;
-import de.thu.thutorium.api.transferObjects.CourseCategoryTO;
-import de.thu.thutorium.api.transferObjects.CourseTO;
-import de.thu.thutorium.api.transferObjects.TutorTO;
+import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
+import de.thu.thutorium.api.transferObjects.common.CourseTO;
+import de.thu.thutorium.api.transferObjects.common.TutorTO;
 import de.thu.thutorium.database.dbObjects.*;
 import de.thu.thutorium.database.repositories.CategoryRepository;
 import de.thu.thutorium.database.repositories.CourseRepository;
@@ -64,10 +64,10 @@ public class SearchServiceImpl implements SearchService {
    *
    * <p>This method fetches the list of tutors whose full name matches the given {@code tutorName}.
    * The search may support partial matches depending on the implementation. The result is mapped
-   * into a list of {@link de.thu.thutorium.api.transferObjects.UserTO} objects.
+   * into a list of {@link de.thu.thutorium.api.transferObjects.common.UserTO} objects.
    *
    * @param tutorName the full name of the tutor (can be partial).
-   * @return a list of {@link de.thu.thutorium.api.transferObjects.UserTO} objects
+   * @return a list of {@link de.thu.thutorium.api.transferObjects.common.UserTO} objects
    *     representing the tutors that match the search criteria. If no tutors are found, an empty
    *     list is returned.
    */

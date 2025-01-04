@@ -1,7 +1,7 @@
 package de.thu.thutorium.api.controllers;
 
-import de.thu.thutorium.api.transferObjects.AddressTO;
-import de.thu.thutorium.api.transferObjects.CourseCategoryTO;
+import de.thu.thutorium.api.transferObjects.common.AddressTO;
+import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
 import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
 import de.thu.thutorium.exceptions.ResourceNotFoundException;
 import de.thu.thutorium.services.interfaces.*;

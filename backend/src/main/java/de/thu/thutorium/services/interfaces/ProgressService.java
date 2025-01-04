@@ -1,6 +1,6 @@
 package de.thu.thutorium.services.interfaces;
 
-import de.thu.thutorium.api.transferObjects.ProgressTO;
+import de.thu.thutorium.api.transferObjects.common.ProgressTO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

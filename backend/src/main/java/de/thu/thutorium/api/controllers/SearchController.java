@@ -1,8 +1,8 @@
 package de.thu.thutorium.api.controllers;
 
-import de.thu.thutorium.api.transferObjects.CourseCategoryTO;
-import de.thu.thutorium.api.transferObjects.CourseTO;
-import de.thu.thutorium.api.transferObjects.TutorTO;
+import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
+import de.thu.thutorium.api.transferObjects.common.CourseTO;
+import de.thu.thutorium.api.transferObjects.common.TutorTO;
 import de.thu.thutorium.services.implementations.SearchServiceImpl;
 import de.thu.thutorium.services.interfaces.CourseService;
 import de.thu.thutorium.services.interfaces.SearchService;
