@@ -1,5 +1,6 @@
 package de.thu.thutorium.api.controllers;
 
+import de.thu.thutorium.api.transferObjects.chat.ChatSummaryTO;
 import de.thu.thutorium.api.transferObjects.common.ChatCreateTO;
 import de.thu.thutorium.api.transferObjects.common.MessageTO;
 import de.thu.thutorium.services.interfaces.ChatService;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * WebSocketController handles WebSocket messaging and facilitates real-time message sending through
@@ -34,7 +37,7 @@ public class WebSocketController {
    */
   public WebSocketController(MessageService messageService, ChatService chatService) {
     this.messageService = messageService;
-      this.chatService = chatService;
+    this.chatService = chatService;
   }
 
   /**
@@ -45,7 +48,6 @@ public class WebSocketController {
    * @param messageTO the message data transfer object containing the message details
    * @return the saved message as a MessageDTO, which will be sent to all subscribers
    */
-
   @MessageMapping("/sendMessage")
   @SendTo("/topic/messages")
   public MessageTO sendMessage(MessageTO messageTO) {
@@ -61,14 +63,15 @@ public class WebSocketController {
    * @return the created message wrapped in a ResponseEntity
    */
   @Operation(
-          summary = "Send a new message",
-          description = "Persists a new message in the database and sends it to the recipient.",
-          tags = {"Message Operations"}
-  )
+      summary = "Send a new message",
+      description = "Persists a new message in the database and sends it to the recipient.",
+      tags = {"Message Operations"})
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Message sent successfully",
-                  content = @Content(schema = @Schema(implementation = MessageTO.class))),
-          @ApiResponse(responseCode = "400", description = "Invalid message data")
+    @ApiResponse(
+        responseCode = "200",
+        description = "Message sent successfully",
+        content = @Content(schema = @Schema(implementation = MessageTO.class))),
+    @ApiResponse(responseCode = "400", description = "Invalid message data")
   })
   @PostMapping("/message/send")
   public ResponseEntity<MessageTO> PostsendMessage(@RequestBody MessageTO messageTO) {
@@ -83,13 +86,12 @@ public class WebSocketController {
    * @return a success message.
    */
   @Operation(
-          summary = "Create a new chat",
-          description = "Creates a new chat session based on the provided chat details.",
-          tags = {"Chat Operations"}
-  )
+      summary = "Create a new chat",
+      description = "Creates a new chat session based on the provided chat details.",
+      tags = {"Chat Operations"})
   @ApiResponses({
-          @ApiResponse(responseCode = "201", description = "Chat created successfully"),
-          @ApiResponse(responseCode = "400", description = "Invalid chat data")
+    @ApiResponse(responseCode = "201", description = "Chat created successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid chat data")
   })
   @PostMapping("/chat-create")
   public ResponseEntity<String> createChat(@RequestBody @Valid ChatCreateTO requestDTO) {
@@ -104,17 +106,74 @@ public class WebSocketController {
    * @return a success message.
    */
   @Operation(
-          summary = "Delete a chat by ID",
-          description = "Deletes an existing chat by its unique ID.",
-          tags = {"Chat Operations"}
-  )
+      summary = "Delete a chat by ID",
+      description = "Deletes an existing chat by its unique ID.",
+      tags = {"Chat Operations"})
   @ApiResponses({
-          @ApiResponse(responseCode = "204", description = "Chat deleted successfully"),
-          @ApiResponse(responseCode = "404", description = "Chat not found")
+    @ApiResponse(responseCode = "204", description = "Chat deleted successfully"),
+    @ApiResponse(responseCode = "404", description = "Chat not found")
   })
   @DeleteMapping("/chat-delete/{chatId}")
   public ResponseEntity<String> deleteChat(@PathVariable Long chatId) {
     chatService.deleteChat(chatId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Chat deleted successfully!");
+  }
+
+  @Operation(
+      summary = "Get chat summaries for a user",
+      description = "Fetches a list of chat summaries for a user by their user ID.",
+      tags = {"Chat Operations"})
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Successfully retrieved chat summaries",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = ChatSummaryTO.class))),
+    @ApiResponse(responseCode = "400", description = "Invalid user ID supplied"),
+    @ApiResponse(responseCode = "404", description = "User not found"),
+    @ApiResponse(responseCode = "403", description = "Forbidden: Invalid token or bad request")
+  })
+  @GetMapping("/get-chat-summaries")
+  public ResponseEntity<List<ChatSummaryTO>> getChatSummaries(@RequestParam Long userId) {
+    List<ChatSummaryTO> summaries = chatService.getChatSummaries(userId);
+    return ResponseEntity.ok(summaries);
+  }
+
+  @Operation(
+      summary = "Get messages for a specific chat",
+      description = "Fetches a list of messages in a chat by the chat's unique ID.",
+      tags = {"Chat Operations"})
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Successfully retrieved chat messages",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = MessageTO.class))),
+    @ApiResponse(responseCode = "400", description = "Invalid chat ID supplied"),
+    @ApiResponse(responseCode = "404", description = "Chat not found"),
+    @ApiResponse(responseCode = "403", description = "Forbidden: Invalid token or bad request")
+  })
+  @GetMapping("/get-messages-chat")
+  public ResponseEntity<List<MessageTO>> getChatMessages(@RequestParam Long chatId) {
+    List<MessageTO> messages = messageService.getMessagesByChatId(chatId);
+    return ResponseEntity.ok(messages);
+  }
+
+  @Operation(
+      summary = "Mark a message as read",
+      description = "Updates the message status to read and sets the read timestamp.",
+      tags = {"Message Operations"})
+  @ApiResponses({
+    @ApiResponse(responseCode = "200", description = "Message marked as read successfully"),
+    @ApiResponse(responseCode = "404", description = "Message not found")
+  })
+  @PutMapping("/message/{messageId}/read")
+  public ResponseEntity<String> markMessageAsRead(@PathVariable Long messageId) {
+    messageService.markAsRead(messageId);
+    return ResponseEntity.ok("Message marked as read successfully.");
   }
 }

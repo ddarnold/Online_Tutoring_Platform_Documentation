@@ -25,13 +25,13 @@ public interface UserRepository extends JpaRepository<UserDBO, Long> {
    */
   Optional<UserDBO> findByEmail(String email);
 
-  /**
-   * Checks if a user entity exists with the given email.
-   *
-   * @param email the username to check
-   * @return true if a user entity exists with the given username, false otherwise
-   */
-  boolean existsByEmail(String email);
+//  /**
+//   * Checks if a user entity exists with the given email.
+//   *
+//   * @param email the username to check
+//   * @return true if a user entity exists with the given username, false otherwise
+//   */
+//  boolean existsByEmail(String email);
 
   /**
    * Finds a user by their email and roles.
@@ -75,4 +75,5 @@ public interface UserRepository extends JpaRepository<UserDBO, Long> {
           + "(LOWER(CONCAT(u.firstName, ' ', u.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%')) OR "
           + "LOWER(CONCAT(u.lastName, ' ', u.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%')))")
   List<UserDBO> findByTutorFullName(@Param("tutorName") String tutorName);
+
 }

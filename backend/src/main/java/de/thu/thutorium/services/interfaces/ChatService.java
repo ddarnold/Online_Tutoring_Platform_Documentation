@@ -1,7 +1,10 @@
 package de.thu.thutorium.services.interfaces;
 
+import de.thu.thutorium.api.transferObjects.chat.ChatSummaryTO;
 import de.thu.thutorium.api.transferObjects.common.ChatCreateTO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * ChatService is an interface for managing chat operations.
@@ -24,4 +27,6 @@ public interface ChatService {
    * @param chatId the unique identifier of the chat to be deleted.
    */
   void deleteChat(Long chatId);
+
+  List<ChatSummaryTO> getChatSummaries(Long userId);
 }

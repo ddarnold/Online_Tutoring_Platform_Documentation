@@ -4,6 +4,8 @@ import de.thu.thutorium.database.dbObjects.MessageDBO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository interface for {@link MessageDBO} entities.
  *
@@ -18,4 +20,8 @@ import org.springframework.stereotype.Repository;
  * mechanism.
  */
 @Repository
-public interface MessageRepository extends JpaRepository<MessageDBO, Long> { }
+public interface MessageRepository extends JpaRepository<MessageDBO, Long> {
+  int countByChat_ChatIdAndReceiver_UserIdAndIsReadFalse(Long chatId, Long receiverId);
+
+  List<MessageDBO> findByChat_ChatId(Long chatId);
+}

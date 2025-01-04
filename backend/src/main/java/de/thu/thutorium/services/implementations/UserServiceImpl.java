@@ -137,12 +137,26 @@ public class UserServiceImpl implements UserService {
         );
     }
 
-    @Override
-    @Transactional
-    public UserTO updateUser(Long id, UserTO user) {
-        Optional<UserDBO> existingUserOptional = userRepository.findById(id);
-        if (existingUserOptional.isPresent()) {
-            UserDBO existingUser = existingUserOptional.get();
+  /**
+   * Updates the details of an existing user in the system.
+   *
+   * <p>This method retrieves the user by their unique ID, updates their information, including
+   * their affiliation, and saves the changes to the database.
+   *
+   * <p>The affiliation is checked for existence based on the university name and affiliation type.
+   * If a matching affiliation is found, it is reused; otherwise, the provided affiliation is saved
+   * as a new record.
+   *
+   * @param id the unique identifier of the user to be updated
+   * @param user the {@link UserTO} containing the updated details of the user
+   * @return a {@link UserTO} containing the updated user details
+   * @throws UsernameNotFoundException if no user is found with the given ID
+   */
+  @Override
+  public UserTO updateUser(Long id, UserTO user) {
+    Optional<UserDBO> existingUserOptional = userRepository.findById(id);
+    if (existingUserOptional.isPresent()) {
+      UserDBO existingUser = existingUserOptional.get();
 
             // Convert AffiliationTO to AffiliationDBO
             AffiliationDBO affiliationDBO = affiliationDBOMapper.toDBO(user.getAffiliation());

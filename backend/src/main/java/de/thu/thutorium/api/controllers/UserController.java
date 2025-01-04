@@ -1,10 +1,13 @@
 package de.thu.thutorium.api.controllers;
 
+import de.thu.thutorium.api.transferObjects.common.MeetingTO;
 import de.thu.thutorium.api.transferObjects.common.UserTO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
+import de.thu.thutorium.services.interfaces.MeetingService;
 import de.thu.thutorium.services.interfaces.UserService;
 import de.thu.thutorium.swagger.CommonApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /** Controller for managing user operations. */
 @RestController
 @RequiredArgsConstructor
@@ -30,6 +35,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
   private final UserService userService;
+  private final MeetingService meetingService;
 
   /**
    * Retrieves the account details of a user based on their user ID.
@@ -126,14 +132,55 @@ public class UserController {
           tags = {"User Endpoints"}
   )
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Tutor retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = UserTO.class))),
-          @ApiResponse(responseCode = "404", description = "Tutor not found")
+    @ApiResponse(
+        responseCode = "200",
+        description = "Tutor retrieved successfully",
+        content = @Content(schema = @Schema(implementation = UserTO.class))),
+    @ApiResponse(responseCode = "404", description = "Tutor not found")
   })
-  @GetMapping("/tutor/get-tutor")
+  @GetMapping("tutor")
   @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
   public UserTO getTutor(@RequestParam Long id) {
     return userService.getTutorByID(id);
+  }
+
+  /**
+   * Retrieves all meetings associated with a specific user.
+   *
+   * <p>This endpoint fetches a list of meetings for a given user ID. It includes both:
+   *
+   * <ul>
+   *   <li>Meetings where the user is a participant
+   *   <li>Meetings scheduled by the user in their role as a tutor
+   * </ul>
+   *
+   * @param userId the unique identifier of the user whose meetings are to be retrieved
+   * @return a {@link ResponseEntity} containing a list of {@link MeetingTO} objects representing
+   *     the meetings associated with the user, or an empty list if none are found
+   * @throws org.springframework.web.server.ResponseStatusException if the user is not found or an
+   *     error occurs while retrieving the meetings
+   * @see de.thu.thutorium.api.transferObjects.common.MeetingTO
+   */
+  @Operation(
+      summary = "Retrieve all meetings for a specific user",
+      description =
+          "Fetches a list of meetings associated with a user. Includes both meetings the user participates in and meetings they have scheduled as a tutor.")
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Meetings retrieved successfully",
+        content =
+            @Content(array = @ArraySchema(schema = @Schema(implementation = MeetingTO.class)))),
+    @ApiResponse(
+        responseCode = "404",
+        description = "User not found or no meetings available for the user",
+        content = @Content(schema = @Schema(implementation = String.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @GetMapping("/get-meetings/{userId}")
+  public ResponseEntity<List<MeetingTO>> getMeetingsForUser(@PathVariable Long userId) {
+    List<MeetingTO> meetings = meetingService.getMeetingsForUser(userId);
+    return ResponseEntity.ok(meetings);
   }
 
   /**

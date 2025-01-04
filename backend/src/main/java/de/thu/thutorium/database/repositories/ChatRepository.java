@@ -4,6 +4,8 @@ import de.thu.thutorium.database.dbObjects.ChatDBO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository interface for {@link ChatDBO} entities.
  *
@@ -17,4 +19,6 @@ import org.springframework.stereotype.Repository;
  * mechanism.
  */
 @Repository
-public interface ChatRepository extends JpaRepository<ChatDBO, Long> { }
+public interface ChatRepository extends JpaRepository<ChatDBO, Long> {
+  List<ChatDBO> findByParticipants_UserId(Long userId);
+}

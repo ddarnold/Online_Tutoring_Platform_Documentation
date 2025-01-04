@@ -1,10 +1,13 @@
 package de.thu.thutorium.services.implementations;
 
+import de.thu.thutorium.api.transferObjects.chat.ChatSummaryTO;
+import de.thu.thutorium.api.transferObjects.chat.ReceiverTO;
 import de.thu.thutorium.api.transferObjects.common.ChatCreateTO;
 import de.thu.thutorium.database.DBOMappers.ChatDBMapper;
 import de.thu.thutorium.database.dbObjects.ChatDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
 import de.thu.thutorium.database.repositories.ChatRepository;
+import de.thu.thutorium.database.repositories.MessageRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
 import de.thu.thutorium.services.interfaces.ChatService;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,7 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Service implementation for managing chat creation and deletion.
@@ -34,6 +39,8 @@ public class ChatServiceImpl implements ChatService {
 
   /** Mapper for converting {@link ChatCreateTO} DTO to {@link ChatDBO} entity. */
   private final ChatDBMapper chatMapper;
+
+  private final MessageRepository messageRepository;
 
   /**
    * Creates a new chat.
@@ -82,5 +89,38 @@ public class ChatServiceImpl implements ChatService {
             .orElseThrow(() -> new EntityNotFoundException("Chat not found"));
 
     chatRepository.delete(chatDBO);
+  }
+
+  @Override
+  public List<ChatSummaryTO> getChatSummaries(Long userId) {
+    // Fetch all chats for the user (assuming participation list contains the user)
+    List<ChatDBO> userChats = chatRepository.findByParticipants_UserId(userId);
+
+    // Map chats to summaries
+    return userChats.stream()
+        .map(
+            chat -> {
+              // Find the other participant (receiver) in one-on-one chat
+              UserDBO receiver =
+                  chat.getParticipants().stream()
+                      .filter(participant -> !participant.getUserId().equals(userId))
+                      .findFirst()
+                      .orElse(null);
+
+              // Count unread messages for the user in this chat
+              int unreadMessages =
+                  messageRepository.countByChat_ChatIdAndReceiver_UserIdAndIsReadFalse(
+                      chat.getChatId(), userId);
+
+              // Create DTO
+              return new ChatSummaryTO(
+                  chat.getChatId(),
+                  receiver != null
+                      ? new ReceiverTO(
+                          receiver.getUserId(), receiver.getFirstName(), receiver.getLastName())
+                      : null,
+                  unreadMessages);
+            })
+        .collect(Collectors.toList());
   }
 }

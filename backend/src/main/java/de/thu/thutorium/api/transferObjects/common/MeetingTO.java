@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,6 +32,10 @@ public class MeetingTO {
     @NotNull(message = "Meeting time cannot be null")
     private LocalDateTime meetingTime;
 
+    /** The time of the meeting. */
+    @NotNull(message = "Meeting end time cannot be null")
+    private LocalDateTime endTime;
+
     /** The duration of the meeting in minutes. */
     @NotNull(message = "Duration cannot be null")
     private Integer duration;
@@ -49,4 +54,7 @@ public class MeetingTO {
 
     @NotEmpty(message = "Room number cant be empty")
     private String roomNum;
+
+    @NotEmpty(message = "Participants cannot be empty")
+    private List<Long> participantIds;
 }

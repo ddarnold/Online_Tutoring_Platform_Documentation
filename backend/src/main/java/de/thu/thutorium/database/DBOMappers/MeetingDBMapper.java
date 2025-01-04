@@ -47,5 +47,6 @@ public interface MeetingDBMapper {
   @Mapping(target = "participants", ignore = true) // Default initialized in the constructor
   @Mapping(target = "meetingId", ignore = true) // Auto-generated in the database
   @Mapping(source = "roomNum", target = "roomNum") // Ensure roomNum is mapped
+  @Mapping(source = "endTime", target = "endTime") // Ensure roomNum is mapped
   MeetingDBO toEntity(MeetingTO meetingTO);
 }
