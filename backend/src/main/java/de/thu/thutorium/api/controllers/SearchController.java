@@ -3,7 +3,6 @@ package de.thu.thutorium.api.controllers;
 import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
 import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.TutorTO;
-import de.thu.thutorium.services.implementations.SearchServiceImpl;
 import de.thu.thutorium.services.interfaces.CourseService;
 import de.thu.thutorium.services.interfaces.SearchService;
 import de.thu.thutorium.services.interfaces.UserService;
@@ -13,7 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -35,26 +34,15 @@ import java.util.List;
  * <p><b>Access:</b> This controller is publicly accessible, meaning it can be accessed without
  * authentication. It is designed to provide search functionality and general platform information
  * to both logged-in and not logged-in users.
- *
- * <p>All endpoints in this controller support cross-origin requests from "http://localhost:3000"
- * and allow preflight request caching for up to 3600 seconds.
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/search")
-@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 public class SearchController {
 
   private final SearchService searchService;
   private final CourseService courseService;
   private final UserService userService;
-
-  @Autowired
-  public SearchController(
-      SearchServiceImpl searchServiceImpl, CourseService courseService, UserService userService) {
-    this.searchService = searchServiceImpl;
-    this.courseService = courseService;
-    this.userService = userService;
-  }
 
   /**
    * Searches for tutors or courses based on the provided query parameters.
@@ -79,8 +67,7 @@ public class SearchController {
                   responseCode = "200",
                   description = "Search results returned successfully",
                   content = @Content(array = @ArraySchema(schema = @Schema(implementation = Object.class)))),
-          @ApiResponse(responseCode = "400", description = "Invalid query parameters provided"),
-          @ApiResponse(responseCode = "500", description = "Internal server error")
+          @ApiResponse(responseCode = "404", description = "Searched entities not found"),
   })
   @GetMapping
   public List<Object> search(

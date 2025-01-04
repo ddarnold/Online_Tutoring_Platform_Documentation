@@ -50,14 +50,6 @@ public class UserDBO implements UserDetails {
   @Transient
   private String fullName;
 
-  /**
-   * Initializes transient fields after the entity is loaded from the database.
-   */
-  @PostLoad
-  private void onLoad() {
-    this.fullName = firstName + " " + lastName;
-  }
-
   /** The user's email, used for login. This field must be unique. */
   @Column(name = "email_address", nullable = false, unique = true)
   private String email;
@@ -150,7 +142,7 @@ public class UserDBO implements UserDetails {
       joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "course_id"))
   @Builder.Default
-  private Set<CourseDBO> studentCourses = new HashSet<>();
+  private List<CourseDBO> studentCourses = new ArrayList<>();
 
   /**
    * Ratings given by a student to tutors.
@@ -172,6 +164,34 @@ public class UserDBO implements UserDetails {
   @OneToMany(mappedBy = "tutor", orphanRemoval = true)
   @Builder.Default
   private List<RatingTutorDBO> receivedTutorRatings = new ArrayList<>();
+
+
+  /**
+   * The average rating of the tutor.
+   * This field is not persisted in the database.
+   */
+  @Transient
+  private Double averageRating;
+
+  /**
+   * Initializes transient fields after the entity is loaded from the database.
+   */
+  @PostLoad
+  private void onLoad() {
+    //Retrieve full name of the user
+    this.fullName = firstName + " " + lastName;
+    //Retrieve average rating of the user with tutor role.
+    if (receivedTutorRatings != null && !receivedTutorRatings.isEmpty()) {
+      double sum = receivedTutorRatings.stream()
+              .mapToDouble(RatingTutorDBO::getPoints)
+              .sum();
+      this.averageRating = sum / receivedTutorRatings.size();
+    } else {
+      this.averageRating = 0.0;
+    }
+  }
+
+
 
   /**
    * Ratings given by this student to courses.
@@ -242,7 +262,7 @@ public class UserDBO implements UserDetails {
   public UserDBO() {
     this.roles = new HashSet<>();
     this.verifiers = new HashSet<>();
-    this.studentCourses = new HashSet<>();
+    this.studentCourses = new ArrayList<>();
     this.tutorCourses = new ArrayList<>();
     this.givenTutorRatings = new ArrayList<>();
     this.receivedTutorRatings = new ArrayList<>();

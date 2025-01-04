@@ -2,6 +2,7 @@ package de.thu.thutorium.database.DBOMappers;
 
 import de.thu.thutorium.api.transferObjects.common.RatingCourseTO;
 import de.thu.thutorium.database.dbObjects.*;
+import de.thu.thutorium.database.dbObjects.enums.Role;
 import de.thu.thutorium.database.repositories.CourseRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -28,7 +29,7 @@ public class RatingCourseDBOMapper {
     public RatingCourseDBO toDBO(RatingCourseTO courseRating) {
 
         // Fetch the student and handle the case where the student is not found
-        UserDBO student = userRepository.findUserDBOByUserId(courseRating.getStudentId())
+        UserDBO student = userRepository.findUserDBOByUserIdAndRoles_RoleName(courseRating.getStudentId(), Role.STUDENT)
                 .orElseThrow(() -> new EntityNotFoundException("Student with id " + courseRating.getStudentId() + " not found"));
 
         // Fetch the course and handle the case where the course is not found

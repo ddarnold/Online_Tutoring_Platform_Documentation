@@ -1,24 +1,29 @@
 package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.UserTOMapper;
+import de.thu.thutorium.api.transferObjects.common.RatingTutorTO;
 import de.thu.thutorium.api.transferObjects.common.UserTO;
 import de.thu.thutorium.database.DBOMappers.AffiliationDBOMapper;
 import de.thu.thutorium.database.dbObjects.AffiliationDBO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
+import de.thu.thutorium.database.dbObjects.RatingTutorDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
 import de.thu.thutorium.database.dbObjects.enums.Role;
 import de.thu.thutorium.database.repositories.AffiliationRepository;
 import de.thu.thutorium.database.repositories.CourseRepository;
+import de.thu.thutorium.database.repositories.RatingTutorRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
-import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
-import de.thu.thutorium.exceptions.SpringErrorPayload;
 import de.thu.thutorium.services.interfaces.UserService;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -31,6 +36,7 @@ import java.util.Optional;
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -38,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final UserTOMapper userMapper;
     private final AffiliationDBOMapper affiliationDBOMapper;
     private final AffiliationRepository affiliationRepository;
+    private final RatingTutorRepository ratingTutorRepository;
 
     /**
      * Returns the total number of students in the system.
@@ -52,7 +59,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll().stream()
                 .filter(
                         user ->
-                                user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(Role.STUDENT)))
+                                user.getRoles().stream()
+                                        .anyMatch(role -> role.getRoleName().equals(Role.STUDENT)))
                 .count();
     }
 
@@ -69,7 +77,8 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll().stream()
                 .filter(
                         user ->
-                                user.getRoles().stream().anyMatch(role -> role.getRoleName().equals(Role.TUTOR)))
+                                user.getRoles().stream()
+                                        .anyMatch(role -> role.getRoleName().equals(Role.TUTOR)))
                 .count();
     }
 
@@ -89,11 +98,9 @@ public class UserServiceImpl implements UserService {
         Optional<UserDBO> user = userRepository.findUserDBOByUserId(userId);
 
         // Map UserDBO to UserBaseDTO
-        return user.map(userMapper::toDTO).orElseThrow(() -> new EntityNotFoundException(new SpringErrorPayload(
-                "User does not exist",
-                "User with ID " + userId + " does not exist in database.",
-                404
-        ).toString()));
+        return user.map(userMapper::toDTO).orElseThrow(() -> new EntityNotFoundException("User with ID "
+                + userId
+                + " does not exist in database."));
     }
 
     /**
@@ -150,7 +157,7 @@ public class UserServiceImpl implements UserService {
    * @param id the unique identifier of the user to be updated
    * @param user the {@link UserTO} containing the updated details of the user
    * @return a {@link UserTO} containing the updated user details
-   * @throws UsernameNotFoundException if no user is found with the given ID
+   * @throws EntityNotFoundException if no user is found with the given ID
    */
   @Override
   public UserTO updateUser(Long id, UserTO user) {
@@ -182,13 +189,7 @@ public class UserServiceImpl implements UserService {
             UserDBO updatedUser = userRepository.save(existingUser);
             return userMapper.toDTO(updatedUser);
         } else {
-            throw new UsernameNotFoundException(
-                    new SpringErrorPayload(
-                            "User name not found",
-                            "User not found with id " + id,
-                            404)
-                            .toString()
-            );
+            throw new EntityNotFoundException("User with ID " + id + " does not exist in database.");
         }
     }
 
@@ -228,7 +229,7 @@ public class UserServiceImpl implements UserService {
 
         // Check if the student is already enrolled in the course
         if (student.getStudentCourses().contains(course)) {
-            throw new ResourceAlreadyExistsException("Student with id "
+            throw new EntityExistsException("Student with id "
                     + studentId
                     + " is already enrolled in course with id "
                     + courseId);
@@ -236,4 +237,78 @@ public class UserServiceImpl implements UserService {
         student.getStudentCourses().add(course);
         userRepository.save(student);
     }
+
+    /**
+     * User rates a tutor.
+     *
+     * <p>This method allows a student to rate a tutor. If the tutor or the
+     * student is not found, an {@link EntityNotFoundException} is thrown.
+     *
+     * A student can rate a tutor only if he is enrolled in a course offered by the tutor.
+     *
+     * @param ratingTutorTO the {@link RatingTutorTO} which contains details of the review.
+     * @throws EntityNotFoundException if the tutor or the student with the provided ID is not found.
+     * @throws IllegalArgumentException if the student is not enrolled in any course offered by the tutor.
+     */
+    @Override
+    public void rateTutor(RatingTutorTO ratingTutorTO) {
+
+        RatingTutorDBO tutorRating = null;
+        Long studentId = ratingTutorTO.getStudentId();
+        Long tutorId = ratingTutorTO.getTutorId();
+        Double points = ratingTutorTO.getPoints();
+        String review = "";
+        if (ratingTutorTO.getReview() != null && !ratingTutorTO.getReview().isEmpty()) {
+            review = ratingTutorTO.getReview();
+        }
+
+        // Fetch the student and handle the case where the student is not found
+        UserDBO student = userRepository.findUserDBOByUserIdAndRoles_RoleName(ratingTutorTO.getStudentId(), Role.STUDENT)
+                .orElseThrow(() -> new EntityNotFoundException("Student with id " + ratingTutorTO.getStudentId() + " not found"));
+
+        // Fetch the tutor and handle the case where the tutor is not found
+        UserDBO tutor = userRepository.findUserDBOByUserIdAndRoles_RoleName(ratingTutorTO.getTutorId(), Role.TUTOR)
+                .orElseThrow(() -> new EntityNotFoundException("Tutor with id " + ratingTutorTO.getTutorId() + " not found"));
+
+        List<CourseDBO> tutorCourses = tutor.getTutorCourses();
+        List<CourseDBO> studentCourses = student.getStudentCourses();
+
+        //Check if the student is enrolled to at least on course offered by the tutor
+        // in order to be able to review the course
+        if (studentCourses.stream().noneMatch(tutorCourses::contains)) {
+            throw new IllegalArgumentException("Student with id "
+                    + student.getUserId()
+                    + "has not enrolled in any courses offered by"
+                    + tutor.getUserId());
+        }
+
+        //Retrieve existing reviews if any, by the student ID.
+        //Since there can be only one review from a student, the retrieved list of reviews can be limited to one.
+        List<RatingTutorDBO> tutorRatingDBOExisting = ratingTutorRepository
+                .findByTutor_UserIdAndStudent_UserId(
+                        tutorId,
+                        studentId,
+                        Limit.of(1));
+
+        //If there are no existing reviews, create a new review
+        if (tutorRatingDBOExisting.isEmpty()) {
+            log.info("In empty object");
+            tutorRating = RatingTutorDBO.builder()
+                    .student(student)
+                    .tutor(tutor)
+                    .review(review)
+                    .points(points)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+        } else { //Fetch and update existing reviews
+            log.info("In retrieved object");
+            tutorRating = tutorRatingDBOExisting.get(0);
+            tutorRating.setReview(review);
+            tutorRating.setPoints(points);
+            tutorRating.setCreatedAt(LocalDateTime.now());
+        }
+        ratingTutorRepository.save(tutorRating);
+    }
 }
+
+

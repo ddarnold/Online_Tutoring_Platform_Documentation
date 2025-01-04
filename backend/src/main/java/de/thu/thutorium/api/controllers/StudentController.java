@@ -1,6 +1,7 @@
 package de.thu.thutorium.api.controllers;
 
 import de.thu.thutorium.api.transferObjects.common.RatingCourseTO;
+import de.thu.thutorium.api.transferObjects.common.RatingTutorTO;
 import de.thu.thutorium.services.implementations.UserServiceImpl;
 import de.thu.thutorium.services.interfaces.CourseService;
 import de.thu.thutorium.swagger.CommonApiResponses;
@@ -105,6 +106,45 @@ public class StudentController {
     public ResponseEntity<?> rateCourse(@Valid @RequestBody RatingCourseTO ratingCourseTO) {
         try {
             courseService.rateCourse(ratingCourseTO);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Unexpected error: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Provide a tutor rating based on its ID.
+     *
+     * @param ratingTutorTO the {@link RatingTutorTO} which contains the details of the tutor and review from the student.
+     * Only a student can rate a tutor.
+     * @return suitable HTTP response upon successful rating.
+     * @throws EntityNotFoundException, if the searched student/tutor does not exist in the database.
+     */
+    @Operation(
+            summary = "Student rates a tutor. ",
+            description =
+                    "A student can rate a tutor, provided they exists already in the database and the student "
+                            + "has enrolled in at least one of the courses offered by the tutor.",
+            tags = {"Student Endpoints"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tutor successfully rated."),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Student or tutor not found.",
+                    content =
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = String.class)
+                    )
+            )
+    })
+    @PostMapping("/rate-tutor")
+    public ResponseEntity<?> rateTutor(@Valid @RequestBody RatingTutorTO ratingTutorTO) {
+        try {
+            studentService.rateTutor(ratingTutorTO);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());

@@ -2,14 +2,14 @@ package de.thu.thutorium.api.controllers;
 
 import de.thu.thutorium.api.transferObjects.common.AddressTO;
 import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
-import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
-import de.thu.thutorium.exceptions.ResourceNotFoundException;
 import de.thu.thutorium.services.interfaces.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +62,7 @@ public class AdminController {
      * @param address the {@code AddressTO} object containing the university data
      * @return a {@code ResponseEntity} containing the created {@code AddressTO} object and a {@link
      * HttpStatus#CREATED} status
-     * @throws ResourceAlreadyExistsException, if the university already exists with the provided
+     * @throws EntityExistsException, if the university already exists with the provided
      *                                         address.
      */
     @Operation(
@@ -94,7 +94,7 @@ public class AdminController {
         try {
             AddressTO created = addressService.createUniversityAndAddress(address);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (ResourceAlreadyExistsException ex) {
+        } catch (EntityExistsException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -153,7 +153,7 @@ public class AdminController {
      * @param courseCategory the {@code CourseCategoryTO} object containing the course category data
      * @return a {@code ResponseEntity} containing the created {@code CourseCategoryTO} object and a
      * {@link HttpStatus#CREATED} status
-     * @throws ResourceAlreadyExistsException, if the course category already exists.
+     * @throws EntityExistsException, if the course category already exists.
      */
     @Operation(
             summary = "Create a new course category.",
@@ -184,7 +184,7 @@ public class AdminController {
         try {
             CourseCategoryTO created = categoryService.createCourseCategory(courseCategory);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (ResourceAlreadyExistsException ex) {
+        } catch (EntityExistsException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -201,7 +201,7 @@ public class AdminController {
      * @param courseCategory    the {@code CourseCategoryTO} object containing the course category data
      * @return a {@code ResponseEntity} containing the updated {@code CourseCategoryTO} object and a
      * {@link HttpStatus#CREATED} status
-     * @throws ResourceNotFoundException, if the searched course category does not exist.
+     * @throws EntityNotFoundException, if the searched course category does not exist.
      */
     @Operation(
             summary = "Update an existing course category.",
@@ -234,7 +234,7 @@ public class AdminController {
         try {
             CourseCategoryTO updated = categoryService.updateCourseCategory(courseCategoryID, courseCategory);
             return ResponseEntity.status(HttpStatus.CREATED).body(updated);
-        } catch (ResourceNotFoundException ex) {
+        } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

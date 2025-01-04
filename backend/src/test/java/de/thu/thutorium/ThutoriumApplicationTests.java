@@ -11,6 +11,8 @@ import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
 import de.thu.thutorium.api.transferObjects.common.UniversityTO;
 import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
 import de.thu.thutorium.services.interfaces.*;
+import jakarta.persistence.EntityExistsException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -50,7 +52,7 @@ public class ThutoriumApplicationTests {
 
     //NOW TESTING CREATEUNIVERSITYANDADDRES
     @Test
-    public void testCreateUniversityAndAdress_Success(){
+    public void testCreateUniversityAndAddress_Success(){
         AddressTO addressTO = new AddressTO(); // Create a mock AddressTO object
         AddressTO createdAddressTO = new AddressTO(); // Simulate the created address object
         when(addressService.createUniversityAndAddress(addressTO)).thenReturn(createdAddressTO);
@@ -69,7 +71,7 @@ public class ThutoriumApplicationTests {
         // Given
         AddressTO addressTO = new AddressTO(); // Create a mock AddressTO object
         when(addressService.createUniversityAndAddress(addressTO))
-                .thenThrow(new ResourceAlreadyExistsException("University already exists"));
+                .thenThrow(new EntityExistsException("University already exists"));
 
         // When
         ResponseEntity<?> response = adminController.createUniversityAndAddress(addressTO);
@@ -165,7 +167,7 @@ public class ThutoriumApplicationTests {
         // Given
         CourseCategoryTO courseCategoryTO = new CourseCategoryTO();
         when(categoryService.createCourseCategory(courseCategoryTO))
-                .thenThrow(new ResourceAlreadyExistsException("Category already exists"));
+                .thenThrow(new EntityExistsException("Category already exists"));
 
         // When
         ResponseEntity<?> response = adminController.createCourseCategory(courseCategoryTO);

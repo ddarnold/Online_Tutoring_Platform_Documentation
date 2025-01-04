@@ -21,14 +21,27 @@ public class RatingTutorTO {
      * <p>This field represents the unique ID for the rating, which is typically used for identifying
      * and retrieving specific ratings from the system.
      */
-    @NotNull
     private Long ratingId;
+
+    /**
+     * Basic information about the student who gave the rating.
+     */
+    @NotNull(message = "The student ID cannot be empty")
+    private Long studentId;
+    private String studentName;
+
+    /**
+     * Basic information about the Tutor which received the rating.
+     */
+    @NotNull(message = "The course ID cannot be empty")
+    private Long tutorId;
+    private String tutorName;
 
     /**
      * The rating points given to the tutor.
      *
      * <p>This field stores the numeric value representing the rating points given by the student.
-     * Typically, this might be a value between 1 and 5, depending on the rating system.
+     * Typically, this might be a value between 1 and 10, depending on the rating system.
      */
     @NotNull(message = "Points cannot be null")
     private Double points;
@@ -41,12 +54,4 @@ public class RatingTutorTO {
      * overall experience.
      */
     private String review;
-
-    /**
-     * Basic information about the student who gave the rating.
-     *
-     * <p>This field contains a {@code UserDTO} object that represents the student who provided
-     * the rating. The student's basic information (such as their name) is included in this object.
-     */
-    private UserTO student;
 }

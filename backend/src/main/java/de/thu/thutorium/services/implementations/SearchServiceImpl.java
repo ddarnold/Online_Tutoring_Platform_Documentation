@@ -11,6 +11,8 @@ import de.thu.thutorium.database.repositories.CategoryRepository;
 import de.thu.thutorium.database.repositories.CourseRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
 import de.thu.thutorium.services.interfaces.SearchService;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +26,7 @@ import java.util.stream.Collectors;
  * database objects into transfer objects for further use in the application.
  */
 @Service
+@RequiredArgsConstructor
 public class SearchServiceImpl implements SearchService {
   private final CourseRepository courseRepository;
   private final CourseTOMapper courseTOMapper;
@@ -32,20 +35,7 @@ public class SearchServiceImpl implements SearchService {
   private final CategoryRepository categoryRepository;
   private final CourseCategoryTOMapper courseCategoryTOMapper;
 
-  public SearchServiceImpl(
-      CourseRepository courseRepository,
-      CourseTOMapper courseTOMapper,
-      UserRepository userRepository,
-      TutorTOMapper tutorTOMapper,
-      CategoryRepository categoryRepository,
-      CourseCategoryTOMapper courseCategoryTOMapper) {
-    this.courseRepository = courseRepository;
-    this.courseTOMapper = courseTOMapper;
-    this.userRepository = userRepository;
-    this.tutorTOMapper = tutorTOMapper;
-    this.categoryRepository = categoryRepository;
-    this.courseCategoryTOMapper = courseCategoryTOMapper;
-  }
+
 
   /**
    * Constructor for initializing the service with necessary dependencies.
@@ -74,7 +64,13 @@ public class SearchServiceImpl implements SearchService {
   @Override
   public List<TutorTO> searchTutors(String tutorName) {
     List<UserDBO> tutors = userRepository.findByTutorFullName(tutorName);
-    return tutors.stream().map(this::mapWithAverageTutorRating).toList();
+    if (tutors.isEmpty()) {
+      throw new EntityNotFoundException("Tutors not found");
+    } else {
+      return tutors.stream().map(tutorTOMapper::toDTO).toList();
+    }
+
+//    return tutors.stream().map(this::mapWithAverageTutorRating).toList();
   }
 
   /**

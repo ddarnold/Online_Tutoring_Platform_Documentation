@@ -8,10 +8,7 @@ import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.RatingCourseDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
 import de.thu.thutorium.database.dbObjects.enums.Role;
-import de.thu.thutorium.database.repositories.CategoryRepository;
-import de.thu.thutorium.database.repositories.CourseRepository;
-import de.thu.thutorium.database.repositories.RatingCourseRepository;
-import de.thu.thutorium.database.repositories.UserRepository;
+import de.thu.thutorium.database.repositories.*;
 import de.thu.thutorium.exceptions.ResourceAlreadyExistsException;
 import de.thu.thutorium.services.interfaces.CourseService;
 import jakarta.persistence.EntityExistsException;
@@ -46,6 +43,7 @@ public class CourseServiceImpl implements CourseService {
     private final CourseTOMapper courseMapper;
     private final UserRepository userRepository;
     private final RatingCourseRepository ratingCourseRepository;
+    private final RatingTutorRepository ratingTutorRepository;
 
     /**
      * Finds a course by its unique ID.

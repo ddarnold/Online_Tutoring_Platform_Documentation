@@ -1,6 +1,8 @@
 package de.thu.thutorium.database.dbObjects;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -9,7 +11,7 @@ import java.time.LocalDateTime;
  * Represents a rating given by a student for a tutor.
  *
  * <p>This entity stores the details of the rating, including the student who gave the rating, the
- * tutor being rated, the rating points (e.g., 1.0 to 5.0), and an optional review text.
+ * tutor being rated, the rating points (e.g., 1.0 to 10.0), and an optional review text.
  *
  * @see UserDBO
  */
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RatingTutorDBO {
   /** Primary key of the Rating table, automatically generated. */
   @Id
@@ -49,6 +52,8 @@ public class RatingTutorDBO {
 
   /** The rating points given by the student. */
   @Column(name = "points", nullable = false)
+  @Min(0)
+  @Max(10)
   private Double points;
 
   /** The review text provided by the student. */
@@ -57,5 +62,12 @@ public class RatingTutorDBO {
 
   /** The timestamp when the rating was created. */
   @Column(name = "created_at", nullable = false)
+  @Builder.Default
   private LocalDateTime createdAt = LocalDateTime.now();
+
+  public RatingTutorDBO(UserDBO student, UserDBO tutor) {
+    this.student = student;
+    this.tutor = tutor;
+    this.createdAt = LocalDateTime.now();
+  }
 }

@@ -8,17 +8,6 @@ import java.util.List;
 
 /**
  * The {@code CourseService} interface provides methods for retrieving and searching courses.
- *
- * <p>It exposes the following functionalities:
- *
- * <ul>
- *   <li>Find a course by its ID.
- *   <li>Find courses by tutor's first and last name.
- *   <li>Find courses by a full tutor's name.
- *   <li>Find courses by course name.
- *   <li>Retrieve courses by category name.
- *   <li>Get the total count of courses.
- * </ul>
  */
 @Service
 public interface CourseService {
@@ -91,4 +80,5 @@ public interface CourseService {
    * @param ratingCourseTO the {@link RatingCourseTO} which contains details of the review.
    */
   void rateCourse(RatingCourseTO ratingCourseTO);
+
 }
