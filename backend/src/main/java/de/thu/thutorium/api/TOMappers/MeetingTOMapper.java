@@ -4,6 +4,7 @@ import de.thu.thutorium.api.transferObjects.common.MeetingTO;
 import de.thu.thutorium.database.dbObjects.MeetingDBO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import java.util.List;
 
@@ -16,31 +17,29 @@ import java.util.List;
  *
  * <p>The mapper is configured to be a Spring component using {@code componentModel = "spring"}.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring",
+uses = {
+        AddressTOMapper.class,
+        UniversityTOMapper.class,
+})
 public interface MeetingTOMapper {
 
   /**
    * Converts a {@link MeetingDBO} entity to a {@link MeetingTO} transfer object.
    *
-   * <p>Custom field mappings:
-   *
-   * <ul>
-   *   <li>{@code tutor.userId} is mapped to {@code tutorId}
-   *   <li>{@code course.courseId} is mapped to {@code courseId}
-   *   <li>{@code address.addressId} is mapped to {@code addressId}
-   *   <li>{@code meetingDate} is formatted as {@code yyyy-MM-dd}
-   *   <li>{@code meetingTime}, and {@code roomNum} are mapped directly
-   * </ul>
-   *
    * @param meetingDBO the {@link MeetingDBO} entity to convert
    * @return a {@link MeetingTO} transfer object with mapped fields
    */
-  @Mapping(source = "tutor.userId", target = "tutorId")
-  @Mapping(source = "course.courseId", target = "courseId")
-  @Mapping(source = "address.addressId", target = "addressId")
-  @Mapping(source = "meetingDate", target = "meetingDate", dateFormat = "yyyy-MM-dd")
-  @Mapping(source = "meetingTime", target = "meetingTime")
-  @Mapping(source = "roomNum", target = "roomNum")
+  @Mappings({
+          @Mapping(source = "tutor.userId", target = "tutorId"),
+          @Mapping(source = "tutor.fullName", target = "tutorName"),
+          @Mapping(source = "course.courseId", target = "courseId"),
+          @Mapping(source = "course.courseName", target = "courseName"),
+          @Mapping(source = "address.addressId", target = "addressId"),
+          @Mapping(source = "address.university.universityName", target = "universityName"),
+          @Mapping(source = "address.campusName", target = "campusName"),
+  })
+
   MeetingTO toDTO(MeetingDBO meetingDBO);
 
   /**

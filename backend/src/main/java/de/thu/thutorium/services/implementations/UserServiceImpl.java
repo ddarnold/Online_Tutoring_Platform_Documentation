@@ -57,9 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long getStudentCount() {
         return userRepository.findAll().stream()
-                .filter(
-                        user ->
-                                user.getRoles().stream()
+                .filter(user -> user.getRoles().stream()
                                         .anyMatch(role -> role.getRoleName().equals(Role.STUDENT)))
                 .count();
     }
@@ -75,9 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Long getTutorCount() {
         return userRepository.findAll().stream()
-                .filter(
-                        user ->
-                                user.getRoles().stream()
+                .filter(user -> user.getRoles().stream()
                                         .anyMatch(role -> role.getRoleName().equals(Role.TUTOR)))
                 .count();
     }

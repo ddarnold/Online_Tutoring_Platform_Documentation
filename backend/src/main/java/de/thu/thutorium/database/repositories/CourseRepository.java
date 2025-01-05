@@ -75,4 +75,21 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
    * @return {@code boolean} value indicating if the searched course exists
    */
   boolean existsByCourseName(String courseName);
+
+  /**
+   * Finds a CourseDBO entity based on the course ID and the tutor's user ID.
+   *
+   * <p>
+   * This method retrieves a course that is associated with a specific tutor. It
+   * is useful for
+   * ensuring that a particular tutor is responsible for a given course.
+   *
+   * @param courseId    The unique ID of the course.
+   * @param tutorUserId The unique ID of the tutor.
+   * @return An {@link Optional} containing the {@link CourseDBO} object if a
+   *         course with the specified
+   *         course ID and tutor user ID exists, or an empty {@link Optional} if
+   *         no such course is found.
+   */
+  Optional<CourseDBO> findByCourseIdAndTutor_UserId(Long courseId, Long tutorUserId);
 }

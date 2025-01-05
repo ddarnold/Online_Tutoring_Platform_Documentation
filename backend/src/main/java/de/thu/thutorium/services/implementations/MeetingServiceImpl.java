@@ -2,11 +2,12 @@ package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.MeetingTOMapper;
 import de.thu.thutorium.api.transferObjects.common.MeetingTO;
-import de.thu.thutorium.database.DBOMappers.MeetingDBMapper;
 import de.thu.thutorium.database.dbObjects.AddressDBO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.MeetingDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
+import de.thu.thutorium.database.dbObjects.enums.MeetingStatus;
+import de.thu.thutorium.database.dbObjects.enums.Role;
 import de.thu.thutorium.database.repositories.AddressRepository;
 import de.thu.thutorium.database.repositories.CourseRepository;
 import de.thu.thutorium.database.repositories.MeetingRepository;
@@ -15,20 +16,21 @@ import de.thu.thutorium.services.interfaces.MeetingService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  * Service implementation for managing meetings.
  *
  * <p>This service provides methods for creating, updating, deleting, and retrieving meetings. It
  * interacts with the {@link MeetingRepository}, {@link UserRepository}, {@link CourseRepository},
- * and {@link AddressRepository} for database operations, and uses {@link MeetingDBMapper} for
- * mapping between DTO and DBO.
+ * and {@link AddressRepository} for database operations.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MeetingServiceImpl implements MeetingService {
@@ -36,7 +38,6 @@ public class MeetingServiceImpl implements MeetingService {
   private final UserRepository userRepository;
   private final CourseRepository courseRepository;
   private final AddressRepository addressRepository;
-  private final MeetingDBMapper meetingDBMapper;
   private final MeetingTOMapper meetingTOMapper;
 
   /**
@@ -52,51 +53,41 @@ public class MeetingServiceImpl implements MeetingService {
    */
   @Override
   @Transactional
-  public void createMeeting(MeetingTO meetingTO) {
-    UserDBO tutor =
-        userRepository
-            .findById(meetingTO.getTutorId())
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        "Tutor not found with ID: " + meetingTO.getTutorId()));
-    CourseDBO course =
-        courseRepository
-            .findById(meetingTO.getCourseId())
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        "Course not found with ID: " + meetingTO.getCourseId()));
-    AddressDBO address =
-        addressRepository
-            .findById(meetingTO.getAddressId())
-            .orElseThrow(
-                () ->
-                    new EntityNotFoundException(
-                        "Address not found with ID: " + meetingTO.getAddressId()));
+  public MeetingTO createMeeting(MeetingTO meetingTO) {
+    //Check if the tutor is valid
+    UserDBO tutor = userRepository.findUserDBOByUserIdAndRoles_RoleName(meetingTO.getTutorId(), Role.TUTOR)
+            .orElseThrow(() -> new EntityNotFoundException("Tutor not found with ID: " + meetingTO.getTutorId()));
 
-    List<UserDBO> participants =
-        meetingTO.getParticipantIds().stream()
-            .map(
-                participantId ->
-                    userRepository
-                        .findById(participantId)
-                        .orElseThrow(
-                            () ->
-                                new EntityNotFoundException(
-                                    "Participant not found with ID: " + participantId)))
-            .collect(Collectors.toList());
+    //Check if the course is valid
+    CourseDBO course = courseRepository.findByCourseIdAndTutor_UserId(meetingTO.getCourseId(), meetingTO.getTutorId())
+            .orElseThrow(() -> new EntityNotFoundException("Course with ID: " + meetingTO.getCourseId() + " not found from "
+            + " tutor with ID" + meetingTO.getTutorId()));
 
-    MeetingDBO meetingDBO = meetingDBMapper.toEntity(meetingTO);
+    //Check if the address is valid
+    AddressDBO address = addressRepository.findById(meetingTO.getAddressId())
+            .orElseThrow(() -> new EntityNotFoundException("Address not found with ID: " + meetingTO.getAddressId()));
 
-    // Set References
-    meetingDBO.setTutor(tutor);
-    meetingDBO.setCourse(course);
-    meetingDBO.setAddress(address);
-    meetingDBO.setParticipants(participants);
-    participants.forEach(participant -> participant.getMeetings().add(meetingDBO));
+    //Handle the optional fields in the meetingTO
+    MeetingStatus meetingStatus = Optional.ofNullable(meetingTO.getMeetingStatus())
+            .orElse(MeetingStatus.SCHEDULED);
+    String roomNum = Optional.ofNullable(meetingTO.getRoomNum())
+        .orElse("No room scheduled");
+    String meetingLink = Optional.ofNullable(meetingTO.getMeetingLink())
+        .orElse("No meeting link provided");
 
-    meetingRepository.save(meetingDBO);
+    MeetingDBO meetingDBO = MeetingDBO.builder()
+            .tutor(tutor)
+            .course(course)
+            .meetingTime(meetingTO.getMeetingTime())
+            .endTime(meetingTO.getEndTime())
+            .meetingType(meetingTO.getMeetingType())
+            .meetingStatus(meetingStatus)
+            .roomNum(roomNum)
+            .meetingLink(meetingLink)
+            .address(address)
+            .build();
+    MeetingDBO savedMeeting = meetingRepository.save(meetingDBO);
+    return meetingTOMapper.toDTO(savedMeeting);
   }
 
   /**
@@ -114,7 +105,6 @@ public class MeetingServiceImpl implements MeetingService {
     if (!meetingRepository.existsById(meetingId)) {
       throw new EntityNotFoundException("Meeting not found with ID: " + meetingId);
     }
-
     // Delete the meeting
     meetingRepository.deleteById(meetingId);
   }
@@ -142,9 +132,8 @@ public class MeetingServiceImpl implements MeetingService {
                             () -> new EntityNotFoundException("Meeting not found with ID: " + meetingId));
 
     // Update fields
-    existingMeeting.setMeetingDate(meetingTO.getMeetingDate());
+//    existingMeeting.setMeetingDate(meetingTO.getMeetingDate());
     existingMeeting.setMeetingTime(meetingTO.getMeetingTime());
-    existingMeeting.setDuration(meetingTO.getDuration());
     existingMeeting.setMeetingType(meetingTO.getMeetingType());
     existingMeeting.setMeetingStatus(meetingTO.getMeetingStatus());
 
@@ -177,14 +166,14 @@ public class MeetingServiceImpl implements MeetingService {
     existingMeeting.setAddress(address);
 
     // Update participants
-    List<UserDBO> newParticipants =
-            meetingTO.getParticipantIds().stream()
-                    .map(participantId ->
-                            userRepository
-                                    .findById(participantId)
-                                    .orElseThrow(() ->
-                                            new EntityNotFoundException("Participant not found with ID: " + participantId)))
-                    .collect(Collectors.toList());
+    List<UserDBO> newParticipants = null;
+//            meetingTO.getParticipantIds().stream()
+//                    .map(participantId ->
+//                            userRepository
+//                                    .findById(participantId)
+//                                    .orElseThrow(() ->
+//                                            new EntityNotFoundException("Participant not found with ID: " + participantId)))
+//                    .collect(Collectors.toList());
 
     // Remove participants who are no longer part of the meeting
     existingMeeting.getParticipants().forEach(participant -> {

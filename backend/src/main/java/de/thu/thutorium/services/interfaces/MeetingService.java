@@ -26,8 +26,9 @@ public interface MeetingService {
    *
    * @param meetingTO the {@link MeetingTO} object containing the data for the meeting to be
    *     created.
+   * @return {@link MeetingTO} of the new {@link de.thu.thutorium.database.dbObjects.MeetingDBO} object created.
    */
-  void createMeeting(MeetingTO meetingTO);
+  MeetingTO createMeeting(MeetingTO meetingTO);
 
   /**
    * Deletes a meeting by its unique ID.

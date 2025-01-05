@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,9 +73,16 @@ public class TutorController {
           @ApiResponse(responseCode = "400", description = "Invalid input data")
   })
   @PostMapping("/create-meeting")
-  public ResponseEntity<String> createMeeting(@RequestBody @Valid MeetingTO meetingTO) {
-    meetingService.createMeeting(meetingTO);
-    return ResponseEntity.status(HttpStatus.CREATED).body("Meeting created successfully");
+  public ResponseEntity<?> createMeeting(@RequestBody @Valid MeetingTO meetingTO) {
+    try {
+      MeetingTO meeting = meetingService.createMeeting(meetingTO);
+      return ResponseEntity.status(HttpStatus.CREATED).body(meeting);
+    } catch (EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
+    } catch (Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Unexpected error: " + ex.getMessage());
+    }
   }
 
   /**
@@ -93,9 +101,16 @@ public class TutorController {
           @ApiResponse(responseCode = "404", description = "Meeting not found")
   })
   @DeleteMapping("/delete-meeting/{meetingId}")
-  public ResponseEntity<String> deleteMeeting(@PathVariable Long meetingId) {
-    meetingService.deleteMeeting(meetingId);
-    return ResponseEntity.ok("Meeting deleted successfully");
+  public ResponseEntity<?> deleteMeeting(@PathVariable Long meetingId) {
+    try {
+      meetingService.deleteMeeting(meetingId);
+      return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Meeting deleted successfully");
+    } catch (EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    } catch (Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body("Unexpected error: " + ex.getMessage());
+    }
   }
 
   /**

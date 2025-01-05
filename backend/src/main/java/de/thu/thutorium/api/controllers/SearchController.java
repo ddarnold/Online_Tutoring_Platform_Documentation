@@ -151,7 +151,9 @@ public class SearchController {
    *
    * @param categoryName The name of the category for which courses are to be retrieved.
    * @return A list of {@link CourseTO} objects that belong to the specified category.
-   * Todo: Is the method case-insensitive for parameters? Does it provide/ need to provide partial matches? Review the repository method?
+   * Todo: Is the method case-insensitive for parameters? Does it provide/ need to provide partial matches?
+   * Todo: Review the repository method?
+   * Todo: The url is misleading? Shouldn't it be course/Category name?
    */
   @Operation(
           summary = "Retrieve courses by category",
@@ -179,9 +181,6 @@ public class SearchController {
    * Endpoint to get the total count of students.
    *
    * @return the total number of users with the role of 'student'
-   * @apiNote This endpoint can be accessed via a GET request to '/students/count'.
-   * @example GET /students/count
-   * @response 42
    */
   @Operation(
           summary = "Get total student count",
@@ -192,7 +191,6 @@ public class SearchController {
                   responseCode = "200",
                   description = "Student count retrieved successfully",
                   content = @Content(schema = @Schema(implementation = Long.class))),
-          @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @GetMapping("students/count")
   public Long getStudentCount() {
@@ -203,9 +201,6 @@ public class SearchController {
    * Endpoint to get the total count of tutors.
    *
    * @return the total number of users with the role of 'tutor'
-   * @apiNote This endpoint can be accessed via a GET request to '/tutors/count'.
-   * @example GET /tutors/count
-   * @response 15
    */
   @Operation(
           summary = "Get total tutor count",
@@ -216,7 +211,6 @@ public class SearchController {
                   responseCode = "200",
                   description = "Tutor count retrieved successfully",
                   content = @Content(schema = @Schema(implementation = Long.class))),
-          @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @GetMapping("tutors/count")
   public Long getTutorsCount() {
@@ -224,8 +218,7 @@ public class SearchController {
   }
 
   /**
-   * Handles a GET request to retrieve the total count of courses. Allows cross-origin requests from
-   * "http://localhost:3000" with a maximum age of 3600 seconds.
+   * Handles a GET request to retrieve the total count of courses.
    *
    * @return the total number of courses as a {@code Long}.
    */
@@ -238,7 +231,6 @@ public class SearchController {
                   responseCode = "200",
                   description = "Course count retrieved successfully",
                   content = @Content(schema = @Schema(implementation = Long.class))),
-          @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @GetMapping("/courses/count")
   public Long getCoursesCount() {

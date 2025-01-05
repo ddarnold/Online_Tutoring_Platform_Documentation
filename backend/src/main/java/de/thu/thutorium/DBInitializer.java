@@ -71,8 +71,37 @@ public class DBInitializer {
 
   /**
    * @Author Nikolai Ivanov (Kekschorstviy)
+   * //Todo: The constraints work in most cases, but it was possible to create a meeting in the same
+   * room within an occupied timerange by another tutor.
+   * - Please check for all cases, including but not limited to:
+   * - A meeting should not be created WITHIN an occupied time range at a particular location, irrespective
+   * of if it is from the same or a different tutor.
+   * - The same tutor cannot have overlapping sessions.
+   * - Check start and end times on different days (edge cases)
+   * - Set an upper limit to possible dates (within an year etc.)?
+   * Explore alternate methods (only if it makes sense):
+   * ChatGPT example->
+   *
+   *   boolean isOverlapping = meetingRepository.existsByRoomNumberAndMeetingTypeAndTimeRangeOverlap(
+   *     roomNumber, meetingType, meetingTime, meetingEndTime
+   * );
+   * if (isOverlapping) {
+   *     throw new IllegalArgumentException("Meeting overlaps with an existing meeting.");
+   * }
+
+   * @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END " +
+   *        "FROM Meeting m " +
+   *        "WHERE m.roomNumber = :roomNumber " +
+   *        "AND m.meetingType = :meetingType " +
+   *        "AND m.meetingTime < :endTime AND m.meetingEndTime > :startTime")
+   * boolean existsByRoomNumberAndMeetingTypeAndTimeRangeOverlap(
+   *     @Param("roomNumber") int roomNumber,
+   *     @Param("meetingType") String meetingType,
+   *     @Param("startTime") LocalDateTime startTime,
+   *     @Param("endTime") LocalDateTime endTime
+   * );
    * */
-  private void addDatabaseConstraints() {
+  private String addDatabaseConstraints() {
     try {
       // Step 1: Create extension
       jdbcTemplate.execute("CREATE EXTENSION IF NOT EXISTS btree_gist");
@@ -104,8 +133,10 @@ public class DBInitializer {
       );
 
       log.info("Database constraints added successfully.");
+      return "Database constraints added successfully.";
     } catch (Exception e) {
       log.error("Error adding database constraints: " + e.getMessage());
+      return e.getMessage();
     }
   }
 

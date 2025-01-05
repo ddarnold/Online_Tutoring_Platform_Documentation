@@ -5,5 +5,6 @@ public enum MeetingStatus {
   PRESENT,
   ABSENT,
   EXCUSED,
-  UPCOMING
+  UPCOMING,
+  SCHEDULED
 }
