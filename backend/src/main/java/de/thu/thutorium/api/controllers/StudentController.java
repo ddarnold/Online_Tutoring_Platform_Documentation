@@ -31,7 +31,7 @@ public class StudentController {
     private final CourseService courseService;
 
     /**
-     * Retrieves a course based on its ID.
+     * A student enrolls in a course.
      *
      * @param studentId The ID of the student who wants to enroll in a course.
      * @param courseId The ID of the course in which the student wants to enroll.
@@ -69,6 +69,53 @@ public class StudentController {
         try {
             studentService.enrollCourse(studentId, courseId);
             return ResponseEntity.status(HttpStatus.OK).body("Enrolled successfully in the course");
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Unexpected error: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * A student Unenrolls in a course.
+     * Todo: Implement the method
+     * @param studentId The ID of the student who wants to unenroll in a course.
+     * @param courseId The ID of the course in which the student wants to unenroll.
+     * @return suitable HTTP response upon successful unenrolment.
+     * @throws EntityNotFoundException, if the searched student/course does not exist in the database.
+     */
+    @Operation(
+            summary = "Student unenrolls in a course. ",
+            description =
+                    "A student can unenroll in a course, provided he is already enrolled in the course.",
+            tags = {"Student Endpoints"})
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "User successfully unenrolled."),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Student or course not found.",
+                    content =
+                    @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = String.class)
+                    )
+            )
+    })
+    @PostMapping("/unenroll-course")
+    public ResponseEntity<?> unenrollInCourse(@Parameter(
+                                                    name = "student ID",
+                                                    description = "The ID of the student unenrolling in the course",
+                                                    required = true
+                                            ) @RequestParam Long studentId,
+                                            @Parameter(
+                                                    name = "course ID",
+                                                    description = "The ID of the course from which the student unenrolls.",
+                                                    required = true
+                                            ) @RequestParam Long courseId) {
+        try {
+            studentService.unenrollCourse(studentId, courseId);
+            return ResponseEntity.status(HttpStatus.OK).body("Unenrolled successfully in the course");
         } catch (EntityNotFoundException ex) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
         } catch (Exception ex) {

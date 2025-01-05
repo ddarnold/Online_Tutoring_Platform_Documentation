@@ -305,6 +305,19 @@ public class UserServiceImpl implements UserService {
         }
         ratingTutorRepository.save(tutorRating);
     }
+
+    /**
+     * A student unenrolls from a course.
+     *
+     * @param studentId the id of the student who unenrolls.
+     * @param courseId the id of the course from which the student unenrolls.
+     *Todo:
+     * Implement the method.
+     */
+    @Override
+    public void unenrollCourse(Long studentId, Long courseId) {
+
+    }
 }
 
 

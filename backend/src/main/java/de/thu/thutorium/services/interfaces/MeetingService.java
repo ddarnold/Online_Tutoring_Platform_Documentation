@@ -47,7 +47,7 @@ public interface MeetingService {
    * @param meetingId the unique ID of the meeting to be updated.
    * @param meetingTO the {@link MeetingTO} object containing the new meeting data.
    */
-  void updateMeeting(Long meetingId, MeetingTO meetingTO);
+  MeetingTO updateMeeting(Long meetingId, MeetingTO meetingTO);
 
   /**
    * Retrieves all meetings associated with a specific user.

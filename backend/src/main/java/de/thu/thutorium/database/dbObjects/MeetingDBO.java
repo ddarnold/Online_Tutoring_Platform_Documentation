@@ -21,7 +21,7 @@ import java.util.List;
  * and is associated with a course and an address. The meeting also includes fields for date, type,
  * status, room number, duration of the meeting, and a link to the meeting.
  */
-@Builder
+@Builder(toBuilder = true)
 @Entity
 @Table(
         name = "meeting",
@@ -144,4 +144,24 @@ public class MeetingDBO {
   public MeetingDBO() {
     this.participants = new ArrayList<>();
   }
+
+//  @Override
+//  public String toString() {
+//    return "MeetingDBO{" +
+//            "meetingId=" + meetingId +
+//            ", tutor=" + tutor +
+//            ", course=" + course +
+//            ", meetingDate=" + meetingDate +
+//            ", meetingTime=" + meetingTime +
+//            ", endTime=" + endTime +
+//            ", duration=" + duration +
+//            ", meetingType=" + meetingType +
+//            ", meetingStatus=" + meetingStatus +
+//            ", roomNum='" + roomNum + '\'' +
+//            ", meetingLink='" + meetingLink + '\'' +
+//            ", address=" + address +
+//            ", participants=" + participants +
+//            ", timeRange='" + timeRange + '\'' +
+//            '}';
+//  }
 }

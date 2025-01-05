@@ -85,4 +85,12 @@ public interface UserService {
    * @param ratingTutorTO the {@link RatingTutorTO} which contains details of the review.
    */
   void rateTutor(@Valid RatingTutorTO ratingTutorTO);
+
+  /**
+   * A student unenrolls from a course.
+   *
+   * @param studentId the id of the student who unenrolls.
+   * @param courseId the id of the course from which the student unenrolls.
+   */
+  void unenrollCourse(Long studentId, Long courseId);
 }

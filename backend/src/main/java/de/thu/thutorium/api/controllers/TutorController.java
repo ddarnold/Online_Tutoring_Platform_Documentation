@@ -69,8 +69,17 @@ public class TutorController {
           tags = {"Meeting Endpoints"}
   )
   @ApiResponses({
-          @ApiResponse(responseCode = "201", description = "Meeting created successfully"),
-          @ApiResponse(responseCode = "400", description = "Invalid input data")
+          @ApiResponse(responseCode = "201",
+                  description = "Meeting created successfully",
+                  content = @Content(
+                          mediaType = "application/json",
+                          schema = @Schema(implementation = MeetingTO.class)
+                  )),
+          @ApiResponse(responseCode = "404",
+                  description = "Tutor/Course/Address not found",
+                  content = @Content(
+                          mediaType = "application/json",
+                          schema = @Schema(implementation = String.class)))
   })
   @PostMapping("/create-meeting")
   public ResponseEntity<?> createMeeting(@RequestBody @Valid MeetingTO meetingTO) {
@@ -98,7 +107,9 @@ public class TutorController {
   )
   @ApiResponses({
           @ApiResponse(responseCode = "200", description = "Meeting deleted successfully"),
-          @ApiResponse(responseCode = "404", description = "Meeting not found")
+          @ApiResponse(responseCode = "404", description = "Meeting not found",
+                  content = @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = String.class)))
   })
   @DeleteMapping("/delete-meeting/{meetingId}")
   public ResponseEntity<?> deleteMeeting(@PathVariable Long meetingId) {
@@ -126,14 +137,26 @@ public class TutorController {
           tags = {"Meeting Endpoints"}
   )
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Meeting updated successfully"),
-          @ApiResponse(responseCode = "404", description = "Meeting not found")
+          @ApiResponse(responseCode = "200",
+                  description = "Meeting updated successfully",
+                  content = @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = MeetingTO.class))),
+          @ApiResponse(responseCode = "404", description = "Meeting not found",
+                  content = @Content(mediaType = "application/json",
+                          schema = @Schema(implementation = String.class)))
   })
   @PutMapping("/update-meeting/{meetingId}")
-  public ResponseEntity<String> updateMeeting(
-      @PathVariable Long meetingId, @RequestBody @Valid MeetingTO meetingTO) {
-    meetingService.updateMeeting(meetingId, meetingTO);
-    return ResponseEntity.ok("Meeting updated successfully");
+  public ResponseEntity<?> updateMeeting(@PathVariable Long meetingId,
+                                         @RequestBody @Valid MeetingTO meetingTO) {
+    try {
+      MeetingTO updatedMeeting = meetingService.updateMeeting(meetingId, meetingTO);
+      return ResponseEntity.status(HttpStatus.OK).body(updatedMeeting);
+    } catch (EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    } catch (Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body("Unexpected error: " + ex.getMessage());
+    }
   }
 
   /** Course Operations */
