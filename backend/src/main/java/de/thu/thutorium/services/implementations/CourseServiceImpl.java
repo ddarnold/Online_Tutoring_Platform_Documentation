@@ -262,9 +262,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseTO> searchCourses(String courseName) {
         List<CourseDBO> courses = courseRepository.findCourseByName(courseName);
-        if (courses.isEmpty()) {
-            throw new EntityNotFoundException("No courses with name " + courseName + " found");
-        }
         return courses.stream().map(courseMapper::toDTO).toList();
     }
 }

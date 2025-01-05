@@ -111,12 +111,8 @@ public class CategoryServiceImpl implements CategoryService {
   @Override
   public List<CourseCategoryTO> getAllCategories() {
     // Use repository's built-in `findAll` and map results to TOs
-    List<CourseCategoryTO> courseCategories =  courseCategoryRepository.findAll().stream()
-            .map(courseCategoryTOMapper::toDTO)
-            .toList();
-    if (courseCategories.isEmpty()) {
-      throw new EntityNotFoundException("Error: Course Category not found!");
-    }
-    return courseCategories;
+      return courseCategoryRepository.findAll().stream()
+              .map(courseCategoryTOMapper::toDTO)
+              .toList();
   }
 }

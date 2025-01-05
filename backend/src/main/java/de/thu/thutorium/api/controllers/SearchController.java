@@ -14,8 +14,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +41,7 @@ import java.util.List;
  * authentication. It is designed to provide search functionality and general platform information
  * to both logged-in and not logged-in users.
  */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/search")
@@ -68,8 +69,6 @@ public class SearchController {
    * Todo: Review:
    * - The method will find match for any course and tutor names, even if the courses are not
    * being offered by the respective tutors; is this by design?
-   * - If no users are retrieved, (as of now), it will throw an EntityNotFoundException and block
-   * further code execution- improve? (The same behavior is observed for the courses as well.)
    * - Passing of special characters 'C++' seem to cause internal errors?
    */
   @Operation(
@@ -80,11 +79,8 @@ public class SearchController {
           @ApiResponse(
                   responseCode = "200",
                   description = "Search results returned successfully",
-                  content = @Content(array = @ArraySchema(schema = @Schema(implementation = Object.class)))),
-          @ApiResponse(responseCode = "404",
-                  description = "Searched entities not found",
-                  content = @Content(schema = @Schema(implementation = String.class))
-          ),
+                  content = @Content(array = @ArraySchema(schema = @Schema(implementation = Object.class)))
+          )
   })
   @GetMapping
   public ResponseEntity<?> search(@Parameter(name = "tutorName",
@@ -116,8 +112,6 @@ public class SearchController {
       }
       // Return the combined results without removing duplicates
       return ResponseEntity.status(HttpStatus.OK).body(results);
-    } catch (EntityNotFoundException ex) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     } catch (Exception ex) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body("Unexpected error: " + ex.getMessage());
@@ -130,7 +124,6 @@ public class SearchController {
    * <p>This endpoint fetches all the available course categories from the database.
    *
    * @return  {@code List} of all the available {@link CourseCategoryTO} objects.
-   * @throws  EntityNotFoundException if no categories are found.
    **/
   @Operation(
           summary = "Retrieve all course categories",
@@ -141,17 +134,12 @@ public class SearchController {
                   responseCode = "200",
                   description = "Categories retrieved successfully",
                   content = @Content(array = @ArraySchema(schema = @Schema(implementation = CourseCategoryTO.class)))),
-          @ApiResponse(responseCode = "404",
-                  description = "Course categories not found",
-          content = @Content(schema = @Schema(implementation = String.class)))
   })
   @GetMapping("/categories")
   public ResponseEntity<?> getCategories() {
     try {
       List<CourseCategoryTO> categories = categoryService.getAllCategories();
       return ResponseEntity.status(HttpStatus.OK).body(categories);
-    } catch (EntityNotFoundException ex) {
-      return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     } catch (Exception ex) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
               .body("Unexpected error: " + ex.getMessage());
@@ -159,12 +147,11 @@ public class SearchController {
   }
 
   /**
-   * Retrieves a list of courses based on the specified category name. This endpoint is cross-origin
-   * enabled for requests from "http://localhost:3000" and allows preflight requests to be cached
-   * for up to 3600 seconds.
+   * Retrieves a list of courses based on the specified category name.
    *
    * @param categoryName The name of the category for which courses are to be retrieved.
    * @return A list of {@link CourseTO} objects that belong to the specified category.
+   * Todo: Is the method case-insensitive for parameters? Does it provide/ need to provide partial matches? Review the repository method?
    */
   @Operation(
           summary = "Retrieve courses by category",
@@ -175,12 +162,16 @@ public class SearchController {
                   responseCode = "200",
                   description = "Courses retrieved successfully",
                   content = @Content(array = @ArraySchema(schema = @Schema(implementation = CourseTO.class)))),
-          @ApiResponse(responseCode = "404", description = "Category not found"),
-          @ApiResponse(responseCode = "500", description = "Internal server error")
   })
   @GetMapping("/category/{categoryName}")
-  public List<CourseTO> getCoursesByCategory(@PathVariable String categoryName) {
-    return courseService.getCoursesByCategory(categoryName);
+  public ResponseEntity<?> getCoursesByCategory(@PathVariable String categoryName) {
+    try {
+      log.info("cat name {}", categoryName);
+      return ResponseEntity.status(HttpStatus.OK).body(courseService.getCoursesByCategory(categoryName));
+    } catch (Exception ex) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body("Unexpected error: " + ex.getMessage());
+    }
   }
 
   // Count Functions (works)

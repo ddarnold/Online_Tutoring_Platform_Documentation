@@ -10,7 +10,6 @@ import de.thu.thutorium.database.repositories.CategoryRepository;
 import de.thu.thutorium.database.repositories.CourseRepository;
 import de.thu.thutorium.database.repositories.UserRepository;
 import de.thu.thutorium.services.interfaces.SearchService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -62,13 +61,7 @@ public class SearchServiceImpl implements SearchService {
   @Override
   public List<TutorTO> searchTutors(String tutorName) {
     List<UserDBO> tutors = userRepository.findByTutorFullName(tutorName);
-    if (tutors.isEmpty()) {
-      throw new EntityNotFoundException("Tutors not found");
-    } else {
-      return tutors.stream().map(tutorTOMapper::toDTO).toList();
-    }
-
-//    return tutors.stream().map(this::mapWithAverageTutorRating).toList();
+    return tutors.stream().map(tutorTOMapper::toDTO).toList();
   }
 
   /**
