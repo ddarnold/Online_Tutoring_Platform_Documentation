@@ -80,6 +80,7 @@ public class SearchServiceImpl implements SearchService {
    * @param tutor the {@link UserDBO} object representing the tutor
    * @return a {@link TutorTO} object with the mapped data and the average rating
    */
+  @Deprecated
   private TutorTO mapWithAverageTutorRating(UserDBO tutor) {
     TutorTO tutorTO = tutorTOMapper.toDTO(tutor);
     // Calculate the average rating
@@ -95,22 +96,7 @@ public class SearchServiceImpl implements SearchService {
     return tutorTO;
   }
 
-  /**
-   * Searches for courses based on the course name.
-   *
-   * <p>This method fetches the list of courses whose names match the given {@code courseName}. The
-   * search may support partial matches depending on the implementation. The result is mapped into a
-   * list of {@link CourseTO} objects.
-   *
-   * @param courseName the name of the course (can be partial).
-   * @return a list of {@link CourseTO} objects representing the courses that match the search
-   *     criteria. If no courses are found, an empty list is returned.
-   */
-  @Override
-  public List<CourseTO> searchCourses(String courseName) {
-    List<CourseDBO> courses = courseRepository.findCourseByName(courseName);
-    return courses.stream().map(this::mapWithAverageRating).toList();
-  }
+
 
   /**
    * Maps a {@link CourseDBO} entity to a {@link CourseTO} transfer object, including the average
@@ -119,6 +105,7 @@ public class SearchServiceImpl implements SearchService {
    * @param course the {@link CourseDBO} object representing the course
    * @return a {@link CourseTO} object with the mapped data and the average rating
    */
+  @Deprecated
   private CourseTO mapWithAverageRating(CourseDBO course) {
     CourseTO courseTO = courseTOMapper.toDTO(course);
     // Calculate the average rating

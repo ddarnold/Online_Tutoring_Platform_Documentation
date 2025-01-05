@@ -7,12 +7,16 @@ import de.thu.thutorium.services.interfaces.CourseService;
 import de.thu.thutorium.services.interfaces.SearchService;
 import de.thu.thutorium.services.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,6 +33,7 @@ import java.util.List;
  *   <li>Retrieve a list of course categories
  *   <li>Get a list of courses by category
  *   <li>Retrieve the total count of students, tutors, and courses on the platform
+ *   <li> etc.</li>
  * </ul>
  *
  * <p><b>Access:</b> This controller is publicly accessible, meaning it can be accessed without
@@ -57,39 +62,64 @@ public class SearchController {
    * @return A list of search results containing either tutors (UserBaseDTO), courses (CourseDTO),
    *     or both, depending on the provided parameters. Results may include duplicates if multiple
    *     entities match the search criteria.
+   * @throws jakarta.persistence.EntityNotFoundException if the searched parameters are not found.
+   * Todo: Review:
+   * - The method will find match for any course and tutor names, even if the courses are not
+   * being offered by the respective tutors; is this by design?
+   * - If no users are retrieved, (as of now), it will throw an EntityNotFoundException and block
+   * further code execution- improve? (The same behavior is observed for the courses as well.)
+   * - Passing of special characters 'C++' seem to cause internal errors?
    */
   @Operation(
           summary = "Search tutors or courses",
-          description = "Search for tutors by name or courses by name.",
+          description = "Search for tutors by name or courses by name. ",
           tags = {"Search Endpoints"})
   @ApiResponses({
           @ApiResponse(
                   responseCode = "200",
                   description = "Search results returned successfully",
                   content = @Content(array = @ArraySchema(schema = @Schema(implementation = Object.class)))),
-          @ApiResponse(responseCode = "404", description = "Searched entities not found"),
+          @ApiResponse(responseCode = "404",
+                  description = "Searched entities not found",
+                  content = @Content(schema = @Schema(implementation = String.class))
+          ),
   })
   @GetMapping
-  public List<Object> search(
+  public ResponseEntity<?> search(@Parameter(name = "tutorName",
+                               description = "The name of the tutor to be found. The method returns results for"
+                                       + "any partial match of the name passed. This parameter is optional and the method returns "
+                                       + "only the courses searched for if this parameter is empty.",
+                               required = false)
       @RequestParam(required = false) String tutorName,
+                                  @Parameter(name = "courseName",
+                                     description = "The name of the course to be found. The method returns results for"
+                                             + "any partial match of the course name passed.  This parameter is optional"
+                                             + " and the method returns only the tutors searched for if this parameter is empty.",
+                                     required = false)
       @RequestParam(required = false) String courseName) {
-    // Initialize an empty list to store results
-    List<Object> results = new ArrayList<>();
+    try {
+      // Initialize an empty list to store results
+      List<Object> results = new ArrayList<>();
 
-    // If tutorName is provided, search for tutors and add to the results
-    if (tutorName != null && !tutorName.isEmpty()) {
-      List<TutorTO> tutors = searchService.searchTutors(tutorName);
-      results.addAll(tutors); // Add tutors to the results list
+      // If tutorName is provided, search for tutors and add to the results
+      if (tutorName != null && !tutorName.isEmpty()) {
+        List<TutorTO> tutors = searchService.searchTutors(tutorName);
+        results.addAll(tutors); // Add tutors to the results list
+      }
+
+      // If courseName is provided, search for courses and add to the results
+      if (courseName != null && !courseName.isEmpty()) {
+        List<CourseTO> courses = courseService.searchCourses(courseName);
+        results.addAll(courses); // Add courses to the results list
+      }
+      // Return the combined results without removing duplicates
+      return ResponseEntity.status(HttpStatus.OK).body(results);
+    } catch (EntityNotFoundException ex) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    } catch (Exception ex) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("Unexpected error: " + ex.getMessage());
     }
-
-    // If courseName is provided, search for courses and add to the results
-    if (courseName != null && !courseName.isEmpty()) {
-      List<CourseTO> courses = searchService.searchCourses(courseName);
-      results.addAll(courses); // Add courses to the results list
-    }
-
-    // Return the combined results without removing duplicates
-    return results;
   }
 
   /**

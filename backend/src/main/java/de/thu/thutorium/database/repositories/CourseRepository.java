@@ -75,5 +75,4 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
    * @return {@code boolean} value indicating if the searched course exists
    */
   boolean existsByCourseName(String courseName);
-
 }

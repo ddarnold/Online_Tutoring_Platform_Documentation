@@ -247,4 +247,24 @@ public class CourseServiceImpl implements CourseService {
         }
         ratingCourseRepository.save(courseRating);
     }
+
+    /**
+     * Searches for courses based on the course name.
+     *
+     * <p>This method fetches the list of courses whose names match the given {@code courseName}. The
+     * search may support partial matches depending on the implementation. The result is mapped into a
+     * list of {@link CourseTO} objects.
+     *
+     * @param courseName the name of the course (can be partial).
+     * @return a list of {@link CourseTO} objects representing the courses that match the search
+     *     criteria. If no courses are found, an empty list is returned.
+     */
+    @Override
+    public List<CourseTO> searchCourses(String courseName) {
+        List<CourseDBO> courses = courseRepository.findCourseByName(courseName);
+        if (courses.isEmpty()) {
+            throw new EntityNotFoundException("No courses with name " + courseName + " found");
+        }
+        return courses.stream().map(courseMapper::toDTO).toList();
+    }
 }
