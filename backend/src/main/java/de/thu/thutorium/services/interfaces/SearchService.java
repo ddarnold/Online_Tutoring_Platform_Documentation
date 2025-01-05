@@ -1,6 +1,5 @@
 package de.thu.thutorium.services.interfaces;
 
-import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
 import de.thu.thutorium.api.transferObjects.common.TutorTO;
 
 import java.util.List;
@@ -32,14 +31,4 @@ public interface SearchService {
    */
   List<TutorTO> searchTutors(String tutorName);
 
-  /**
-   * Retrieves all available course categories.
-   *
-   * <p>This method will return a list of {@link CourseCategoryTO} objects, each representing a
-   * distinct category to which courses can belong.
-   *
-   * @return a list of {@link CourseCategoryTO} objects representing all available categories. If no
-   *     categories exist, an empty list is returned.
-   */
-  List<CourseCategoryTO> getAllCategories();
 }

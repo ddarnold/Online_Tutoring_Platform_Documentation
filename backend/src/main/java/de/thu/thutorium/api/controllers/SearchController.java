@@ -3,6 +3,7 @@ package de.thu.thutorium.api.controllers;
 import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
 import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.TutorTO;
+import de.thu.thutorium.services.interfaces.CategoryService;
 import de.thu.thutorium.services.interfaces.CourseService;
 import de.thu.thutorium.services.interfaces.SearchService;
 import de.thu.thutorium.services.interfaces.UserService;
@@ -46,6 +47,7 @@ import java.util.List;
 public class SearchController {
 
   private final SearchService searchService;
+  private final CategoryService categoryService;
   private final CourseService courseService;
   private final UserService userService;
 
@@ -123,14 +125,13 @@ public class SearchController {
   }
 
   /**
-   * Converts a {@link CourseCategoryTO} (representing a course category in the database) to a
-   * {@link CourseCategoryTO}.
+   * Gets all course categories.
    *
-   * <p>This method maps the {@code categoryName} field of the {@code CourseCategoryDBO} to the
-   * {@code categoryName} field in the {@code CourseCategoryDTO}.
+   * <p>This endpoint fetches all the available course categories from the database.
    *
-   * @return a {@code CourseCategoryDTO} object containing the course category data
-   */
+   * @return  {@code List} of all the available {@link CourseCategoryTO} objects.
+   * @throws  EntityNotFoundException if no categories are found.
+   **/
   @Operation(
           summary = "Retrieve all course categories",
           description = "Fetches a list of all available course categories in the system.",
@@ -140,11 +141,21 @@ public class SearchController {
                   responseCode = "200",
                   description = "Categories retrieved successfully",
                   content = @Content(array = @ArraySchema(schema = @Schema(implementation = CourseCategoryTO.class)))),
-          @ApiResponse(responseCode = "500", description = "Internal server error")
+          @ApiResponse(responseCode = "404",
+                  description = "Course categories not found",
+          content = @Content(schema = @Schema(implementation = String.class)))
   })
   @GetMapping("/categories")
-  public List<CourseCategoryTO> getCategories() {
-    return searchService.getAllCategories();
+  public ResponseEntity<?> getCategories() {
+    try {
+      List<CourseCategoryTO> categories = categoryService.getAllCategories();
+      return ResponseEntity.status(HttpStatus.OK).body(categories);
+    } catch (EntityNotFoundException ex) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    } catch (Exception ex) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body("Unexpected error: " + ex.getMessage());
+    }
   }
 
   /**

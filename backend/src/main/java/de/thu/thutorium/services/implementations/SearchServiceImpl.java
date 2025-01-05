@@ -3,7 +3,6 @@ package de.thu.thutorium.services.implementations;
 import de.thu.thutorium.api.TOMappers.CourseCategoryTOMapper;
 import de.thu.thutorium.api.TOMappers.CourseTOMapper;
 import de.thu.thutorium.api.TOMappers.TutorTOMapper;
-import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
 import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.TutorTO;
 import de.thu.thutorium.database.dbObjects.*;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of the {@link SearchService} interface that provides methods for searching tutors,
@@ -119,21 +117,5 @@ public class SearchServiceImpl implements SearchService {
       courseTO.setAverageRating(0.0); // Default to 0 if no ratings
     }
     return courseTO;
-  }
-
-  /**
-   * Retrieves all available course categories.
-   *
-   * <p>This method fetches the list of all course categories from the {@link CategoryRepository}.
-   * The result is a list of {@link CourseCategoryTO} objects representing the available categories.
-   *
-   * @return a list of {@link CourseCategoryTO} objects representing all available categories. If no
-   *     categories are found, an empty list is returned.
-   */
-  public List<CourseCategoryTO> getAllCategories() {
-    // Use repository's built-in `findAll` and map results to TOs
-    return categoryRepository.findAll().stream()
-        .map(courseCategoryTOMapper::toDTO)
-        .collect(Collectors.toList());
   }
 }

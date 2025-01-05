@@ -3,6 +3,8 @@ package de.thu.thutorium.services.interfaces;
 import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * CategoryService is an interface for managing course categories.
  *
@@ -23,4 +25,15 @@ public interface CategoryService {
   CourseCategoryTO updateCourseCategory(Long categoryId, CourseCategoryTO courseCategoryTO);
 
   void deleteCourseCategory(int categoryId);
+
+  /**
+   * Retrieves all available course categories.
+   *
+   * <p>This method will return a list of {@link CourseCategoryTO} objects, each representing a
+   * distinct category to which courses can belong.
+   *
+   * @return a list of {@link CourseCategoryTO} objects representing all available categories. If no
+   *     categories exist, an empty list is returned.
+   */
+  List<CourseCategoryTO> getAllCategories();
 }

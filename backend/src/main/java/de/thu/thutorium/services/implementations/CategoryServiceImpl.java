@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -95,5 +96,27 @@ public class CategoryServiceImpl implements CategoryService {
     // Check if the courseCategory exists => throw Not found exception
     // Delete the courseCategoryDBO => Check for side effects on courses, other possible side
     // effects
+  }
+
+  /**
+   * Retrieves all available course categories.
+   *
+   * <p>This method fetches the list of all course categories from the {@link CategoryRepository}.
+   * The result is a list of {@link CourseCategoryTO} objects representing the available categories.
+   *
+   * @return a list of {@link CourseCategoryTO} objects representing all available categories. If no
+   *     categories are found, an empty list is returned.
+   * @throws EntityNotFoundException if no categories are found
+   */
+  @Override
+  public List<CourseCategoryTO> getAllCategories() {
+    // Use repository's built-in `findAll` and map results to TOs
+    List<CourseCategoryTO> courseCategories =  courseCategoryRepository.findAll().stream()
+            .map(courseCategoryTOMapper::toDTO)
+            .toList();
+    if (courseCategories.isEmpty()) {
+      throw new EntityNotFoundException("Error: Course Category not found!");
+    }
+    return courseCategories;
   }
 }
