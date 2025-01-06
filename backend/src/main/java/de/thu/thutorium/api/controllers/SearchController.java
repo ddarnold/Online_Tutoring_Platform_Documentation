@@ -3,6 +3,7 @@ package de.thu.thutorium.api.controllers;
 import de.thu.thutorium.api.transferObjects.common.CourseCategoryTO;
 import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.TutorTO;
+import de.thu.thutorium.exceptions.ResourceNotFoundException;
 import de.thu.thutorium.services.interfaces.CategoryService;
 import de.thu.thutorium.services.interfaces.CourseService;
 import de.thu.thutorium.services.interfaces.SearchService;
@@ -168,7 +169,6 @@ public class SearchController {
   @GetMapping("/category/{categoryName}")
   public ResponseEntity<?> getCoursesByCategory(@PathVariable String categoryName) {
     try {
-      log.info("cat name {}", categoryName);
       return ResponseEntity.status(HttpStatus.OK).body(courseService.getCoursesByCategory(categoryName));
     } catch (Exception ex) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -176,7 +176,6 @@ public class SearchController {
     }
   }
 
-  // Count Functions (works)
   /**
    * Endpoint to get the total count of students.
    *
@@ -235,5 +234,55 @@ public class SearchController {
   @GetMapping("/courses/count")
   public Long getCoursesCount() {
     return courseService.getTotalCountOfCourses();
+  }
+
+  /**
+   * Retrieves a course based on its ID.
+   *
+   * @param id The ID of the course to retrieve.
+   * @return The {@link CourseTO} object representing the course.
+   * @throws ResourceNotFoundException, if the searched course does not exist in the database.
+   */
+  @Operation(
+          summary = "A user can search for and retrieve a course if it exists in the database",
+          description =
+                  "Allows a user to search for the course by its user ID. If the course does not exist in the database"
+                          + "an appropriate error is thrown.",
+          tags = {"Course Endpoints"})
+  @ApiResponses({
+          @ApiResponse(
+                  responseCode = "200",
+                  description = "The course is retrieved successfully",
+                  content =
+                  @Content(
+                          mediaType = "application/json",
+                          schema = @Schema(implementation = CourseTO.class)
+                  )
+          ),
+          @ApiResponse(
+                  responseCode = "404",
+                  description = "Course does not exist in database",
+                  content =
+                  @Content(
+                          mediaType = "application/json",
+                          schema = @Schema(implementation = String.class)
+                  )
+          )
+  })
+  @GetMapping("/get-course/{id}")
+  public ResponseEntity<?> getCourseById(@Parameter(
+          name = "course ID",
+          description = "The ID of the course to be queried",
+          required = true
+  ) @PathVariable Long id) {
+    try {
+      CourseTO course = courseService.findCourseById(id);
+      return ResponseEntity.status(HttpStatus.OK).body(course);
+    } catch (ResourceNotFoundException ex) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
+    } catch (Exception ex) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body("Unexpected error: " + ex.getMessage());
+    }
   }
 }

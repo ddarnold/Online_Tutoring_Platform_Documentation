@@ -18,7 +18,7 @@ import java.util.List;
  *
  * <p>
  */
-@Builder // If Builder is intended to be used
+@Builder(toBuilder = true) // If Builder is intended to be used
 @Entity
 @Table(name = "course")
 @Getter
@@ -133,8 +133,7 @@ public class CourseDBO {
   private List<ProgressDBO> progress;
 
   /** The list of course categories for a course. */
-  @ManyToMany(mappedBy = "courses", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @Builder.Default
+  @ManyToMany(mappedBy = "courses", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
   private List<CourseCategoryDBO> courseCategories = new ArrayList<>();
 
   /** Constructs a CourseDBO object with empty lists. */

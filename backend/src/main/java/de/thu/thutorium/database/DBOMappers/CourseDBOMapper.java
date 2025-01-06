@@ -38,6 +38,8 @@ public class CourseDBOMapper {
         Optional<UserDBO> tutor;
 
         //check if the user exists with TUTOR role from its ID
+        //Todo:
+        // Simplify with userRepository.findUserDBOByUserIdAndRoles_RoleName(course.getTutorId(), Role.TUTOR)??
         tutor = userRepository.findUserDBOByUserId(course.getTutorId());
         tutor.ifPresentOrElse(
                 (user) -> {
@@ -51,7 +53,6 @@ public class CourseDBOMapper {
                     throw new EntityNotFoundException("User not found with id " + course.getTutorId());
                 }
         );
-
 
         //Throw error if the associated course categories are not found; else fetch those categories
         if (course.getCourseCategories() != null) {

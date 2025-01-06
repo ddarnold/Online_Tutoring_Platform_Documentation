@@ -71,8 +71,9 @@ public interface CourseService {
    *
    * @param courseId the unique ID of the course to be updated.
    * @param courseTO the {@link CourseTO} object containing the new course data.
+   * @return
    */
-  void updateCourse(Long courseId, CourseTO courseTO);
+  CourseTO updateCourse(Long courseId, CourseTO courseTO);
 
   /**
    * User rates an existing course.

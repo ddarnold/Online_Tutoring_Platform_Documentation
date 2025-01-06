@@ -4,6 +4,7 @@ import de.thu.thutorium.api.TOMappers.CourseTOMapper;
 import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.RatingCourseTO;
 import de.thu.thutorium.database.DBOMappers.CourseDBOMapper;
+import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.RatingCourseDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
@@ -21,8 +22,7 @@ import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Implementation of the {@link CourseService} interface that provides various methods for
@@ -149,36 +149,44 @@ public class CourseServiceImpl implements CourseService {
      *
      * @param courseId the ID of the course to be updated
      * @param courseTO the transfer object containing the updated course data
+     * @return
      * @throws EntityNotFoundException if the course with the provided ID or the tutor with the
      *                                 provided ID is not found
      */
     @Override
-    public void updateCourse(Long courseId, CourseTO courseTO) {
-        CourseDBO existingCourse =
-                courseRepository
-                        .findById(courseId)
-                        .orElseThrow(
-                                () -> new EntityNotFoundException("Course not found with ID: " + courseId));
+    @Transactional
+    public CourseTO updateCourse(Long courseId, CourseTO courseTO) {
+        CourseDBO existingCourse = courseRepository.findById(courseId)
+                        .orElseThrow(() -> new EntityNotFoundException("Course not found with ID: " + courseId));
 
-        // Update fields of the existing course
-        existingCourse.setCourseName(courseTO.getCourseName());
-        existingCourse.setDescriptionShort(courseTO.getDescriptionShort());
-        existingCourse.setDescriptionLong(courseTO.getDescriptionLong());
-        existingCourse.setStartDate(courseTO.getStartDate());
-        existingCourse.setEndDate(courseTO.getEndDate());
+        //All validity checks (eg: tutor, categories etc.) will be performed in the DBOmapper
+        CourseDBO newCourse = courseDBMapper.toDBO(courseTO);
 
-        // Update associated tutor (use userRepository to get the tutor)
-        UserDBO tutor =
-                userRepository
-                        .findById(courseTO.getTutorId())
-                        .orElseThrow(
-                                () ->
-                                        new EntityNotFoundException(
-                                                "Tutor not found with ID: " + courseTO.getTutorId()));
-        existingCourse.setTutor(tutor);
+        //Fetch the new course categories
+        List<CourseCategoryDBO> newCategories = new ArrayList<>(newCourse.getCourseCategories());
+
+        // Clear the existing categories
+        existingCourse.getCourseCategories().forEach(category -> category.getCourses().remove(existingCourse));
+        existingCourse.getCourseCategories().clear();
+
+        // Set the new categories
+        newCategories.forEach(category -> category.getCourses().add(existingCourse));
+        existingCourse.setCourseCategories(newCategories);
+
+
+        //Update the existing course with the new course details
+        existingCourse.setCourseName(newCourse.getCourseName());
+        existingCourse.setTutor(newCourse.getTutor());
+        existingCourse.setDescriptionShort(newCourse.getDescriptionShort());
+        existingCourse.setDescriptionLong(newCourse.getDescriptionLong());
+        existingCourse.setStartDate(newCourse.getStartDate());
+        existingCourse.setEndDate(newCourse.getEndDate());
+        existingCourse.setCourseCategories(newCategories);
+        existingCourse.setCreatedOn(LocalDateTime.now());
 
         // Save the updated course
-        courseRepository.save(existingCourse);
+        CourseDBO savedCourse = courseRepository.save(existingCourse);
+        return courseMapper.toDTO(savedCourse);
     }
 
     /**
