@@ -50,7 +50,9 @@ public class SecurityConfig {
                         "/v3/api-docs.yaml",
                         "/chat/**")
                     .permitAll()
+                    .requestMatchers("/course/**").permitAll()
                     .requestMatchers("/search/**").permitAll()
+                    .requestMatchers("/profile").permitAll()
                     .requestMatchers("/student/**").hasRole("STUDENT")
                     .requestMatchers("/tutor/**").hasRole("TUTOR")
                     .requestMatchers("/verifier/**").hasRole("VERIFIER")

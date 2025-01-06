@@ -67,7 +67,7 @@ const SearchSection = () => {
 
   useEffect(() => {
     fetchCategories();
-  }, [categories]);
+  }, []);
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -261,7 +261,9 @@ function Home() {
   useEffect(() => {
     const fetchStudentCount = async () => {
       try {
-        const response = await fetch("http://localhost:8080/students/count");
+        const response = await fetch(
+          "http://localhost:8080/search/students/count",
+        );
         if (!response.ok) {
           console.error("Network response was not ok");
         }
@@ -273,7 +275,9 @@ function Home() {
     };
     const fetchTutorCount = async () => {
       try {
-        const response = await fetch("http://localhost:8080/tutors/count");
+        const response = await fetch(
+          "http://localhost:8080/search/tutors/count",
+        );
         if (!response.ok) {
           console.error("Network response was not ok");
         }
@@ -285,7 +289,9 @@ function Home() {
     };
     const fetchCourseCount = async () => {
       try {
-        const response = await fetch("http://localhost:8080/courses/count");
+        const response = await fetch(
+          "http://localhost:8080/search/courses/count",
+        );
         if (!response.ok) {
           console.error("Network response was not ok");
         }
@@ -303,7 +309,7 @@ function Home() {
 
   return (
     <div className="flex flex-col items-center w-full bg-white overflow-hidden">
-      <NavBar isLoggedIn={false} currentPage={window.location.pathname} />
+      <NavBar currentPage={window.location.pathname} />
       <SearchSection />
       <StatsSection
         students={studentCount}

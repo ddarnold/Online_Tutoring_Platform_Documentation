@@ -1,9 +1,13 @@
 package de.thu.thutorium.api.controllers;
 
+import de.thu.thutorium.api.transferObjects.chat.ChatSummaryTO;
 import de.thu.thutorium.api.transferObjects.common.MeetingTO;
+import de.thu.thutorium.api.transferObjects.common.MessageTO;
 import de.thu.thutorium.api.transferObjects.common.UserTO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
+import de.thu.thutorium.services.interfaces.ChatService;
 import de.thu.thutorium.services.interfaces.MeetingService;
+import de.thu.thutorium.services.interfaces.MessageService;
 import de.thu.thutorium.services.interfaces.UserService;
 import de.thu.thutorium.swagger.CommonApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,13 +33,15 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-//@Tag(name = "User Endpoints", description = "Endpoints for user operations")
+//@Tag(name = "User end-points", description = "Endpoints for user operations")
 @Slf4j
 @CommonApiResponses
 public class UserController {
 
   private final UserService userService;
   private final MeetingService meetingService;
+  private final ChatService chatService;
+  private final MessageService messageService;
 
   /**
    * Retrieves the account details of a user based on their user ID.
@@ -47,7 +53,7 @@ public class UserController {
   @Operation(
       summary = "Retrieve the account details of an existing user",
       description = "Retrieve an existing user if they exist in the database",
-      tags = {"User Endpoints"})
+      tags = {" User Endpoints"})
   @CommonApiResponses
   @GetMapping("/get-user/{userId}")
   public ResponseEntity<?> getUser(@PathVariable Long userId) {
@@ -74,7 +80,7 @@ public class UserController {
   @Operation(
       summary = "Update an existing user",
       description = "Update an existing user if they exist in the database",
-      tags = {"User Endpoints"})
+      tags = {" User Endpoints"})
   @CommonApiResponses
   @PutMapping("/update-user/{id}")
   public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UserTO userTO) {
@@ -100,10 +106,10 @@ public class UserController {
   @Operation(
       summary = "Enables an existing user to delete his account",
       description = "Retrieves an existing and authenticated user and deletes their account.",
-      tags = {"User Endpoints"})
+      tags = {" User Endpoints"})
   @CommonApiResponses
   @DeleteMapping("/delete-my-account")
-  public ResponseEntity<?> deleteMyAccount() {
+  public ResponseEntity<String> deleteMyAccount() {
     try {
       // Retrieve the currently authenticated user's ID
       Long authenticatedUserId = getAuthenticatedUserId();
@@ -129,14 +135,12 @@ public class UserController {
   @Operation(
           summary = "Retrieve tutor by ID",
           description = "Fetches tutor details by their unique ID.",
-          tags = {"User Endpoints"}
+          tags = {"User Operations"}
   )
   @ApiResponses({
-    @ApiResponse(
-        responseCode = "200",
-        description = "Tutor retrieved successfully",
-        content = @Content(schema = @Schema(implementation = UserTO.class))),
-    @ApiResponse(responseCode = "404", description = "Tutor not found")
+          @ApiResponse(responseCode = "200", description = "Tutor retrieved successfully",
+                  content = @Content(schema = @Schema(implementation = UserTO.class))),
+          @ApiResponse(responseCode = "404", description = "Tutor not found")
   })
   @GetMapping("tutor")
   @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
@@ -144,7 +148,7 @@ public class UserController {
     return userService.getTutorByID(id);
   }
 
-  /**
+/**
    * Retrieves all meetings associated with a specific user.
    *
    * <p>This endpoint fetches a list of meetings for a given user ID. It includes both:
@@ -182,6 +186,20 @@ public class UserController {
     List<MeetingTO> meetings = meetingService.getMeetingsForUser(userId);
     return ResponseEntity.ok(meetings);
   }
+
+  /*chat*/
+
+    @GetMapping("/get-chat-summaries")
+    public ResponseEntity<List<ChatSummaryTO>> getChatSummaries(@RequestParam Long userId) {
+      List<ChatSummaryTO> summaries = chatService.getChatSummaries(userId);
+      return ResponseEntity.ok(summaries);
+    }
+
+    @GetMapping("/get-messages-chat")
+    public ResponseEntity<List<MessageTO>> getChatMessages(@RequestParam Long chatId) {
+      List<MessageTO> messages = messageService.getMessagesByChatId(chatId);
+      return ResponseEntity.ok(messages);
+    }
 
   /**
    * Retrieves the authenticated user's ID.

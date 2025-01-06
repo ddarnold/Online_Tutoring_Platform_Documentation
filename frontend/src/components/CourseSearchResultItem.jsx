@@ -23,9 +23,9 @@ function CourseSearchResultItem({ course }) {
     >
       <div>
         <span className="text-blue-100 py-1 px-2 rounded-sm font-merriweather_sans bg-blue-600 bg-opacity-40 text-xs">
-          {course.category.categoryName}{" "}
+          {"Programming"}
         </span>
-        {course.ratings.length > 0 ? (
+        {course.ratings?.length > 0 ? (
           <div className="font-merriweather_sans text-sm text-gray-400 mt-2">
             <Rating
               readOnly={true}
@@ -47,8 +47,8 @@ function CourseSearchResultItem({ course }) {
           {course.descriptionShort}
         </div>
         <span className="inline-flex items-center font-merriweather_sans text-sm bg-white text-black px-2 rounded-md">
-          By {course.tutor.firstName} {course.tutor.lastName}
-          {course.tutor.isVerified && (
+          By {course.tutor?.firstName} {course.tutor?.lastName}
+          {course.tutor?.isVerified && (
             <span className="material-symbols-rounded ml-1 text-xl">
               verified
             </span>

@@ -34,3 +34,4 @@ build/
 
 ### dot env ###
 .env
+**/package-lock.json

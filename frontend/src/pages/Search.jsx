@@ -8,6 +8,7 @@ function Search() {
   const [searchResults, setSearchResults] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [verifiedFilter, setVerifiedFilter] = useState(false);
 
   const location = useLocation();
   const query = new URLSearchParams(location.search);
@@ -53,7 +54,7 @@ function Search() {
 
   return (
     <div className="flex flex-col items-center w-full bg-white overflow-hidden">
-      <NavBar isLoggedIn={false} currentPage="/" />
+      <NavBar currentPage="/" />
       {loading && (
         <div className="mt-[150px] font-merriweather_sans text-xl">
           Loading...
@@ -63,19 +64,25 @@ function Search() {
         <div className="mt-[150px] font-merriweather_sans">{error}</div>
       )}
       {!loading && !error && searchResults?.length > 0 && (
-        <div className="w-full max-w-4xl mt-[150px]">
+        <div className="w-full max-w-4xl mt-[150px] font-merriweather_sans">
+          <button
+            className={`rounded-full py-1 px-2 mb-2 border border-black text-center cursor-pointer ${verifiedFilter ? "text-white bg-black" : "text-black bg-white"}`}
+            onClick={() => setVerifiedFilter(!verifiedFilter)}
+          >
+            Verified
+          </button>
           {courseName && (
-            <span className="font-merriweather_sans text-xl my-5">
+            <span className="block font-merriweather_sans text-xl my-5">
               {searchResults.length} result(s) for '{courseName}'
             </span>
           )}
           {tutorName && (
-            <span className="font-merriweather_sans text-xl my-5">
+            <span className="block font-merriweather_sans text-xl my-5">
               {searchResults.length} result(s) for '{tutorName}'
             </span>
           )}
           {categoryName && (
-            <span className="font-merriweather_sans text-xl my-5">
+            <span className="block font-merriweather_sans text-xl my-5">
               {searchResults.length} result(s) for '{categoryName}'
             </span>
           )}
@@ -90,7 +97,9 @@ function Search() {
               if (courseName) {
                 return <CourseSearchResultItem course={result} key={index} />;
               }
-              if (tutorName) {
+              if (tutorName && !verifiedFilter) {
+                return <TutorSearchResultItem tutor={result} key={index} />;
+              } else if (tutorName && result.isVerified === verifiedFilter) {
                 return <TutorSearchResultItem tutor={result} key={index} />;
               }
               if (categoryName) {

@@ -1,18 +1,57 @@
 import NavBar from "../components/Navbar";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
+import { useAuth } from "../services/AuthContext";
+import apiClient from "../services/AxiosConfig";
 
 function Login() {
   const navigate = useNavigate();
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [authFailedError, setAuthFailedError] = useState(false);
+  const { login } = useAuth();
+
   const toggleVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleLoginClick = async () => {
+    const emailValid = validateEmail(email);
+
+    setEmailError(!emailValid);
+    setAuthFailedError(false);
+
+    if (!emailValid) {
+      return;
+    }
+    try {
+      const { data } = await apiClient.post("/auth/login", {
+        email,
+        password,
+      });
+      login(data.token);
+      navigate("/profile");
+    } catch (error) {
+      if (error.response?.status === 403) {
+        setAuthFailedError(true);
+      } else {
+        console.error("Login failed", error);
+      }
+    }
+  };
+
   return (
     <div className="relative min-h-screen bg-white overflow-hidden">
-      <NavBar isLoggedIn={false} currentPage={"/"} />
-      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center w-full px-4 ">
+      <NavBar />
+      <div className="absolute top-0 left-0 right-0 bottom-0 flex items-center justify-center w-full px-4">
         <div className="flex flex-col justify-center w-full max-w-xl bg-gray-100 p-10 rounded-2xl font-merriweather_sans">
           <div className="flex items-center justify-center text-2xl">
             Welcome back! 👋
@@ -25,10 +64,23 @@ function Login() {
             <input
               type="email"
               name="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(false);
+              }}
               placeholder="username@thu.de"
-              className="pl-11 pr-4 py-2 rounded-md w-full border border-gray-300 focus:ring-1 focus:ring-gray-950 focus:outline-none"
+              className={`pl-11 pr-4 py-2 rounded-md w-full border border-gray-300 focus:ring-1 focus:ring-gray-950 focus:outline-none email_anchor_element`}
             />
           </div>
+          <Tooltip
+            anchorSelect=".email_anchor_element"
+            place="right"
+            isOpen={emailError}
+          >
+            Enter a valid email
+          </Tooltip>
+
           <label className="text-sm font-medium mt-4 text-black">
             Password
           </label>
@@ -39,8 +91,12 @@ function Login() {
             <input
               type={passwordVisible ? "text" : "password"}
               name="password"
-              placeholder="Enter atleast 8 characters"
-              className="pl-11 pr-4 py-2 rounded-md w-full border border-gray-300 focus:ring-1 focus:ring-gray-950 focus:outline-none"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+              placeholder="• • • • • • • •"
+              className={`pl-11 pr-4 py-2 rounded-md w-full border border-gray-300 focus:ring-1 focus:ring-gray-950 focus:outline-none password_anchor_element`}
             />
             <span
               className="cursor-pointer material-symbols-rounded absolute inset-y-0 right-3 flex items-center text-gray-800"
@@ -49,6 +105,7 @@ function Login() {
               {passwordVisible ? "visibility" : "visibility_off"}
             </span>
           </div>
+
           <div
             className="inline-flex mt-2 justify-end text-blue-900 cursor-pointer self-end w-auto"
             onClick={() => {
@@ -57,7 +114,16 @@ function Login() {
           >
             Forgot password?
           </div>
-          <button className="bg-blue-900 text-white py-2 px-1 rounded-md mt-7 hover:bg-blue-800 focus:outline-none">
+          {authFailedError && (
+            <p className="text-red-500 mt-2">
+              Incorrect email or password, try again.
+            </p>
+          )}
+          <button
+            type="button"
+            className="bg-blue-900 text-white py-2 px-1 rounded-md mt-7 hover:bg-blue-800 focus:outline-none"
+            onClick={handleLoginClick}
+          >
             Log In
           </button>
           <div

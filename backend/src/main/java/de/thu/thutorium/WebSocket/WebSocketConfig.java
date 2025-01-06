@@ -42,7 +42,7 @@ public class WebSocketConfig
     // Register "/chat" endpoint for WebSocket connections and enable SockJS fallback
     registry
         .addEndpoint("/chat")
-        .setAllowedOrigins("*");
-//        .withSockJS(); // WebSocket endpoint with fallback
+        .setAllowedOrigins("http://localhost:3000")
+        .withSockJS(); // WebSocket endpoint with fallback
   }
 }

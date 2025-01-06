@@ -1,15 +1,38 @@
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import React from "react";
+import * as Auth from "../services/AuthService";
+import { useAuth } from "../services/AuthContext";
 
-export default function NavBar({ isLoggedIn, currentPage }) {
+export default function NavBar({ currentPage }) {
   const navigate = useNavigate();
-  const menuItems = [
-    { label: "Home", path: "/" },
-    { label: "My Courses", path: "/my-courses" },
-    { label: "Tutor Centre", path: "/tutor-centre" },
-    { label: "Messages", path: "/messages" },
-  ];
+  const { user } = useAuth(); // Get user details, including roles
+  const isLoggedIn = Auth.isAuthenticated();
+
+  // Define menu items for roles
+  const roleBasedMenuItems = {
+    ROLE_STUDENT: [
+      { label: "My Courses", path: "/my-courses" },
+      { label: "Messages", path: "/messages" },
+    ],
+    ROLE_TUTOR: [
+      { label: "Tutor Centre", path: "/tutor-centre" },
+      { label: "Messages", path: "/messages" },
+    ],
+  };
+
+  // Calculate role-based menu items
+  const menuItems = Array.from(
+    new Set(
+      user?.roles
+        ?.flatMap((role) => roleBasedMenuItems[role.toUpperCase()] || []) // Convert roles to uppercase for matching
+        .map((item) => JSON.stringify(item)), // Serialize to avoid duplicates
+    ),
+  ).map((item) => JSON.parse(item)); // Deserialize back
+
+  // Always include the "Home" menu item
+  const defaultMenuItems = [{ label: "Home", path: "/" }, ...menuItems];
+
   return (
     <div className="flex justify-between items-center w-full bg-white fixed z-50 shadow-md shadow-black/5">
       <div className="flex justify-between items-center w-full bg-white">
@@ -21,12 +44,12 @@ export default function NavBar({ isLoggedIn, currentPage }) {
           <span className="text-xl font-merriweather_sans">THUtorium</span>
         </div>
         <div className="flex space-x-4">
-          {menuItems.map((item) => (
+          {defaultMenuItems.map((item) => (
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`px-4 py-2 text-sm font-merriweather_sans ${
-                currentPage === item.path ? "bg-gray-200 rounded-md" : ""
+              className={`px-4 py-2 rounded-md text-sm font-merriweather_sans ${
+                currentPage === item.path ? "bg-gray-300" : "hover:bg-gray-200"
               }`}
             >
               {item.label}
@@ -35,7 +58,14 @@ export default function NavBar({ isLoggedIn, currentPage }) {
         </div>
         <div className="flex items-center px-4">
           {isLoggedIn ? (
-            <button className="px-4 py-2 text-sm border border-black font-merriweather_sans rounded-full hover:bg-black hover:text-white">
+            <button
+              onClick={() => navigate("/profile")}
+              className={`${
+                currentPage !== "/profile"
+                  ? "hover:bg-black hover:text-white px-4 py-2 text-sm border border-black font-merriweather_sans rounded-full"
+                  : "px-4 py-2 text-sm border bg-black text-white font-merriweather_sans rounded-full"
+              } `}
+            >
               My Account
             </button>
           ) : (
