@@ -17,11 +17,12 @@ import java.util.List;
  *
  * <p>The mapper is configured to be a Spring component using {@code componentModel = "spring"}.
  */
-@Mapper(componentModel = "spring",
-uses = {
-        AddressTOMapper.class,
-        UniversityTOMapper.class,
-})
+@Mapper(
+    componentModel = "spring",
+    uses = {
+      AddressTOMapper.class,
+      UniversityTOMapper.class,
+    })
 public interface MeetingTOMapper {
 
   /**
@@ -32,14 +33,18 @@ public interface MeetingTOMapper {
    */
   @Mappings({
           @Mapping(source = "tutor.userId", target = "tutorId"),
-          @Mapping(source = "tutor.fullName", target = "tutorName"),
           @Mapping(source = "course.courseId", target = "courseId"),
-          @Mapping(source = "course.courseName", target = "courseName"),
+          @Mapping(source = "meetingDate", target = "meetingDate"),
+          @Mapping(source = "startTime", target = "startTime"),
+          @Mapping(source = "meetingLink", target = "meetingLink"),
+          @Mapping(source = "endTime", target = "endTime"),
+          @Mapping(source = "duration", target = "duration"),
+          @Mapping(source = "meetingType", target = "meetingType"),
+          @Mapping(source = "roomNum", target = "roomNum"),
           @Mapping(source = "address.addressId", target = "addressId"),
-          @Mapping(source = "address.university.universityName", target = "universityName"),
           @Mapping(source = "address.campusName", target = "campusName"),
+          @Mapping(source = "address.university.universityName", target = "universityName"),
   })
-
   MeetingTO toDTO(MeetingDBO meetingDBO);
 
   /**

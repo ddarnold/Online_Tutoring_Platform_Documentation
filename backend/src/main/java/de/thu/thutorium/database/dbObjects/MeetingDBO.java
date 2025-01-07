@@ -1,13 +1,9 @@
 package de.thu.thutorium.database.dbObjects;
 
-import de.thu.thutorium.database.dbObjects.enums.MeetingStatus;
 import de.thu.thutorium.database.dbObjects.enums.MeetingType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,18 +17,18 @@ import java.util.List;
  * and is associated with a course and an address. The meeting also includes fields for date, type,
  * status, room number, duration of the meeting, and a link to the meeting.
  */
-@Builder(toBuilder = true)
+@Builder
 @Entity
 @Table(
-        name = "meeting",
-        uniqueConstraints = @UniqueConstraint(
-                name = "unique_meeting_constraint",
-                columnNames = {"meeting_date", "meeting_time", "room_number", "address_id"}
-        )
-)
+    name = "meeting",
+    uniqueConstraints =
+        @UniqueConstraint(
+            name = "unique_meeting_constraint",
+            columnNames = {"meeting_date", "meeting_time", "room_number", "address_id"}))
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MeetingDBO {
   /** The unique identifier for the meeting. This ID is generated automatically. */
   @Id
@@ -58,33 +54,21 @@ public class MeetingDBO {
   @JoinColumn(name = "course_id", nullable = false)
   private CourseDBO course;
 
-  //Todo: DO we need date, since it is already contained in the time?
-//  /** The date on which the meeting is scheduled to be held. This field cannot be null. */
-//  @Column(name = "meeting_date", nullable = false)
-//  @FutureOrPresent(message = "The meeting date must be in the present or future.")
-  @Transient
+  /** The date on which the meeting is scheduled to be held. This field cannot be null. */
+  @Column(name = "meeting_date", nullable = false)
   private LocalDate meetingDate;
 
   /** The time on which the meeting is scheduled to be held. This field cannot be null. */
-  @Column(name = "meeting_time", nullable = false)
-  @FutureOrPresent(message = "The meeting start time must be in the present or future.")
-  private LocalDateTime meetingTime;
+  @Column(name = "meeting_start_time", nullable = false)
+  private LocalDateTime startTime;
 
   @Column(name = "meeting_end_time", nullable = false)
   private LocalDateTime endTime;
 
   /** The duration of the meeting in minutes. This field cannot be null. */
-  @Transient
-  private Long duration;
-
-  /**
-   * Initializes transient fields after the entity is loaded from the database.
-   */
-  @PostLoad
-  private void onLoad() {
-    this.duration = Duration.between(meetingTime, endTime).toMinutes();
-    this.meetingDate = meetingTime.toLocalDate();
-  }
+  @Column(name = "duration_minutes", nullable = false)
+  @Builder.Default
+  private Integer duration = 90;
 
   /**
    * The type of the meeting as enumerated by the {@link MeetingType}. Represents whether the
@@ -93,18 +77,6 @@ public class MeetingDBO {
   @Enumerated(EnumType.STRING)
   @Column(name = "meeting_type", nullable = false)
   private MeetingType meetingType;
-
-  /**
-   * The current status of the meeting (e.g., confirmed, canceled, etc.). Must be a non-null string
-   * with a maximum length of 255 characters.
-   * Todo: Review:
-   * - If it is 'confirmed', 'canceled' etc. it can be mandatory, but the enum types have to be suitably updated.
-   * - If it is 'PRESENT','ABSENT' etc. it is about the status AFTER the meeting and the field can be nullable?
-   */
-  @Enumerated(EnumType.STRING)
-  @Column(name = "meeting_status")
-  @Builder.Default
-  private MeetingStatus meetingStatus = MeetingStatus.SCHEDULED;
 
   /**
    * The room number where the meeting is taking place, if applicable. This field may be null and
@@ -126,7 +98,6 @@ public class MeetingDBO {
    */
   @ManyToOne
   @JoinColumn(name = "address_id")
-  @NotNull
   private AddressDBO address;
 
   /**
@@ -140,28 +111,4 @@ public class MeetingDBO {
 
   @Column(name = "time_range", columnDefinition = "tsrange", insertable = false, updatable = false)
   private String timeRange;
-
-  public MeetingDBO() {
-    this.participants = new ArrayList<>();
-  }
-
-//  @Override
-//  public String toString() {
-//    return "MeetingDBO{" +
-//            "meetingId=" + meetingId +
-//            ", tutor=" + tutor +
-//            ", course=" + course +
-//            ", meetingDate=" + meetingDate +
-//            ", meetingTime=" + meetingTime +
-//            ", endTime=" + endTime +
-//            ", duration=" + duration +
-//            ", meetingType=" + meetingType +
-//            ", meetingStatus=" + meetingStatus +
-//            ", roomNum='" + roomNum + '\'' +
-//            ", meetingLink='" + meetingLink + '\'' +
-//            ", address=" + address +
-//            ", participants=" + participants +
-//            ", timeRange='" + timeRange + '\'' +
-//            '}';
-//  }
 }

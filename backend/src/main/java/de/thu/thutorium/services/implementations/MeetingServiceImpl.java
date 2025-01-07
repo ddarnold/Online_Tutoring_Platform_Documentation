@@ -2,12 +2,11 @@ package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.MeetingTOMapper;
 import de.thu.thutorium.api.transferObjects.common.MeetingTO;
+import de.thu.thutorium.database.DBOMappers.MeetingDBMapper;
 import de.thu.thutorium.database.dbObjects.AddressDBO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
 import de.thu.thutorium.database.dbObjects.MeetingDBO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
-import de.thu.thutorium.database.dbObjects.enums.MeetingStatus;
-import de.thu.thutorium.database.dbObjects.enums.Role;
 import de.thu.thutorium.database.repositories.AddressRepository;
 import de.thu.thutorium.database.repositories.CourseRepository;
 import de.thu.thutorium.database.repositories.MeetingRepository;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service implementation for managing meetings.
@@ -39,6 +38,7 @@ public class MeetingServiceImpl implements MeetingService {
   private final CourseRepository courseRepository;
   private final AddressRepository addressRepository;
   private final MeetingTOMapper meetingTOMapper;
+  private final MeetingDBMapper meetingDBMapper;
 
   /**
    * Creates a new meeting based on the provided {@link MeetingTO}.
@@ -54,39 +54,62 @@ public class MeetingServiceImpl implements MeetingService {
   @Override
   @Transactional
   public MeetingTO createMeeting(MeetingTO meetingTO) {
-    //Check if the tutor is valid
-    UserDBO tutor = userRepository.findUserDBOByUserIdAndRoles_RoleName(meetingTO.getTutorId(), Role.TUTOR)
-            .orElseThrow(() -> new EntityNotFoundException("Tutor not found with ID: " + meetingTO.getTutorId()));
+    // Fetch and validate the tutor
+    UserDBO tutor =
+        userRepository
+            .findById(meetingTO.getTutorId())
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Tutor not found with ID: " + meetingTO.getTutorId()));
 
-    //Check if the course is valid
-    CourseDBO course = courseRepository.findByCourseIdAndTutor_UserId(meetingTO.getCourseId(), meetingTO.getTutorId())
-            .orElseThrow(() -> new EntityNotFoundException("Course with ID: " + meetingTO.getCourseId() + " not found from "
-            + " tutor with ID" + meetingTO.getTutorId()));
+    // Fetch and validate the course
+    CourseDBO course =
+        courseRepository
+            .findById(meetingTO.getCourseId())
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Course not found with ID: " + meetingTO.getCourseId()));
 
-    //Check if the address is valid
-    AddressDBO address = addressRepository.findById(meetingTO.getAddressId())
-            .orElseThrow(() -> new EntityNotFoundException("Address not found with ID: " + meetingTO.getAddressId()));
+    // Fetch and validate the address
+    AddressDBO address =
+        addressRepository
+            .findById(meetingTO.getAddressId())
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Address not found with ID: " + meetingTO.getAddressId()));
 
-    //Handle the optional fields in the meetingTO
-    MeetingStatus meetingStatus = Optional.ofNullable(meetingTO.getMeetingStatus())
-            .orElse(MeetingStatus.SCHEDULED);
-    String roomNum = Optional.ofNullable(meetingTO.getRoomNum())
-        .orElse("No room scheduled");
-    String meetingLink = Optional.ofNullable(meetingTO.getMeetingLink())
-        .orElse("No meeting link provided");
+    // Fetch and validate participants
+    List<UserDBO> participants =
+        meetingTO.getParticipantIds().stream()
+            .map(
+                participantId ->
+                    userRepository
+                        .findById(participantId)
+                        .orElseThrow(
+                            () ->
+                                new EntityNotFoundException(
+                                    "Participant not found with ID: " + participantId)))
+            .collect(Collectors.toList());
 
-    MeetingDBO meetingDBO = MeetingDBO.builder()
-            .tutor(tutor)
-            .course(course)
-            .meetingTime(meetingTO.getMeetingTime())
-            .endTime(meetingTO.getEndTime())
-            .meetingType(meetingTO.getMeetingType())
-            .meetingStatus(meetingStatus)
-            .roomNum(roomNum)
-            .meetingLink(meetingLink)
-            .address(address)
-            .build();
+    // Convert the TO to the entity
+    MeetingDBO meetingDBO = meetingDBMapper.toEntity(meetingTO);
+
+    // Set references
+    meetingDBO.setTutor(tutor);
+    meetingDBO.setCourse(course);
+    meetingDBO.setAddress(address);
+    meetingDBO.setParticipants(participants);
+
+    // Maintain bidirectional relationship for participants
+    participants.forEach(participant -> participant.getMeetings().add(meetingDBO));
+
+    // Save the meeting entity
     MeetingDBO savedMeeting = meetingRepository.save(meetingDBO);
+
+    // Convert the saved entity back to a DTO
     return meetingTOMapper.toDTO(savedMeeting);
   }
 
@@ -125,53 +148,89 @@ public class MeetingServiceImpl implements MeetingService {
   @Transactional
   public MeetingTO updateMeeting(Long meetingId, MeetingTO meetingTO) {
     // Fetch the existing meeting
-    MeetingDBO existingMeeting = meetingRepository.findById(meetingId)
-                    .orElseThrow(() -> new EntityNotFoundException("Meeting not found with ID: " + meetingId));
-
-    //Validate tutor, course and address
-    //Check if the tutor is valid
-    UserDBO tutor = userRepository.findUserDBOByUserIdAndRoles_RoleName(meetingTO.getTutorId(), Role.TUTOR)
-            .orElseThrow(() -> new EntityNotFoundException("Tutor not found with ID: " + meetingTO.getTutorId()));
-
-    //Check if the course is valid
-    CourseDBO course = courseRepository.findByCourseIdAndTutor_UserId(meetingTO.getCourseId(), meetingTO.getTutorId())
-            .orElseThrow(() -> new EntityNotFoundException("Course with ID: " + meetingTO.getCourseId() + " not found from "
-                    + " tutor with ID" + meetingTO.getTutorId()));
-
-    //Check if the address is valid
-    AddressDBO address = addressRepository.findById(meetingTO.getAddressId())
-            .orElseThrow(() -> new EntityNotFoundException("Address not found with ID: " + meetingTO.getAddressId()));
-
-    //Handle the optional fields in the meetingTO
-    MeetingStatus meetingStatus = Optional.ofNullable(meetingTO.getMeetingStatus())
-            .orElse(MeetingStatus.SCHEDULED);
-    String roomNum = Optional.ofNullable(meetingTO.getRoomNum())
-            .orElse("No room scheduled");
-    String meetingLink = Optional.ofNullable(meetingTO.getMeetingLink())
-            .orElse("No meeting link provided");
+    MeetingDBO existingMeeting =
+        meetingRepository
+            .findById(meetingId)
+            .orElseThrow(
+                () -> new EntityNotFoundException("Meeting not found with ID: " + meetingId));
 
     // Update fields
-    existingMeeting = existingMeeting.toBuilder()
-            .tutor(tutor)
-            .course(course)
-            .meetingTime(meetingTO.getMeetingTime())
-            .endTime(meetingTO.getEndTime())
-            .meetingType(meetingTO.getMeetingType())
-            .meetingStatus(meetingStatus)
-            .roomNum(roomNum)
-            .meetingLink(meetingLink)
-            .address(address)
-            .build();
-  log.info("DBO is {}", existingMeeting.toString());
-    // Update participants
-    //Todo: Adding and deleting participants is not done via MeetingTO, as it can be
-    // error prone and cumbersome (e.g: editing participant details of 20 students). Define
-    // other methods e.g; bookMeeting() and cancelMeeting() (similar to enroll/unenroll courses)
-    // to achieve this.
+    existingMeeting.setMeetingDate(meetingTO.getMeetingDate());
+    existingMeeting.setStartTime(meetingTO.getStartTime());
+    existingMeeting.setEndTime(meetingTO.getEndTime());
+    existingMeeting.setDuration(meetingTO.getDuration());
+    existingMeeting.setMeetingType(meetingTO.getMeetingType());
 
-    //Save the updated meeting
-    MeetingDBO savedMeeting = meetingRepository.save(existingMeeting);
-    return meetingTOMapper.toDTO(savedMeeting);
+    // Update associated objects (tutor, course, and address)
+    UserDBO tutor =
+        userRepository
+            .findById(meetingTO.getTutorId())
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Tutor not found with ID: " + meetingTO.getTutorId()));
+    existingMeeting.setTutor(tutor);
+
+    CourseDBO course =
+        courseRepository
+            .findById(meetingTO.getCourseId())
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Course not found with ID: " + meetingTO.getCourseId()));
+    existingMeeting.setCourse(course);
+
+    AddressDBO address =
+        addressRepository
+            .findById(meetingTO.getAddressId())
+            .orElseThrow(
+                () ->
+                    new EntityNotFoundException(
+                        "Address not found with ID: " + meetingTO.getAddressId()));
+    existingMeeting.setAddress(address);
+
+    // Update participants
+    List<UserDBO> newParticipants =
+        meetingTO.getParticipantIds().stream()
+            .map(
+                participantId ->
+                    userRepository
+                        .findById(participantId)
+                        .orElseThrow(
+                            () ->
+                                new EntityNotFoundException(
+                                    "Participant not found with ID: " + participantId)))
+            .collect(Collectors.toList());
+
+    // Remove participants who are no longer part of the meeting
+    existingMeeting
+        .getParticipants()
+        .forEach(
+            participant -> {
+              if (!newParticipants.contains(participant)) {
+                participant.getMeetings().remove(existingMeeting);
+              }
+            });
+
+    // Add new participants
+    newParticipants.forEach(
+        participant -> {
+          if (!existingMeeting.getParticipants().contains(participant)) {
+            participant.getMeetings().add(existingMeeting);
+          }
+        });
+
+    // Set the updated list of participants
+    existingMeeting.setParticipants(newParticipants);
+
+    // Update optional fields (room number, campus name, university name)
+    existingMeeting.setRoomNum(meetingTO.getRoomNum());
+
+    // Save the updated meeting
+    MeetingDBO updatedMeeting = meetingRepository.save(existingMeeting);
+
+    // Convert the updated entity back to DTO
+    return meetingTOMapper.toDTO(updatedMeeting);
   }
 
   /**
