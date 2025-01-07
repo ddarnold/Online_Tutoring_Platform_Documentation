@@ -71,14 +71,10 @@ public class CourseTO {
    */
   private LocalDate endDate;
 
-  /**
-   * The average rating of the course.
-   */
+  /** The average rating of the course. */
   private Double averageRating;
 
-  /**
-   * The list of course categories for a course.
-   */
+  /** The list of course categories for a course. */
   @NotEmpty(message = "Course categories cannot be empty.")
   @Valid
   private List<CourseCategoryTO> courseCategories;

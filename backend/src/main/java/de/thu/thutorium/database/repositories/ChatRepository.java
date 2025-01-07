@@ -20,5 +20,5 @@ import java.util.List;
  */
 @Repository
 public interface ChatRepository extends JpaRepository<ChatDBO, Long> {
-    List<ChatDBO> findByParticipants_UserId(Long userId);
+  List<ChatDBO> findByParticipants_UserId(Long userId);
 }

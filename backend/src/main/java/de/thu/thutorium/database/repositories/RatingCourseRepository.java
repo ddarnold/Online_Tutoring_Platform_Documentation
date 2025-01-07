@@ -22,7 +22,9 @@ import java.util.List;
  */
 @Repository
 public interface RatingCourseRepository extends JpaRepository<RatingCourseDBO, Long> {
-    List<RatingCourseDBO> findByCourse_CourseIdAndStudent_UserId(Long courseCourseId, Long studentUserId);
+  List<RatingCourseDBO> findByCourse_CourseIdAndStudent_UserId(
+      Long courseCourseId, Long studentUserId);
 
-    List<RatingCourseDBO> findByCourse_CourseIdAndStudent_UserId(Long courseCourseId, Long studentUserId, Limit limit);
+  List<RatingCourseDBO> findByCourse_CourseIdAndStudent_UserId(
+      Long courseCourseId, Long studentUserId, Limit limit);
 }

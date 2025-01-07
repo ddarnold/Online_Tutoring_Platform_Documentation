@@ -26,13 +26,13 @@ public interface UserRepository extends JpaRepository<UserDBO, Long> {
    */
   Optional<UserDBO> findByEmail(String email);
 
-//  /**
-//   * Checks if a user entity exists with the given email.
-//   *
-//   * @param email the username to check
-//   * @return true if a user entity exists with the given username, false otherwise
-//   */
-//  boolean existsByEmail(String email);
+  //  /**
+  //   * Checks if a user entity exists with the given email.
+  //   *
+  //   * @param email the username to check
+  //   * @return true if a user entity exists with the given username, false otherwise
+  //   */
+  //  boolean existsByEmail(String email);
 
   /**
    * Finds a user by their email and roles.
@@ -43,11 +43,8 @@ public interface UserRepository extends JpaRepository<UserDBO, Long> {
    */
   UserDBO findByEmailAndRoles(String email, Set<RoleDBO> roles);
 
-  /**
-   * Retrieves a {@link UserDBO} entity by its unique identifier.
-   */
+  /** Retrieves a {@link UserDBO} entity by its unique identifier. */
   Optional<UserDBO> findUserDBOByUserId(Long userId);
-
 
   /**
    * Retrieves a {@link UserDBO} entity with the role of "TUTOR" based on the specified user ID.
@@ -69,8 +66,8 @@ public interface UserRepository extends JpaRepository<UserDBO, Long> {
    * @param tutorName The search string to match against the tutor's full name. This parameter is
    *     compared case-insensitively and supports partial matching.
    * @return A list of {@link UserDBO} objects representing tutors whose full names match the search
-   *     string.
-   * Todo: The method will match for any substring provided by the parameter, is this the expected behavior?
+   *     string. Todo: The method will match for any substring provided by the parameter, is this
+   *     the expected behavior?
    */
   @Query(
       "SELECT u FROM UserDBO u JOIN u.roles r WHERE r.roleName = 'TUTOR' AND "
@@ -81,18 +78,13 @@ public interface UserRepository extends JpaRepository<UserDBO, Long> {
   /**
    * Finds a UserDBO entity based on the user's ID and role name.
    *
-   * <p>
-   * This method retrieves a user who has the specified user ID and role name. It
-   * is useful for
+   * <p>This method retrieves a user who has the specified user ID and role name. It is useful for
    * checking if a user with a specific role exists.
    *
-   * @param userId   The unique ID of the user.
+   * @param userId The unique ID of the user.
    * @param roleName The role name to check for the user.
-   * @return An {@link Optional} containing the {@link UserDBO} object if a user
-   *         with the specified
-   *         ID and role name exists, or an empty {@link Optional} if no such user
-   *         is found.
+   * @return An {@link Optional} containing the {@link UserDBO} object if a user with the specified
+   *     ID and role name exists, or an empty {@link Optional} if no such user is found.
    */
   Optional<UserDBO> findUserDBOByUserIdAndRoles_RoleName(Long userId, Role roleName);
-
 }

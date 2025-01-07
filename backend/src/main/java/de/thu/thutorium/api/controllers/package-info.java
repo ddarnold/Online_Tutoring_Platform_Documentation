@@ -8,6 +8,6 @@
  * @since 1.0
  * @version 1.0
  * @author Jossin Anthony
- * @author Nikolai Ivanov
+ * @author Nikolai Ivanov (kekschorstviy)
  */
 package de.thu.thutorium.api.controllers;

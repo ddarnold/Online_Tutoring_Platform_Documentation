@@ -22,21 +22,18 @@ import java.util.List;
  */
 @Repository
 public interface RatingTutorRepository extends JpaRepository<RatingTutorDBO, Long> {
-    /**
-     * Finds a list of RatingTutorDBO entities based on the tutor's user ID and the
-     * student's user ID.
-     *
-     * <p>
-     * This method retrieves all ratings given by a specific student to a specific
-     * tutor. The
-     * results can be limited by specifying a limit parameter.
-     *
-     * @param tutorUserId   The unique ID of the tutor.
-     * @param studentUserId The unique ID of the student.
-     * @param limit         The maximum number of results to return.
-     * @return A list of {@link RatingTutorDBO} objects representing the ratings
-     *         given by the student
-     *         to the tutor.
-     */
-    List<RatingTutorDBO> findByTutor_UserIdAndStudent_UserId(Long tutorUserId, Long studentUserId, Limit limit);
+  /**
+   * Finds a list of RatingTutorDBO entities based on the tutor's user ID and the student's user ID.
+   *
+   * <p>This method retrieves all ratings given by a specific student to a specific tutor. The
+   * results can be limited by specifying a limit parameter.
+   *
+   * @param tutorUserId The unique ID of the tutor.
+   * @param studentUserId The unique ID of the student.
+   * @param limit The maximum number of results to return.
+   * @return A list of {@link RatingTutorDBO} objects representing the ratings given by the student
+   *     to the tutor.
+   */
+  List<RatingTutorDBO> findByTutor_UserIdAndStudent_UserId(
+      Long tutorUserId, Long studentUserId, Limit limit);
 }

@@ -33,7 +33,7 @@ import java.util.List;
 @Setter
 @Builder
 @AllArgsConstructor
-@EntityListeners(DBPreProcess.class) //Save all string fields in all entities in lower case
+@EntityListeners(DBPreProcess.class) // Save all string fields in all entities in lower case
 public class AddressDBO {
 
   /**
@@ -99,5 +99,4 @@ public class AddressDBO {
   public AddressDBO() {
     this.meetings = new ArrayList<>();
   }
-
 }

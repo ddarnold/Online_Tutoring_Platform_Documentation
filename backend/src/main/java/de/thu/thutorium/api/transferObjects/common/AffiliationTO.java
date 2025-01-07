@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * Transfer object representing an affiliation.
- */
+/** Transfer object representing an affiliation. */
 @Getter
 @Setter
 @NoArgsConstructor

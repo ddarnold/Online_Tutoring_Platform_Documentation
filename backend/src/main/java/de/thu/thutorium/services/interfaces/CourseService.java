@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * The {@code CourseService} interface provides methods for retrieving and searching courses.
- */
+/** The {@code CourseService} interface provides methods for retrieving and searching courses. */
 @Service
 public interface CourseService {
   /**
@@ -22,7 +20,6 @@ public interface CourseService {
    *     null} if no course with the given ID exists.
    */
   CourseTO findCourseById(Long id);
-
 
   /**
    * Retrieves courses that belong to a specific category.

@@ -68,7 +68,8 @@ public class AddressServiceImpl implements AddressService {
       AddressDBO savedAddress = addressRepository.save(addressDBO);
       return addressTOMapper.toDTO(savedAddress);
     } else {
-      throw new EntityExistsException("Address already exists with the university " + universityDBO.getUniversityName());
+      throw new EntityExistsException(
+          "Address already exists with the university " + universityDBO.getUniversityName());
     }
   }
 }

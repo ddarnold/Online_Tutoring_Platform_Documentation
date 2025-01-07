@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @CommonApiResponses
 @RequiredArgsConstructor
-//@Tag(name = "Authentication", description = "Endpoints for user authentication and registration")
+// @Tag(name = "Authentication", description = "Endpoints for user authentication and registration")
 public class AuthenticationController {
 
   private final AuthenticationServiceImpl authService;

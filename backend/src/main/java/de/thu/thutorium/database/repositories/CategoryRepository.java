@@ -37,7 +37,8 @@ public interface CategoryRepository extends JpaRepository<CourseCategoryDBO, Lon
    * Finds all categories that are associated with at least one course.
    *
    * <p>This method retrieves a list of {@link CourseCategoryDBO} entities that are associated with
-   * one or more {@link de.thu.thutorium.database.dbObjects.CourseDBO} entities. Categories without courses are excluded.
+   * one or more {@link de.thu.thutorium.database.dbObjects.CourseDBO} entities. Categories without
+   * courses are excluded.
    *
    * @return a {@link List} of {@link CourseCategoryDBO} objects associated with courses.
    */

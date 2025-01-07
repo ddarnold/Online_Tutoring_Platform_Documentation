@@ -10,14 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-/**
- * Transfer object representing a university.
- */
+/** Transfer object representing a university. */
 public class UniversityTO {
 
   private Long universityId;
 
   @NotEmpty(message = "The university name cannot be empty")
   private String universityName;
-
 }

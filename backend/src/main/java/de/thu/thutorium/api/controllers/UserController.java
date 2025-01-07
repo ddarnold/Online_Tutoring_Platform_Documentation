@@ -33,7 +33,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
-//@Tag(name = "User end-points", description = "Endpoints for user operations")
+// @Tag(name = "User end-points", description = "Endpoints for user operations")
 @Slf4j
 @CommonApiResponses
 public class UserController {
@@ -133,14 +133,15 @@ public class UserController {
    * @return the {@link UserTO} object containing tutor details.
    */
   @Operation(
-          summary = "Retrieve tutor by ID",
-          description = "Fetches tutor details by their unique ID.",
-          tags = {"User Operations"}
-  )
+      summary = "Retrieve tutor by ID",
+      description = "Fetches tutor details by their unique ID.",
+      tags = {"User Operations"})
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Tutor retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = UserTO.class))),
-          @ApiResponse(responseCode = "404", description = "Tutor not found")
+    @ApiResponse(
+        responseCode = "200",
+        description = "Tutor retrieved successfully",
+        content = @Content(schema = @Schema(implementation = UserTO.class))),
+    @ApiResponse(responseCode = "404", description = "Tutor not found")
   })
   @GetMapping("tutor")
   @CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
@@ -148,7 +149,7 @@ public class UserController {
     return userService.getTutorByID(id);
   }
 
-/**
+  /**
    * Retrieves all meetings associated with a specific user.
    *
    * <p>This endpoint fetches a list of meetings for a given user ID. It includes both:
@@ -189,17 +190,17 @@ public class UserController {
 
   /*chat*/
 
-    @GetMapping("/get-chat-summaries")
-    public ResponseEntity<List<ChatSummaryTO>> getChatSummaries(@RequestParam Long userId) {
-      List<ChatSummaryTO> summaries = chatService.getChatSummaries(userId);
-      return ResponseEntity.ok(summaries);
-    }
+  @GetMapping("/get-chat-summaries")
+  public ResponseEntity<List<ChatSummaryTO>> getChatSummaries(@RequestParam Long userId) {
+    List<ChatSummaryTO> summaries = chatService.getChatSummaries(userId);
+    return ResponseEntity.ok(summaries);
+  }
 
-    @GetMapping("/get-messages-chat")
-    public ResponseEntity<List<MessageTO>> getChatMessages(@RequestParam Long chatId) {
-      List<MessageTO> messages = messageService.getMessagesByChatId(chatId);
-      return ResponseEntity.ok(messages);
-    }
+  @GetMapping("/get-messages-chat")
+  public ResponseEntity<List<MessageTO>> getChatMessages(@RequestParam Long chatId) {
+    List<MessageTO> messages = messageService.getMessagesByChatId(chatId);
+    return ResponseEntity.ok(messages);
+  }
 
   /**
    * Retrieves the authenticated user's ID.

@@ -74,8 +74,8 @@ public interface UserService {
   /**
    * Enrolls a student in a course
    *
-   * @param studentId  the id of the student
-   * @param courseId  the id of the course
+   * @param studentId the id of the student
+   * @param courseId the id of the course
    */
   void enrollCourse(Long studentId, Long courseId);
 

@@ -22,7 +22,9 @@ import java.util.List;
  * a Spring bean for this mapper, allowing it to be injected into other components or services
  * within the application.
  */
-@Mapper(componentModel = "spring", uses = {AffiliationTOMapper.class})
+@Mapper(
+    componentModel = "spring",
+    uses = {AffiliationTOMapper.class})
 public interface UserTOMapper {
   /**
    * Converts a {@link UserDBO} object to a {@link UserTO}.

@@ -30,5 +30,4 @@ public interface SearchService {
    *     is returned.
    */
   List<TutorTO> searchTutors(String tutorName);
-
 }

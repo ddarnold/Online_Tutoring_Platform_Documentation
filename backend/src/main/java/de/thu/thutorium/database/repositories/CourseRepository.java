@@ -22,12 +22,13 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
    * @param lastName The participant's last name.
    * @return A list of {@link CourseDBO} objects where the participant has the "Tutor" role.
    */
-  @Query("SELECT c FROM CourseDBO c JOIN c.students s JOIN s.roles r "
+  @Query(
+      "SELECT c FROM CourseDBO c JOIN c.students s JOIN s.roles r "
           + "WHERE r.roleName = 'TUTOR' "
           + "AND LOWER(s.firstName) LIKE LOWER(CONCAT('%', :firstName, '%')) "
           + "AND LOWER(s.lastName) LIKE LOWER(CONCAT('%', :lastName, '%'))")
   List<CourseDBO> findByTutorFirstNameAndLastName(
-          @Param("firstName") String firstName, @Param("lastName") String lastName);
+      @Param("firstName") String firstName, @Param("lastName") String lastName);
 
   /**
    * Finds courses where a participant with a specific full name has the "Tutor" role.
@@ -36,10 +37,10 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
    * @return A list of {@link CourseDBO} objects where the participant has the "Tutor" role.
    */
   @Query(
-          "SELECT c FROM CourseDBO c JOIN c.students s JOIN s.roles r "
-                  + "WHERE r.roleName = 'TUTOR' "
-                  + "AND (LOWER(CONCAT(s.firstName, ' ', s.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%')) "
-                  + "OR LOWER(CONCAT(s.lastName, ' ', s.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%')))")
+      "SELECT c FROM CourseDBO c JOIN c.students s JOIN s.roles r "
+          + "WHERE r.roleName = 'TUTOR' "
+          + "AND (LOWER(CONCAT(s.firstName, ' ', s.lastName)) LIKE LOWER(CONCAT('%', :tutorName, '%')) "
+          + "OR LOWER(CONCAT(s.lastName, ' ', s.firstName)) LIKE LOWER(CONCAT('%', :tutorName, '%')))")
   List<CourseDBO> findByTutorFullName(@Param("tutorName") String tutorName);
 
   /**
@@ -66,11 +67,12 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
    * @return A list of {@link CourseDBO} objects that belong to the specified category.
    */
   @Query(
-          "SELECT c FROM CourseDBO c JOIN c.courseCategories cc WHERE LOWER(cc.categoryName) = LOWER(:categoryName)")
+      "SELECT c FROM CourseDBO c JOIN c.courseCategories cc WHERE LOWER(cc.categoryName) = LOWER(:categoryName)")
   List<CourseDBO> findCoursesByCategoryName(@Param("categoryName") String categoryName);
 
   /**
    * Checks if a course exists in the database from its name.
+   *
    * @param courseName to be searched
    * @return {@code boolean} value indicating if the searched course exists
    */
@@ -79,17 +81,14 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
   /**
    * Finds a CourseDBO entity based on the course ID and the tutor's user ID.
    *
-   * <p>
-   * This method retrieves a course that is associated with a specific tutor. It
-   * is useful for
+   * <p>This method retrieves a course that is associated with a specific tutor. It is useful for
    * ensuring that a particular tutor is responsible for a given course.
    *
-   * @param courseId    The unique ID of the course.
+   * @param courseId The unique ID of the course.
    * @param tutorUserId The unique ID of the tutor.
-   * @return An {@link Optional} containing the {@link CourseDBO} object if a
-   *         course with the specified
-   *         course ID and tutor user ID exists, or an empty {@link Optional} if
-   *         no such course is found.
+   * @return An {@link Optional} containing the {@link CourseDBO} object if a course with the
+   *     specified course ID and tutor user ID exists, or an empty {@link Optional} if no such
+   *     course is found.
    */
   Optional<CourseDBO> findByCourseIdAndTutor_UserId(Long courseId, Long tutorUserId);
 }

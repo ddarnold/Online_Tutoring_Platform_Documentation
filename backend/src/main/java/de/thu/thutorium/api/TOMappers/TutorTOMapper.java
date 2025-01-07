@@ -21,8 +21,7 @@ import org.mapstruct.Mapping;
  */
 @Mapper(
     componentModel = "spring",
-    uses = { CourseTOMapper.class }
-)
+    uses = {CourseTOMapper.class})
 public interface TutorTOMapper {
   /**
    * Converts a {@link UserDBO} (representing a tutor) to a {@link TutorTO}.
@@ -31,8 +30,9 @@ public interface TutorTOMapper {
    * @return a {@code TutorTO} object containing the tutor's data
    */
   @Mapping(
-      target = "tutorCourses", source = "tutorCourses") // Map Set<CourseDBO> to List<CourseDTO>
+      target = "tutorCourses",
+      source = "tutorCourses") // Map Set<CourseDBO> to List<CourseDTO>
   TutorTO toDTO(UserDBO tutor);
 
-//  List<TutorTO> toDTOList(List<UserDBO> users);
+  //  List<TutorTO> toDTOList(List<UserDBO> users);
 }

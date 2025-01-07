@@ -43,12 +43,10 @@ public class UserDBO implements UserDetails {
   private String lastName;
 
   /**
-   * The full name of the user, which is a combination of the first name and last
-   * name.
-   * This field is not persisted in the database.
+   * The full name of the user, which is a combination of the first name and last name. This field
+   * is not persisted in the database.
    */
-  @Transient
-  private String fullName;
+  @Transient private String fullName;
 
   /** The user's email, used for login. This field must be unique. */
   @Column(name = "email_address", nullable = false, unique = true)
@@ -136,7 +134,9 @@ public class UserDBO implements UserDetails {
    * cascading operations defined in this relationship. The counterpart is denoted by a Set<UserDBO>
    * called 'participants' in the {@link CourseDBO}.
    */
-  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToMany(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
       name = "course_students",
       joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "user_id"),
@@ -165,33 +165,22 @@ public class UserDBO implements UserDetails {
   @Builder.Default
   private List<RatingTutorDBO> receivedTutorRatings = new ArrayList<>();
 
+  /** The average rating of the tutor. This field is not persisted in the database. */
+  @Transient private Double averageRating;
 
-  /**
-   * The average rating of the tutor.
-   * This field is not persisted in the database.
-   */
-  @Transient
-  private Double averageRating;
-
-  /**
-   * Initializes transient fields after the entity is loaded from the database.
-   */
+  /** Initializes transient fields after the entity is loaded from the database. */
   @PostLoad
   private void onLoad() {
-    //Retrieve full name of the user
+    // Retrieve full name of the user
     this.fullName = firstName + " " + lastName;
-    //Retrieve average rating of the user with tutor role.
+    // Retrieve average rating of the user with tutor role.
     if (receivedTutorRatings != null && !receivedTutorRatings.isEmpty()) {
-      double sum = receivedTutorRatings.stream()
-              .mapToDouble(RatingTutorDBO::getPoints)
-              .sum();
+      double sum = receivedTutorRatings.stream().mapToDouble(RatingTutorDBO::getPoints).sum();
       this.averageRating = sum / receivedTutorRatings.size();
     } else {
       this.averageRating = 0.0;
     }
   }
-
-
 
   /**
    * Ratings given by this student to courses.

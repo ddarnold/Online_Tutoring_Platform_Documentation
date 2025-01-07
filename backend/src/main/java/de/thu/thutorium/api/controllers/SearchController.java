@@ -35,7 +35,7 @@ import java.util.List;
  *   <li>Retrieve a list of course categories
  *   <li>Get a list of courses by category
  *   <li>Retrieve the total count of students, tutors, and courses on the platform
- *   <li> etc.</li>
+ *   <li>etc.
  * </ul>
  *
  * <p><b>Access:</b> This controller is publicly accessible, meaning it can be accessed without
@@ -67,35 +67,40 @@ public class SearchController {
    *     or both, depending on the provided parameters. Results may include duplicates if multiple
    *     entities match the search criteria.
    * @throws jakarta.persistence.EntityNotFoundException if the searched parameters are not found.
-   * Todo: Review:
-   * - The method will find match for any course and tutor names, even if the courses are not
-   * being offered by the respective tutors; is this by design?
-   * - Passing of special characters 'C++' seem to cause internal errors?
+   *     Todo: Review: - The method will find match for any course and tutor names, even if the
+   *     courses are not being offered by the respective tutors; is this by design? - Passing of
+   *     special characters 'C++' seem to cause internal errors?
    */
   @Operation(
-          summary = "Search tutors or courses",
-          description = "Search for tutors by name or courses by name. ",
-          tags = {"Search Endpoints"})
+      summary = "Search tutors or courses",
+      description = "Search for tutors by name or courses by name. ",
+      tags = {"Search Endpoints"})
   @ApiResponses({
-          @ApiResponse(
-                  responseCode = "200",
-                  description = "Search results returned successfully",
-                  content = @Content(array = @ArraySchema(schema = @Schema(implementation = Object.class)))
-          )
+    @ApiResponse(
+        responseCode = "200",
+        description = "Search results returned successfully",
+        content = @Content(array = @ArraySchema(schema = @Schema(implementation = Object.class))))
   })
   @GetMapping
-  public ResponseEntity<?> search(@Parameter(name = "tutorName",
-                               description = "The name of the tutor to be found. The method returns results for"
-                                       + "any partial match of the name passed. This parameter is optional and the method returns "
-                                       + "only the courses searched for if this parameter is empty.",
-                               required = false)
-      @RequestParam(required = false) String tutorName,
-                                  @Parameter(name = "courseName",
-                                     description = "The name of the course to be found. The method returns results for"
-                                             + "any partial match of the course name passed.  This parameter is optional"
-                                             + " and the method returns only the tutors searched for if this parameter is empty.",
-                                     required = false)
-      @RequestParam(required = false) String courseName) {
+  public ResponseEntity<?> search(
+      @Parameter(
+              name = "tutorName",
+              description =
+                  "The name of the tutor to be found. The method returns results for"
+                      + "any partial match of the name passed. This parameter is optional and the method returns "
+                      + "only the courses searched for if this parameter is empty.",
+              required = false)
+          @RequestParam(required = false)
+          String tutorName,
+      @Parameter(
+              name = "courseName",
+              description =
+                  "The name of the course to be found. The method returns results for"
+                      + "any partial match of the course name passed.  This parameter is optional"
+                      + " and the method returns only the tutors searched for if this parameter is empty.",
+              required = false)
+          @RequestParam(required = false)
+          String courseName) {
     try {
       // Initialize an empty list to store results
       List<Object> results = new ArrayList<>();
@@ -115,7 +120,7 @@ public class SearchController {
       return ResponseEntity.status(HttpStatus.OK).body(results);
     } catch (Exception ex) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("Unexpected error: " + ex.getMessage());
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
 
@@ -124,17 +129,19 @@ public class SearchController {
    *
    * <p>This endpoint fetches all the available course categories from the database.
    *
-   * @return  {@code List} of all the available {@link CourseCategoryTO} objects.
-   **/
+   * @return {@code List} of all the available {@link CourseCategoryTO} objects.
+   */
   @Operation(
-          summary = "Retrieve all course categories",
-          description = "Fetches a list of all available course categories in the system.",
-          tags = {"Search Endpoints"})
+      summary = "Retrieve all course categories",
+      description = "Fetches a list of all available course categories in the system.",
+      tags = {"Search Endpoints"})
   @ApiResponses({
-          @ApiResponse(
-                  responseCode = "200",
-                  description = "Categories retrieved successfully",
-                  content = @Content(array = @ArraySchema(schema = @Schema(implementation = CourseCategoryTO.class)))),
+    @ApiResponse(
+        responseCode = "200",
+        description = "Categories retrieved successfully",
+        content =
+            @Content(
+                array = @ArraySchema(schema = @Schema(implementation = CourseCategoryTO.class)))),
   })
   @GetMapping("/categories")
   public ResponseEntity<?> getCategories() {
@@ -143,7 +150,7 @@ public class SearchController {
       return ResponseEntity.status(HttpStatus.OK).body(categories);
     } catch (Exception ex) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-              .body("Unexpected error: " + ex.getMessage());
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
 
@@ -151,28 +158,30 @@ public class SearchController {
    * Retrieves a list of courses based on the specified category name.
    *
    * @param categoryName The name of the category for which courses are to be retrieved.
-   * @return A list of {@link CourseTO} objects that belong to the specified category.
-   * Todo: Is the method case-insensitive for parameters? Does it provide/ need to provide partial matches?
-   * Todo: Review the repository method?
-   * Todo: The url is misleading? Shouldn't it be course/Category name?
+   * @return A list of {@link CourseTO} objects that belong to the specified category. Todo: Is the
+   *     method case-insensitive for parameters? Does it provide/ need to provide partial matches?
+   *     Todo: Review the repository method? Todo: The url is misleading? Shouldn't it be
+   *     course/Category name?
    */
   @Operation(
-          summary = "Retrieve courses by category",
-          description = "Fetches courses that belong to a specific category.",
-          tags = {"Search Endpoints"})
+      summary = "Retrieve courses by category",
+      description = "Fetches courses that belong to a specific category.",
+      tags = {"Search Endpoints"})
   @ApiResponses({
-          @ApiResponse(
-                  responseCode = "200",
-                  description = "Courses retrieved successfully",
-                  content = @Content(array = @ArraySchema(schema = @Schema(implementation = CourseTO.class)))),
+    @ApiResponse(
+        responseCode = "200",
+        description = "Courses retrieved successfully",
+        content =
+            @Content(array = @ArraySchema(schema = @Schema(implementation = CourseTO.class)))),
   })
   @GetMapping("/category/{categoryName}")
   public ResponseEntity<?> getCoursesByCategory(@PathVariable String categoryName) {
     try {
-      return ResponseEntity.status(HttpStatus.OK).body(courseService.getCoursesByCategory(categoryName));
+      return ResponseEntity.status(HttpStatus.OK)
+          .body(courseService.getCoursesByCategory(categoryName));
     } catch (Exception ex) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-              .body("Unexpected error: " + ex.getMessage());
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
 
@@ -182,14 +191,14 @@ public class SearchController {
    * @return the total number of users with the role of 'student'
    */
   @Operation(
-          summary = "Get total student count",
-          description = "Retrieves the total number of students registered in the system.",
-          tags = {"Search Endpoints"})
+      summary = "Get total student count",
+      description = "Retrieves the total number of students registered in the system.",
+      tags = {"Search Endpoints"})
   @ApiResponses({
-          @ApiResponse(
-                  responseCode = "200",
-                  description = "Student count retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = Long.class))),
+    @ApiResponse(
+        responseCode = "200",
+        description = "Student count retrieved successfully",
+        content = @Content(schema = @Schema(implementation = Long.class))),
   })
   @GetMapping("students/count")
   public Long getStudentCount() {
@@ -202,14 +211,14 @@ public class SearchController {
    * @return the total number of users with the role of 'tutor'
    */
   @Operation(
-          summary = "Get total tutor count",
-          description = "Retrieves the total number of tutors registered in the system.",
-          tags = {"Search Endpoints"})
+      summary = "Get total tutor count",
+      description = "Retrieves the total number of tutors registered in the system.",
+      tags = {"Search Endpoints"})
   @ApiResponses({
-          @ApiResponse(
-                  responseCode = "200",
-                  description = "Tutor count retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = Long.class))),
+    @ApiResponse(
+        responseCode = "200",
+        description = "Tutor count retrieved successfully",
+        content = @Content(schema = @Schema(implementation = Long.class))),
   })
   @GetMapping("tutors/count")
   public Long getTutorsCount() {
@@ -222,14 +231,14 @@ public class SearchController {
    * @return the total number of courses as a {@code Long}.
    */
   @Operation(
-          summary = "Get total course count",
-          description = "Retrieves the total number of courses available in the system.",
-          tags = {"Search Endpoints"})
+      summary = "Get total course count",
+      description = "Retrieves the total number of courses available in the system.",
+      tags = {"Search Endpoints"})
   @ApiResponses({
-          @ApiResponse(
-                  responseCode = "200",
-                  description = "Course count retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = Long.class))),
+    @ApiResponse(
+        responseCode = "200",
+        description = "Course count retrieved successfully",
+        content = @Content(schema = @Schema(implementation = Long.class))),
   })
   @GetMapping("/courses/count")
   public Long getCoursesCount() {
@@ -244,37 +253,35 @@ public class SearchController {
    * @throws ResourceNotFoundException, if the searched course does not exist in the database.
    */
   @Operation(
-          summary = "A user can search for and retrieve a course if it exists in the database",
-          description =
-                  "Allows a user to search for the course by its user ID. If the course does not exist in the database"
-                          + "an appropriate error is thrown.",
-          tags = {"Course Endpoints"})
+      summary = "A user can search for and retrieve a course if it exists in the database",
+      description =
+          "Allows a user to search for the course by its user ID. If the course does not exist in the database"
+              + "an appropriate error is thrown.",
+      tags = {"Course Endpoints"})
   @ApiResponses({
-          @ApiResponse(
-                  responseCode = "200",
-                  description = "The course is retrieved successfully",
-                  content =
-                  @Content(
-                          mediaType = "application/json",
-                          schema = @Schema(implementation = CourseTO.class)
-                  )
-          ),
-          @ApiResponse(
-                  responseCode = "404",
-                  description = "Course does not exist in database",
-                  content =
-                  @Content(
-                          mediaType = "application/json",
-                          schema = @Schema(implementation = String.class)
-                  )
-          )
+    @ApiResponse(
+        responseCode = "200",
+        description = "The course is retrieved successfully",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = CourseTO.class))),
+    @ApiResponse(
+        responseCode = "404",
+        description = "Course does not exist in database",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class)))
   })
   @GetMapping("/get-course/{id}")
-  public ResponseEntity<?> getCourseById(@Parameter(
-          name = "course ID",
-          description = "The ID of the course to be queried",
-          required = true
-  ) @PathVariable Long id) {
+  public ResponseEntity<?> getCourseById(
+      @Parameter(
+              name = "course ID",
+              description = "The ID of the course to be queried",
+              required = true)
+          @PathVariable
+          Long id) {
     try {
       CourseTO course = courseService.findCourseById(id);
       return ResponseEntity.status(HttpStatus.OK).body(course);
@@ -282,7 +289,7 @@ public class SearchController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
     } catch (Exception ex) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-              .body("Unexpected error: " + ex.getMessage());
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
 }

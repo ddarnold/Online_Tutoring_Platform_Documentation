@@ -23,10 +23,10 @@ import java.util.List;
  */
 @Repository
 public interface MessageRepository extends JpaRepository<MessageDBO, Long> {
-    int countByChat_ChatIdAndReceiver_UserIdAndIsReadFalse(Long chatId, Long receiverId);
+  int countByChat_ChatIdAndReceiver_UserIdAndIsReadFalse(Long chatId, Long receiverId);
 
-    List<MessageDBO> findByChat_ChatId(Long chatId);
+  List<MessageDBO> findByChat_ChatId(Long chatId);
 
-    @Query("SELECT m FROM MessageDBO m WHERE m.chat.chatId = :chatId AND m.isRead = false")
-    List<MessageDBO> findAllByChatIdAndIsReadFalse(@Param("chatId") Long chatId);
+  @Query("SELECT m FROM MessageDBO m WHERE m.chat.chatId = :chatId AND m.isRead = false")
+  List<MessageDBO> findAllByChatIdAndIsReadFalse(@Param("chatId") Long chatId);
 }

@@ -1,6 +1,5 @@
 package de.thu.thutorium.services.implementations;
 
-
 import de.thu.thutorium.api.TOMappers.UniversityTOMapper;
 import de.thu.thutorium.api.transferObjects.common.UniversityTO;
 import de.thu.thutorium.database.DBOMappers.UniversityDBOMapper;
@@ -20,8 +19,8 @@ import java.util.Optional;
  * {@link } for mapping between transfer objects and database objects.
  *
  * <p>The service handles the creation of universities and checks if a university already exists
- * based on its name. It also utilizes {@link AddressServiceImpl} and {@link de.thu.thutorium.api.TOMappers.AddressTOMapper} to
- * manage and map the address of the university.
+ * based on its name. It also utilizes {@link AddressServiceImpl} and {@link
+ * de.thu.thutorium.api.TOMappers.AddressTOMapper} to manage and map the address of the university.
  */
 @RequiredArgsConstructor
 @Service

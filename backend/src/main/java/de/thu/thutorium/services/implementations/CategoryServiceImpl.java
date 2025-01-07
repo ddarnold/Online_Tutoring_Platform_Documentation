@@ -53,8 +53,8 @@ public class CategoryServiceImpl implements CategoryService {
   public CourseCategoryTO createCourseCategory(@Valid CourseCategoryTO courseCategory) {
     // Check if the courseCategoryDBO already exists (by name)
     Optional<CourseCategoryDBO> categoryDBOOptional =
-            courseCategoryRepository.findCourseCategoryDBOByCategoryName(
-                courseCategory.getCategoryName());
+        courseCategoryRepository.findCourseCategoryDBOByCategoryName(
+            courseCategory.getCategoryName());
     categoryDBOOptional.ifPresent(
         (category) -> {
           throw new EntityExistsException(
@@ -75,11 +75,15 @@ public class CategoryServiceImpl implements CategoryService {
    * @throws EntityNotFoundException, if the searched category does not exist in the database.
    */
   @Override
-  public CourseCategoryTO updateCourseCategory(Long categoryId, @Valid CourseCategoryTO courseCategory) {
-    Optional<CourseCategoryDBO> courseCategoryOptional = courseCategoryRepository.findById(categoryId);
-    CourseCategoryDBO existingCategory = courseCategoryOptional.orElseThrow(
-            () -> new EntityNotFoundException("Error: Course Category with id "
-            + categoryId + " not found!"));
+  public CourseCategoryTO updateCourseCategory(
+      Long categoryId, @Valid CourseCategoryTO courseCategory) {
+    Optional<CourseCategoryDBO> courseCategoryOptional =
+        courseCategoryRepository.findById(categoryId);
+    CourseCategoryDBO existingCategory =
+        courseCategoryOptional.orElseThrow(
+            () ->
+                new EntityNotFoundException(
+                    "Error: Course Category with id " + categoryId + " not found!"));
     existingCategory.setCategoryName(courseCategory.getCategoryName());
     existingCategory.setCreatedOn(LocalDateTime.now());
     CourseCategoryDBO savedCategoryDBO = courseCategoryRepository.save(existingCategory);
@@ -111,8 +115,6 @@ public class CategoryServiceImpl implements CategoryService {
   @Override
   public List<CourseCategoryTO> getAllCategories() {
     // Use repository's built-in `findAll` and map results to TOs
-      return courseCategoryRepository.findAll().stream()
-              .map(courseCategoryTOMapper::toDTO)
-              .toList();
+    return courseCategoryRepository.findAll().stream().map(courseCategoryTOMapper::toDTO).toList();
   }
 }

@@ -63,22 +63,24 @@ public class TutorController {
    * @return a success message.
    */
   @Operation(
-          summary = "Create a new meeting",
-          description = "Creates a new meeting for a tutor and course based on the provided details.",
-          tags = {"Meeting Endpoints"}
-  )
+      summary = "Create a new meeting",
+      description = "Creates a new meeting for a tutor and course based on the provided details.",
+      tags = {"Meeting Endpoints"})
   @ApiResponses({
-          @ApiResponse(responseCode = "201",
-                  description = "Meeting created successfully",
-                  content = @Content(
-                          mediaType = "application/json",
-                          schema = @Schema(implementation = MeetingTO.class)
-                  )),
-          @ApiResponse(responseCode = "404",
-                  description = "Tutor/Course/Address not found",
-                  content = @Content(
-                          mediaType = "application/json",
-                          schema = @Schema(implementation = String.class)))
+    @ApiResponse(
+        responseCode = "201",
+        description = "Meeting created successfully",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = MeetingTO.class))),
+    @ApiResponse(
+        responseCode = "404",
+        description = "Tutor/Course/Address not found",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class)))
   })
   @PostMapping("/create-meeting")
   public ResponseEntity<?> createMeeting(@RequestBody @Valid MeetingTO meetingTO) {
@@ -86,10 +88,10 @@ public class TutorController {
       MeetingTO meeting = meetingService.createMeeting(meetingTO);
       return ResponseEntity.status(HttpStatus.CREATED).body(meeting);
     } catch (EntityNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + ex.getMessage());
     } catch (Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Unexpected error: " + ex.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
 
@@ -100,15 +102,18 @@ public class TutorController {
    * @return a success message.
    */
   @Operation(
-          summary = "Delete a meeting",
-          description = "Deletes an existing meeting by its ID.",
-          tags = {"Meeting Endpoints"}
-  )
+      summary = "Delete a meeting",
+      description = "Deletes an existing meeting by its ID.",
+      tags = {"Meeting Endpoints"})
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Meeting deleted successfully"),
-          @ApiResponse(responseCode = "404", description = "Meeting not found",
-                  content = @Content(mediaType = "application/json",
-                          schema = @Schema(implementation = String.class)))
+    @ApiResponse(responseCode = "200", description = "Meeting deleted successfully"),
+    @ApiResponse(
+        responseCode = "404",
+        description = "Meeting not found",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class)))
   })
   @DeleteMapping("/delete-meeting/{meetingId}")
   public ResponseEntity<?> deleteMeeting(@PathVariable Long meetingId) {
@@ -116,10 +121,10 @@ public class TutorController {
       meetingService.deleteMeeting(meetingId);
       return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Meeting deleted successfully");
     } catch (EntityNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     } catch (Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-              .body("Unexpected error: " + ex.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
 
@@ -131,30 +136,36 @@ public class TutorController {
    * @return a success message.
    */
   @Operation(
-          summary = "Update a meeting",
-          description = "Updates the details of an existing meeting by its ID.",
-          tags = {"Meeting Endpoints"}
-  )
+      summary = "Update a meeting",
+      description = "Updates the details of an existing meeting by its ID.",
+      tags = {"Meeting Endpoints"})
   @ApiResponses({
-          @ApiResponse(responseCode = "200",
-                  description = "Meeting updated successfully",
-                  content = @Content(mediaType = "application/json",
-                          schema = @Schema(implementation = MeetingTO.class))),
-          @ApiResponse(responseCode = "404", description = "Meeting not found",
-                  content = @Content(mediaType = "application/json",
-                          schema = @Schema(implementation = String.class)))
+    @ApiResponse(
+        responseCode = "200",
+        description = "Meeting updated successfully",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = MeetingTO.class))),
+    @ApiResponse(
+        responseCode = "404",
+        description = "Meeting not found",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class)))
   })
   @PutMapping("/update-meeting/{meetingId}")
-  public ResponseEntity<?> updateMeeting(@PathVariable Long meetingId,
-                                         @RequestBody @Valid MeetingTO meetingTO) {
+  public ResponseEntity<?> updateMeeting(
+      @PathVariable Long meetingId, @RequestBody @Valid MeetingTO meetingTO) {
     try {
       MeetingTO updatedMeeting = meetingService.updateMeeting(meetingId, meetingTO);
       return ResponseEntity.status(HttpStatus.OK).body(updatedMeeting);
     } catch (EntityNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     } catch (Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-              .body("Unexpected error: " + ex.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
 
@@ -167,30 +178,35 @@ public class TutorController {
    * @return a success message.
    */
   @Operation(
-          summary = "Create a new course",
-          description = "Creates a new course with the specified details.",
-          tags = {"Course Endpoints"}
-  )
+      summary = "Create a new course",
+      description = "Creates a new course with the specified details.",
+      tags = {"Course Endpoints"})
   @ApiResponses({
-          @ApiResponse(responseCode = "201", description = "Course created successfully",
-                        content =
-                        @Content(mediaType = "application/json",
-                                schema = @Schema(implementation = CourseTO.class))),
-          @ApiResponse(responseCode = "409", description = "Entity already exists in the database",
-                        content =
-                        @Content(mediaType = "application/json",
-                                schema = @Schema(implementation = String.class)))
+    @ApiResponse(
+        responseCode = "201",
+        description = "Course created successfully",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = CourseTO.class))),
+    @ApiResponse(
+        responseCode = "409",
+        description = "Entity already exists in the database",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class)))
   })
-
   @PostMapping("/course/create")
   public ResponseEntity<?> createCourse(@RequestBody @Valid CourseTO courseTO) {
     try {
       CourseTO course = courseService.createCourse(courseTO);
       return ResponseEntity.status(HttpStatus.CREATED).body(course);
     } catch (EntityExistsException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     } catch (Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + ex.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
 
@@ -201,13 +217,12 @@ public class TutorController {
    * @return a success message.
    */
   @Operation(
-          summary = "Delete a course by ID",
-          description = "Deletes an existing course by its unique ID.",
-          tags = {"Course Endpoints"}
-  )
+      summary = "Delete a course by ID",
+      description = "Deletes an existing course by its unique ID.",
+      tags = {"Course Endpoints"})
   @ApiResponses({
-          @ApiResponse(responseCode = "204", description = "Course deleted successfully"),
-          @ApiResponse(responseCode = "404", description = "Course not found")
+    @ApiResponse(responseCode = "204", description = "Course deleted successfully"),
+    @ApiResponse(responseCode = "404", description = "Course not found")
   })
   @DeleteMapping("/delete-course/{courseId}")
   public ResponseEntity<?> deleteCourse(@PathVariable Long courseId) {
@@ -218,7 +233,7 @@ public class TutorController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     } catch (Exception ex) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-              .body("Unexpected error: " + ex.getMessage());
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
 
@@ -230,33 +245,38 @@ public class TutorController {
    * @return a success message.
    */
   @Operation(
-          summary = "Update a course by ID",
-          description = "Updates the details of an existing course by its unique ID.",
-          tags = {"Course Endpoints"}
-  )
+      summary = "Update a course by ID",
+      description = "Updates the details of an existing course by its unique ID.",
+      tags = {"Course Endpoints"})
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Course updated successfully",
-                  content = @Content(mediaType = "application/json",
-                          schema = @Schema(implementation = CourseTO.class))),
-          @ApiResponse(responseCode = "404", description = "Course not found",
-                  content = @Content(mediaType = "application/json",
-                  schema = @Schema(implementation = String.class)))
+    @ApiResponse(
+        responseCode = "200",
+        description = "Course updated successfully",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = CourseTO.class))),
+    @ApiResponse(
+        responseCode = "404",
+        description = "Course not found",
+        content =
+            @Content(
+                mediaType = "application/json",
+                schema = @Schema(implementation = String.class)))
   })
   @PutMapping("/update-course/{courseId}")
   public ResponseEntity<?> updateCourse(
-          @PathVariable Long courseId,
-          @RequestBody @Valid CourseTO courseTO) {
+      @PathVariable Long courseId, @RequestBody @Valid CourseTO courseTO) {
     try {
       CourseTO updatedCourse = courseService.updateCourse(courseId, courseTO);
       return ResponseEntity.status(HttpStatus.OK).body(updatedCourse);
     } catch (EntityNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     } catch (Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-              .body("Unexpected error: " + ex.getMessage());
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .body("Unexpected error: " + ex.getMessage());
     }
   }
-
 
   /** Progress Operations */
 
@@ -267,13 +287,12 @@ public class TutorController {
    * @return a success message.
    */
   @Operation(
-          summary = "Create progress record",
-          description = "Creates a new progress record for a student in a specific course.",
-          tags = {"Progress Endpoints"}
-  )
+      summary = "Create progress record",
+      description = "Creates a new progress record for a student in a specific course.",
+      tags = {"Progress Endpoints"})
   @ApiResponses({
-          @ApiResponse(responseCode = "201", description = "Progress created successfully"),
-          @ApiResponse(responseCode = "400", description = "Invalid input data")
+    @ApiResponse(responseCode = "201", description = "Progress created successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid input data")
   })
   @PostMapping("/create-progress")
   public ResponseEntity<String> createProgress(@Valid @RequestBody ProgressTO progressTO) {
@@ -289,13 +308,12 @@ public class TutorController {
    * @return a success message or a not-found message.
    */
   @Operation(
-          summary = "Delete progress record",
-          description = "Deletes a student's progress record for a specific course.",
-          tags = {"Progress Endpoints"}
-  )
+      summary = "Delete progress record",
+      description = "Deletes a student's progress record for a specific course.",
+      tags = {"Progress Endpoints"})
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Progress deleted successfully"),
-          @ApiResponse(responseCode = "404", description = "Progress record not found")
+    @ApiResponse(responseCode = "200", description = "Progress deleted successfully"),
+    @ApiResponse(responseCode = "404", description = "Progress record not found")
   })
   @DeleteMapping("/delete-progress/{studentId}/{courseId}")
   public ResponseEntity<String> deleteProgress(
@@ -317,14 +335,13 @@ public class TutorController {
    * @return a success message or a not-found message.
    */
   @Operation(
-          summary = "Update progress record",
-          description = "Updates the progress points for a student in a specific course.",
-          tags = {"Progress Endpoints"}
-  )
+      summary = "Update progress record",
+      description = "Updates the progress points for a student in a specific course.",
+      tags = {"Progress Endpoints"})
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Progress updated successfully"),
-          @ApiResponse(responseCode = "400", description = "Invalid input data"),
-          @ApiResponse(responseCode = "404", description = "Progress record not found")
+    @ApiResponse(responseCode = "200", description = "Progress updated successfully"),
+    @ApiResponse(responseCode = "400", description = "Invalid input data"),
+    @ApiResponse(responseCode = "404", description = "Progress record not found")
   })
   @PutMapping("/update-progress/{studentId}/{courseId}")
   public ResponseEntity<String> updateProgress(

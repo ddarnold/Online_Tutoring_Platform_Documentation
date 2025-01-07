@@ -48,9 +48,15 @@ public class SpringErrorPayload {
   @Override
   public String toString() {
     return "{\n"
-            + "\"message\" = \"" + message + "\"\n"
-            + "\"details\" = \"" + details + "\"\n"
-            + "\"status\" = \"" + status + "\"\n"
-            + "}";
+        + "\"message\" = \""
+        + message
+        + "\"\n"
+        + "\"details\" = \""
+        + details
+        + "\"\n"
+        + "\"status\" = \""
+        + status
+        + "\"\n"
+        + "}";
   }
 }

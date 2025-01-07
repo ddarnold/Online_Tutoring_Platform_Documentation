@@ -22,5 +22,6 @@ import java.util.Optional;
  */
 @Repository
 public interface AffiliationRepository extends JpaRepository<AffiliationDBO, Long> {
-    Optional<AffiliationDBO> findByAffiliationTypeAndUniversity_UniversityName(AffiliationType affiliationType, String universityName);
+  Optional<AffiliationDBO> findByAffiliationTypeAndUniversity_UniversityName(
+      AffiliationType affiliationType, String universityName);
 }

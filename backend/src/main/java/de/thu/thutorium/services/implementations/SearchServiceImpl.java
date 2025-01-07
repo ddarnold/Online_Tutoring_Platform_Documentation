@@ -32,8 +32,6 @@ public class SearchServiceImpl implements SearchService {
   private final CategoryRepository categoryRepository;
   private final CourseCategoryTOMapper courseCategoryTOMapper;
 
-
-
   /**
    * Constructor for initializing the service with necessary dependencies.
    *
@@ -86,8 +84,6 @@ public class SearchServiceImpl implements SearchService {
     }
     return tutorTO;
   }
-
-
 
   /**
    * Maps a {@link CourseDBO} entity to a {@link CourseTO} transfer object, including the average
