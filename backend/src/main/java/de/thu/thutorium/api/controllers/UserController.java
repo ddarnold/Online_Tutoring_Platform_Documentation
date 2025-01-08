@@ -189,13 +189,44 @@ public class UserController {
   }
 
   /*chat*/
-
+  @Operation(
+      summary = "Retrieve chat summaries for a specific user",
+      description =
+          "Fetches a list of chat summaries, showing unread message counts and the receiver of the chat.")
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Chat summaries retrieved successfully",
+        content =
+            @Content(array = @ArraySchema(schema = @Schema(implementation = ChatSummaryTO.class)))),
+    @ApiResponse(
+        responseCode = "404",
+        description = "User not found or no chat summaries available",
+        content = @Content(schema = @Schema(implementation = String.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
   @GetMapping("/get-chat-summaries")
   public ResponseEntity<List<ChatSummaryTO>> getChatSummaries(@RequestParam Long userId) {
     List<ChatSummaryTO> summaries = chatService.getChatSummaries(userId);
     return ResponseEntity.ok(summaries);
   }
 
+  @Operation(
+      summary = "Retrieve messages for a specific chat",
+      description =
+          "Fetches all messages from a chat identified by the chatId. This includes sender, receiver, content, and timestamps.")
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Messages retrieved successfully",
+        content =
+            @Content(array = @ArraySchema(schema = @Schema(implementation = MessageTO.class)))),
+    @ApiResponse(
+        responseCode = "404",
+        description = "Chat not found or no messages available",
+        content = @Content(schema = @Schema(implementation = String.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
   @GetMapping("/get-messages-chat")
   public ResponseEntity<List<MessageTO>> getChatMessages(@RequestParam Long chatId) {
     List<MessageTO> messages = messageService.getMessagesByChatId(chatId);
