@@ -331,9 +331,30 @@ public class UserServiceImpl implements UserService {
    * A student unenrolls from a course.
    *
    * @param studentId the id of the student who unenrolls.
-   * @param courseId the id of the course from which the student unenrolls. Todo: Implement the
-   *     method.
+   * @param courseId the id of the course from which the student unenrolls.
    */
   @Override
-  public void unenrollCourse(Long studentId, Long courseId) { }
+  public void unenrollCourse(Long studentId, Long courseId) {
+    // Fetch the student from the database
+    UserDBO student = userRepository.findById(studentId)
+            .orElseThrow(() -> new EntityNotFoundException("Student not found with ID: " + studentId));
+
+    // Fetch the course from the database
+    CourseDBO course = courseRepository.findById(courseId)
+            .orElseThrow(() -> new EntityNotFoundException("Course not found with ID: " + courseId));
+
+    // Remove the course from the student's list
+    boolean removed = student.getStudentCourses().remove(course);
+
+    // Also remove the student from the course's participants list to maintain bidirectionality
+    course.getStudents().remove(student);
+
+    if (!removed) {
+      throw new IllegalStateException("Student is not enrolled in the course.");
+    }
+
+    // Save the updated entities back to the database
+    userRepository.save(student);
+    courseRepository.save(course);
+  }
 }
