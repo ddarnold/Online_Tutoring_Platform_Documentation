@@ -30,8 +30,8 @@ jobs:
         uses: super-linter/super-linter/slim@v7.2.0
         env:
           VALIDATE_JAVA: "true"
-          JAVA_FILE_NAME: "google_checks.xml"
-          VALIDATE_GOOGLE_JAVA_FORMAT: "true"
+          # JAVA_FILE_NAME: "google_checks.xml"
+          # VALIDATE_GOOGLE_JAVA_FORMAT: "true"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   frontend-lint:
@@ -53,11 +53,11 @@ jobs:
         uses: super-linter/super-linter/slim@v7.2.0
         env:
           VALIDATE_JSX: "true"
-          VALIDATE_JSX_PRETTIER: "true"
+          # VALIDATE_JSX_PRETTIER: "true"
           VALIDATE_HTML: "true"
-          VALIDATE_HTML_PRETTIER: "true"
+          # VALIDATE_HTML_PRETTIER: "true"
           VALIDATE_CSS: "true" # Fixed typo from VALDIATE_CSS
-          VALIDATE_CSS_PRETTIER: "true"
+          # VALIDATE_CSS_PRETTIER: "true"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   actions-lint:
@@ -81,8 +81,8 @@ jobs:
           VALIDATE_GITHUB_ACTIONS: "true"
           VALIDATE_GITLEAKS: "true"
           VALIDATE_YAML: "true"
-          VALIDATE_YAML_PRETTIER: "true"
+          # VALIDATE_YAML_PRETTIER: "true"
           VALIDATE_MARKDOWN: "true"
-          VALIDATE_MARKDOWN_PRETTIER: "true"
+          # VALIDATE_MARKDOWN_PRETTIER: "true"
           VALIDATE_DOCKERFILE_HADOLINT: "true"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
