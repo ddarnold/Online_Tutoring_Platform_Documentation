@@ -78,6 +78,8 @@ public interface CourseRepository extends JpaRepository<CourseDBO, Long> {
    */
   boolean existsByCourseName(String courseName);
 
+  List<CourseDBO> findByTutor_UserId(Long tutorUserId);
+
   /**
    * Finds a CourseDBO entity based on the course ID and the tutor's user ID.
    *

@@ -1,14 +1,12 @@
 package de.thu.thutorium.api.controllers;
 
 import de.thu.thutorium.api.transferObjects.chat.ChatSummaryTO;
+import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.MeetingTO;
 import de.thu.thutorium.api.transferObjects.common.MessageTO;
 import de.thu.thutorium.api.transferObjects.common.UserTO;
 import de.thu.thutorium.database.dbObjects.UserDBO;
-import de.thu.thutorium.services.interfaces.ChatService;
-import de.thu.thutorium.services.interfaces.MeetingService;
-import de.thu.thutorium.services.interfaces.MessageService;
-import de.thu.thutorium.services.interfaces.UserService;
+import de.thu.thutorium.services.interfaces.*;
 import de.thu.thutorium.swagger.CommonApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -42,6 +40,7 @@ public class UserController {
   private final MeetingService meetingService;
   private final ChatService chatService;
   private final MessageService messageService;
+  private final CourseService courseService;
 
   /**
    * Retrieves the account details of a user based on their user ID.
@@ -246,5 +245,28 @@ public class UserController {
     }
     UserDBO userDetails = (UserDBO) authentication.getPrincipal();
     return userDetails.getUserId();
+  }
+
+  @Operation(
+      summary = "Retrieve courses taught by a specific tutor",
+      description =
+          "Fetches all courses assigned to a tutor identified by their tutorId. ",
+      tags = {"Courses"})
+  @ApiResponses({
+    @ApiResponse(
+        responseCode = "200",
+        description = "Courses retrieved successfully",
+        content =
+            @Content(array = @ArraySchema(schema = @Schema(implementation = CourseTO.class)))),
+    @ApiResponse(
+        responseCode = "404",
+        description = "Tutor not found or no courses available",
+        content = @Content(schema = @Schema(implementation = String.class))),
+    @ApiResponse(responseCode = "500", description = "Internal server error")
+  })
+  @GetMapping("/get-course/{tutorId}")
+  public ResponseEntity<List<CourseTO>> getCoursesByTutor(@PathVariable Long tutorId) {
+    List<CourseTO> courses = courseService.getCourseByTutorId(tutorId);
+    return ResponseEntity.ok(courses);
   }
 }

@@ -32,6 +32,8 @@ public interface CourseService {
    */
   List<CourseTO> getCoursesByCategory(String categoryName);
 
+  List<CourseTO> getCourseByTutorId(Long tutorId);
+
   /**
    * Gets the total count of courses available.
    *

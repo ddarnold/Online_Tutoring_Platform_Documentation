@@ -82,6 +82,12 @@ public class CourseServiceImpl implements CourseService {
     return courses.stream().map(courseMapper::toDTO).toList();
   }
 
+  @Override
+  public List<CourseTO> getCourseByTutorId(Long tutorId) {
+    List<CourseDBO> courseDBOs = courseRepository.findByTutor_UserId(tutorId);
+    return courseMapper.toDTOList(courseDBOs);
+  }
+
   /**
    * Retrieves the total count of courses in the database.
    *
