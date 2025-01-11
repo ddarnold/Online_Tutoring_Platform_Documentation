@@ -134,6 +134,7 @@ public class CourseServiceImpl implements CourseService {
     return courseMapper.toDTO(courseRepository.save(courseDBO));
   }
 
+
   /**
    * Deletes an existing course by its ID.
    *
@@ -236,6 +237,7 @@ public class CourseServiceImpl implements CourseService {
     // Checking if a user is enrolled as a student:
     boolean isStudent =
         student.getRoles().stream().anyMatch((role) -> role.getRoleName().equals(Role.STUDENT));
+
 
     if (!isStudent) {
       throw new IllegalArgumentException("The user is not authorized as a student!");
