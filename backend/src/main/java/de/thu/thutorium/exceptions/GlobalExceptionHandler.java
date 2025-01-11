@@ -1,6 +1,5 @@
 package de.thu.thutorium.exceptions;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -89,14 +88,15 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
 
   }
+
   // Generic Exception Handler (Fallback)
   @ExceptionHandler(Exception.class)
   public ResponseEntity<SpringErrorPayload> handleGenericException(Exception ex) {
     SpringErrorPayload errorResponse =
-            new SpringErrorPayload(
-                    "An unexpected error occurred.",
-                    ex.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR.value());
+        new SpringErrorPayload(
+            "An unexpected error occurred.",
+            ex.getMessage(),
+            HttpStatus.INTERNAL_SERVER_ERROR.value());
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
   }
 
