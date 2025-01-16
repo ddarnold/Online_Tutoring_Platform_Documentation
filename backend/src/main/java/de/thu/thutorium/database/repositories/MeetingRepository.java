@@ -48,4 +48,8 @@ public interface MeetingRepository extends JpaRepository<MeetingDBO, Long> {
    */
   @Query("SELECT m FROM MeetingDBO m WHERE m.tutor.userId = :userId")
   List<MeetingDBO> findScheduledMeetingsByTutorId(@Param("userId") Long userId);
+
+    boolean getMeetingDBOByMeetingId(Long meetingId);
+
+  MeetingDBO findByMeetingId(Long meetingId);
 }

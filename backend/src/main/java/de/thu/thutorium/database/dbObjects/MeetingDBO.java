@@ -2,8 +2,10 @@ package de.thu.thutorium.database.dbObjects;
 
 import de.thu.thutorium.database.dbObjects.enums.MeetingType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
 import lombok.*;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ import java.util.List;
  * and is associated with a course and an address. The meeting also includes fields for date, type,
  * status, room number, duration of the meeting, and a link to the meeting.
  */
-@Builder
+@Builder(toBuilder = true)
 @Entity
 @Table(
     name = "meeting",
@@ -28,7 +30,6 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
 public class MeetingDBO {
   /** The unique identifier for the meeting. This ID is generated automatically. */
   @Id
@@ -54,21 +55,33 @@ public class MeetingDBO {
   @JoinColumn(name = "course_id", nullable = false)
   private CourseDBO course;
 
-  /** The date on which the meeting is scheduled to be held. This field cannot be null. */
-  @Column(name = "meeting_date", nullable = false)
+  //Todo: DO we need date, since it is already contained in the time?
+//  /** The date on which the meeting is scheduled to be held. This field cannot be null. */
+//  @Column(name = "meeting_date", nullable = false)
+//  @FutureOrPresent(message = "The meeting date must be in the present or future.")
+  @Transient
   private LocalDate meetingDate;
 
   /** The time on which the meeting is scheduled to be held. This field cannot be null. */
   @Column(name = "meeting_start_time", nullable = false)
+  @FutureOrPresent(message = "The meeting start time must be in the present or future.")
   private LocalDateTime startTime;
 
   @Column(name = "meeting_end_time", nullable = false)
   private LocalDateTime endTime;
 
   /** The duration of the meeting in minutes. This field cannot be null. */
-  @Column(name = "duration_minutes")
-  @Builder.Default
-  private Integer duration = 90;
+  @Transient
+  private Long duration;
+
+  /**
+   * Initializes transient fields after the entity is loaded from the database.
+   */
+  @PostLoad
+  private void onLoad() {
+    this.duration = Duration.between(startTime, endTime).toMinutes();
+    this.meetingDate = startTime.toLocalDate();
+  }
 
   /**
    * The type of the meeting as enumerated by the {@link MeetingType}. Represents whether the
@@ -111,4 +124,28 @@ public class MeetingDBO {
 
   @Column(name = "time_range", columnDefinition = "tsrange", insertable = false, updatable = false)
   private String timeRange;
+
+  public MeetingDBO() {
+    this.participants = new ArrayList<>();
+  }
+
+//  @Override
+//  public String toString() {
+//    return "MeetingDBO{" +
+//            "meetingId=" + meetingId +
+//            ", tutor=" + tutor +
+//            ", course=" + course +
+//            ", meetingDate=" + meetingDate +
+//            ", meetingTime=" + meetingTime +
+//            ", endTime=" + endTime +
+//            ", duration=" + duration +
+//            ", meetingType=" + meetingType +
+//            ", meetingStatus=" + meetingStatus +
+//            ", roomNum='" + roomNum + '\'' +
+//            ", meetingLink='" + meetingLink + '\'' +
+//            ", address=" + address +
+//            ", participants=" + participants +
+//            ", timeRange='" + timeRange + '\'' +
+//            '}';
+//  }
 }

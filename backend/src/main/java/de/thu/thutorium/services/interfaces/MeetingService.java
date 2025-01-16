@@ -63,4 +63,14 @@ public interface MeetingService {
    * @return a list of {@link MeetingTO} objects representing the meetings related to the user
    */
   List<MeetingTO> getMeetingsForUser(Long userId);
+
+  void bookMeeting(Long meetingId);
+
+  void cancelMeeting(Long meetingId);
+
+  MeetingTO retrieveMeetingbyId(Long meetingId);
+
+  MeetingTO retrieveMeetingbyCourse(Long courseId);
+
+  void retrieveAllParticipants(Long meetingId);
 }

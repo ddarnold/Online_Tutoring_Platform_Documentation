@@ -47,7 +47,6 @@ class TutorControllerTest {
         meetingTO = MeetingTO.builder()
                 .tutorId(1L)
                 .courseId(1L)
-                .meetingDate(LocalDate.now())
                 .startTime(LocalDateTime.now())
                 .endTime(LocalDateTime.now().plusHours(1))
                 .duration(60)
