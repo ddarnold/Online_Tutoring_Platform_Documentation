@@ -158,18 +158,28 @@ function Messages() {
   }, [currentUserId]);
 
   useEffect(() => {
-    if (chats) {
-      // Function to handle filtering
-      loadMessages();
-      setFilteredChats(
-        chats.filter((chat) => {
-          const { firstName, lastName } = chat.receiver;
-          const fullName = `${firstName} ${lastName}`.toLowerCase();
-          return fullName.includes(searchQuery.toLowerCase());
-        }),
-      );
+    async function filterChats() {
+      if (chats) {
+        // Function to handle filtering
+        await loadMessages();
+        setFilteredChats(
+          chats.filter((chat) => {
+            const { firstName, lastName } = chat.receiver;
+            const fullName = `${firstName} ${lastName}`.toLowerCase();
+            const hasMessages =
+              messages[chat.chatId] && messages[chat.chatId].length > 0;
+            const isCreator = chat.creator === currentUserId;
+
+            return (
+              fullName.includes(searchQuery.toLowerCase()) &&
+              (hasMessages || isCreator)
+            );
+          }),
+        );
+      }
     }
-  }, [chats]);
+    filterChats();
+  }, [chats, searchQuery, messages]);
 
   useEffect(() => {
     if (chats) {

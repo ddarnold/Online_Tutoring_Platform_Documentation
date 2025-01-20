@@ -38,4 +38,5 @@ public interface MessageService {
   void markAsRead(Long chatId);
 
   List<MessageTO> getMessagesByChatId(Long chatId);
+
 }

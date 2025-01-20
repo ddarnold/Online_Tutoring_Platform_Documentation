@@ -14,11 +14,12 @@ import Profile from "./pages/Profile";
 import ProtectedRoutes from "./utils/ProtectedRoutes";
 import { AuthProvider } from "./services/AuthContext";
 import PublicRoute from "./utils/PublicRoute";
-import CourseForm from "./components/CourseForm";
+import CreateCourse from "./pages/CreateCourse";
 import Call2 from "./pages/Call";
 import { STUDENT_ROLE, TUTOR_ROLE } from "./config";
 import { SocketProvider } from "./services/SocketContext";
 import CallNotification from "./components/CallNotification";
+import CreateMeeting from "./pages/CreateMeeting";
 
 export default function App() {
   return (
@@ -29,10 +30,18 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route
-              path="/createcourse"
+              path="/create-course"
               element={
                 <ProtectedRoutes roles={[TUTOR_ROLE]}>
-                  <CourseForm />
+                  <CreateCourse />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path="/create-meeting"
+              element={
+                <ProtectedRoutes roles={[TUTOR_ROLE]}>
+                  <CreateMeeting />
                 </ProtectedRoutes>
               }
             />

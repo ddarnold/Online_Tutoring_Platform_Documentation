@@ -48,7 +48,13 @@ public class SecurityConfig {
                         "/swagger-ui/**",
                         "/webjars/**",
                         "/v3/api-docs.yaml",
-                        "/chat/**")
+                        "/chat/**",
+                         "/profile/**",
+                            "/search/**",
+                            "course/**",
+                            "user/**",
+                            "/**",
+                            "/call")
                     .permitAll()
                     .requestMatchers("/course/**")
                     .permitAll()
@@ -59,7 +65,7 @@ public class SecurityConfig {
                     .requestMatchers("/student/**")
                     .hasRole("STUDENT")
                     .requestMatchers("/tutor/**")
-                    .hasRole("TUTOR")
+                    .permitAll()
                     .requestMatchers("/verifier/**")
                     .hasRole("VERIFIER")
                     .requestMatchers("/admin/**")
@@ -92,13 +98,16 @@ public class SecurityConfig {
     configuration.setAllowedOrigins(
         List.of(
             "http://localhost:3000",
+            "http://localhost:5000",
+            "http://localhost:5001",
             "http://localhost:80",
             "http://localhost",
+            "https://8998-2001-7c0-31ff-1-91d6-4176-1420-3c14.ngrok-free.app",
             "http://localhost:8080")); // Add http://localhost
     configuration.setAllowedMethods(
         List.of("GET", "POST", "PUT", "DELETE")); // Allow specific HTTP methods
     configuration.setAllowedHeaders(
-        List.of("Authorization", "Content-Type")); // Allow specific headers
+        List.of("*")); // Allow specific headers
     configuration.setAllowCredentials(true); // Allow credentials for authorization headers
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

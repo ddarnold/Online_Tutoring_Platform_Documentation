@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import InputField from "./InputField";
-import TextareaField from "./TextareaField";
-import SelectField from "./SelectField";
+import InputField from "../components/InputField";
+import TextareaField from "../components/TextareaField";
+import SelectField from "../components/SelectField";
 import { useAuth } from "../services/AuthContext";
 import apiClient from "../services/AxiosConfig";
-import NavBar from "./Navbar";
+import NavBar from "../components/Navbar";
 import { BACKEND_URL } from "../config";
 import { useNavigate } from "react-router-dom";
 
-const CourseForm = () => {
+const CreateCourse = () => {
   const navigate = useNavigate();
   const [courseDetails, setCourseDetails] = useState({});
   const { user } = useAuth();
@@ -188,4 +188,4 @@ const CourseForm = () => {
   );
 };
 
-export default CourseForm;
+export default CreateCourse;

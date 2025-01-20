@@ -14,6 +14,7 @@ export const SocketProvider = ({ children }) => {
   const { user } = useAuth();
   const [socket, setSocket] = useState(null);
   const [incomingCall, setIncomingCall] = useState(null);
+  const [incomingUserName, setIncomingUserName] = useState(null);
   const [incomingSignal, setIncomingSignal] = useState(null);
   const navigate = useNavigate();
 
@@ -28,6 +29,7 @@ export const SocketProvider = ({ children }) => {
 
     newSocket.on("callUser", (data) => {
       setIncomingCall(data.from);
+      setIncomingUserName(data.name);
       setIncomingSignal(data.signal);
     });
 
@@ -50,7 +52,14 @@ export const SocketProvider = ({ children }) => {
 
   return (
     <SocketContext.Provider
-      value={{ socket, incomingCall, incomingSignal, acceptCall, rejectCall }}
+      value={{
+        socket,
+        incomingCall,
+        incomingUserName,
+        incomingSignal,
+        acceptCall,
+        rejectCall,
+      }}
     >
       {children}
     </SocketContext.Provider>

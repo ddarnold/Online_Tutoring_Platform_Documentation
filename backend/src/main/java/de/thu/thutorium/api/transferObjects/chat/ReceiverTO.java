@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReceiverTO {
-  private Long id;
-  private String firstName;
-  private String lastName;
+    private Long id;
+    private String firstName;
+    private String lastName;
 }

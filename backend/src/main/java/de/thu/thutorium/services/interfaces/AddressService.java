@@ -4,6 +4,8 @@ import de.thu.thutorium.api.transferObjects.common.AddressTO;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Service interface for managing addresses.
  *
@@ -20,4 +22,8 @@ public interface AddressService {
    * @return the newly created {@code AddressTO} object
    */
   AddressTO createUniversityAndAddress(@Valid AddressTO address);
+
+  List<AddressTO> getAddressesById(Long addressId);
+
+  List<AddressTO> getAllAddresses();
 }

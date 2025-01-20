@@ -36,7 +36,7 @@ function TutorCentre() {
           </div>
           <button
             onClick={() => {
-              navigate("/createcourse");
+              navigate("/create-course");
             }}
             className="bg-blue-800 max-h-12 rounded-full text-white py-2 px-4"
           >

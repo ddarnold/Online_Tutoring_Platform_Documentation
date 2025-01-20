@@ -32,7 +32,6 @@ function CallPage() {
       },
       audio: true,
     };
-
     navigator.mediaDevices
       .getUserMedia(constraints)
       .then((stream) => {
@@ -65,6 +64,11 @@ function CallPage() {
     socket.on("callEnded", () => {
       console.log("callEnded");
       setCallAccepted(false);
+
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+        setStream(null);
+      }
 
       if (userVideo.current) {
         userVideo.current.srcObject = null;
@@ -142,8 +146,13 @@ function CallPage() {
   const leaveCall = () => {
     setCallAccepted(false);
 
-    if (userVideo.current) userVideo.current.srcObject = null; // Clear remote video
-    if (myVideo.current) myVideo.current.srcObject = null; // Clear local video
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+    }
+
+    if (userVideo.current) userVideo.current.srcObject = null;
+    if (myVideo.current) myVideo.current.srcObject = null;
 
     if (connectionRef.current) {
       connectionRef.current.destroy();

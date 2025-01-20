@@ -31,10 +31,10 @@ public class MessageServiceImpl implements MessageService {
   private final MessageTOMapper messageTOMapper;
 
   public MessageServiceImpl(
-      MessageRepository messageRepository,
-      ChatRepository chatRepository,
-      UserRepository userRepository,
-      MessageTOMapper messageTOMapper) {
+          MessageRepository messageRepository,
+          ChatRepository chatRepository,
+          UserRepository userRepository,
+          MessageTOMapper messageTOMapper) {
     this.messageRepository = messageRepository;
     this.chatRepository = chatRepository;
     this.userRepository = userRepository;
@@ -64,51 +64,51 @@ public class MessageServiceImpl implements MessageService {
 
     // Find the chat by ID (assuming messageTO contains a chat ID)
     ChatDBO chat =
-        chatRepository
-            .findById(messageTO.getChatId()) // Corrected to use chatId from MessageTO
-            .orElseThrow(
-                () -> new RuntimeException("Chat not found for ID: " + messageTO.getChatId()));
+            chatRepository
+                    .findById(messageTO.getChatId()) // Corrected to use chatId from MessageTO
+                    .orElseThrow(
+                            () -> new RuntimeException("Chat not found for ID: " + messageTO.getChatId()));
 
     // Find the sender by ID
     UserDBO sender =
-        userRepository
-            .findById(messageTO.getSenderId()) // Use senderId from MessageTO
-            .orElseThrow(
-                () -> new RuntimeException("Sender not found for ID: " + messageTO.getSenderId()));
+            userRepository
+                    .findById(messageTO.getSenderId()) // Use senderId from MessageTO
+                    .orElseThrow(
+                            () -> new RuntimeException("Sender not found for ID: " + messageTO.getSenderId()));
 
     // Find the receiver by ID
     UserDBO receiver =
-        userRepository
-            .findById(messageTO.getReceiverId()) // Use receiverId from MessageTO
-            .orElseThrow(
-                () ->
-                    new RuntimeException(
-                        "Receiver not found for ID: " + messageTO.getReceiverId()));
+            userRepository
+                    .findById(messageTO.getReceiverId()) // Use receiverId from MessageTO
+                    .orElseThrow(
+                            () ->
+                                    new RuntimeException(
+                                            "Receiver not found for ID: " + messageTO.getReceiverId()));
 
     // Create a new message entity
     MessageDBO messageDBO =
-        MessageDBO.builder()
-            .chat(chat)
-            .sender(sender)
-            .receiver(receiver)
-            .messageContent(messageTO.getMessageContent())
-            .sendAt(messageTO.getSendAt()) // Use sendAt from MessageTO
-            .isRead(false)
-            .build();
+            MessageDBO.builder()
+                    .chat(chat)
+                    .sender(sender)
+                    .receiver(receiver)
+                    .messageContent(messageTO.getMessageContent())
+                    .sendAt(messageTO.getSendAt()) // Use sendAt from MessageTO
+                    .isRead(false)
+                    .build();
 
     // Save the message to the database
     messageRepository.save(messageDBO);
 
     // Map the saved entity back to a DTO and return it
     return new MessageTO(
-        messageDBO.getMessageId(),
-        messageDBO.getSender().getUserId(),
-        messageDBO.getReceiver().getUserId(),
-        messageDBO.getChat().getChatId(), // Return the chatId from the saved message
-        messageDBO.getMessageContent(),
-        messageDBO.getSendAt(),
-        messageDBO.getReadAt(),
-        messageDBO.getIsRead());
+            messageDBO.getMessageId(),
+            messageDBO.getSender().getUserId(),
+            messageDBO.getReceiver().getUserId(),
+            messageDBO.getChat().getChatId(), // Return the chatId from the saved message
+            messageDBO.getMessageContent(),
+            messageDBO.getSendAt(),
+            messageDBO.getReadAt(),
+            messageDBO.getIsRead());
   }
 
   /**
@@ -127,11 +127,10 @@ public class MessageServiceImpl implements MessageService {
     List<MessageDBO> unreadMessages = messageRepository.findAllByChatIdAndIsReadFalse(chatId);
 
     // Mark each message as read and update the timestamp
-    unreadMessages.forEach(
-        message -> {
-          message.setIsRead(true);
-          message.setReadAt(LocalDateTime.now());
-        });
+    unreadMessages.forEach(message -> {
+      message.setIsRead(true);
+      message.setReadAt(LocalDateTime.now());
+    });
 
     // Save the updated messages
     messageRepository.saveAll(unreadMessages);

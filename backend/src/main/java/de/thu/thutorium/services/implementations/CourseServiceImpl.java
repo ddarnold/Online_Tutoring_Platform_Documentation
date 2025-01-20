@@ -1,8 +1,10 @@
 package de.thu.thutorium.services.implementations;
 
 import de.thu.thutorium.api.TOMappers.CourseTOMapper;
+import de.thu.thutorium.api.TOMappers.UserTOMapper;
 import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.RatingCourseTO;
+import de.thu.thutorium.api.transferObjects.common.UserTO;
 import de.thu.thutorium.database.DBOMappers.CourseDBOMapper;
 import de.thu.thutorium.database.dbObjects.CourseCategoryDBO;
 import de.thu.thutorium.database.dbObjects.CourseDBO;
@@ -44,6 +46,7 @@ public class CourseServiceImpl implements CourseService {
   private final UserRepository userRepository;
   private final RatingCourseRepository ratingCourseRepository;
   private final RatingTutorRepository ratingTutorRepository;
+  private final UserTOMapper userTOMapper;
 
   /**
    * Finds a course by its unique ID.
@@ -293,5 +296,17 @@ public class CourseServiceImpl implements CourseService {
   public List<CourseTO> searchCourses(String courseName) {
     List<CourseDBO> courses = courseRepository.findCourseByName(courseName);
     return courses.stream().map(courseMapper::toDTO).toList();
+  }
+
+  @Override
+  public List<UserTO> getStudentsEnrolled(Long courseId) {
+    // Fetch the course by courseId
+    CourseDBO course =
+        courseRepository
+            .findById(courseId)
+            .orElseThrow(
+                () -> new EntityNotFoundException("Course with ID " + courseId + " not found."));
+
+    return userTOMapper.toDTOList(course.getStudents());
   }
 }

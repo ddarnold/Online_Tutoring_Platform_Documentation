@@ -9,10 +9,10 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface MessageTOMapper {
-  @Mapping(source = "sender.userId", target = "senderId")
-  @Mapping(source = "receiver.userId", target = "receiverId")
-  @Mapping(source = "chat.chatId", target = "chatId")
-  MessageTO toDTO(MessageDBO messageDBO);
+    @Mapping(source = "sender.userId", target = "senderId")
+    @Mapping(source = "receiver.userId", target = "receiverId")
+    @Mapping(source = "chat.chatId", target = "chatId")
+    MessageTO toDTO(MessageDBO messageDBO);
 
-  List<MessageTO> toDTOList(List<MessageDBO> messageDBOList);
+    List<MessageTO> toDTOList(List<MessageDBO> messageDBOList);
 }

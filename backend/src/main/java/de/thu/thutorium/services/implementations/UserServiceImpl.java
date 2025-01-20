@@ -1,7 +1,9 @@
 package de.thu.thutorium.services.implementations;
 
+import de.thu.thutorium.api.TOMappers.CourseTOMapper;
 import de.thu.thutorium.api.TOMappers.RatingTutorTOMapper;
 import de.thu.thutorium.api.TOMappers.UserTOMapper;
+import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.RatingTutorTO;
 import de.thu.thutorium.api.transferObjects.common.UserTO;
 import de.thu.thutorium.database.DBOMappers.AffiliationDBOMapper;
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
   private final RatingTutorRepository ratingTutorRepository;
   private final RatingTutorTOMapper ratingTutorTOMapper;
   private final ProgressRepository progressRepository;
+  private final CourseTOMapper courseTOMapper;
 
     /**
      * Returns the total number of students in the system.
@@ -184,24 +187,27 @@ public class UserServiceImpl implements UserService {
     }
   }
 
-    /**
-     * Enrolls a user in a course
-     *
-     * <p>This method enrolls a user in a course, provide both the entities already exist in the database.
-     * Checks are additionally provided to check if the user is already enrolled in the course;
-     * and that the user has student authorizations,
-     *
-     * @param studentId the unique ID of the student who wants to enroll.
-     * @param courseId the course in which the student enrolls.
-     * @throws EntityNotFoundException if no user or course is found with the provided parameters.
-     * @throws IllegalArgumentException if teh user does not have a STUDENT role.
-     */
-    @Override
-    @Transactional
-    public void enrollCourse(Long studentId, Long courseId) {
-        // Fetch the student and handle the case where the student is not found
-        UserDBO student = userRepository.findUserDBOByUserIdAndRoles_RoleName(studentId, Role.STUDENT)
-                .orElseThrow(() -> new EntityNotFoundException("Student with id " + studentId + " not found"));
+  /**
+   * Enrolls a user in a course
+   *
+   * <p>This method enrolls a user in a course, provide both the entities already exist in the
+   * database. Checks are additionally provided to check if the user is already enrolled in the
+   * course; and that the user has student authorizations,
+   *
+   * @param studentId the unique ID of the student who wants to enroll.
+   * @param courseId the course in which the student enrolls.
+   * @throws EntityNotFoundException if no user or course is found with the provided parameters.
+   * @throws IllegalArgumentException if teh user does not have a STUDENT role.
+   */
+  @Override
+  @Transactional
+  public void enrollCourse(Long studentId, Long courseId) {
+    // Fetch the student and handle the case where the student is not found
+    UserDBO student =
+        userRepository
+            .findUserDBOByUserIdAndRoles_RoleName(studentId, Role.STUDENT)
+            .orElseThrow(
+                () -> new EntityNotFoundException("Student with id " + studentId + " not found"));
 
     // Fetch the course and handle the case where the course is not found
     CourseDBO course =
@@ -210,26 +216,33 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(
                 () -> new EntityNotFoundException("Course with id " + courseId + " not found"));
 
-        // Check if the student is already enrolled in the course
-        if (student.getStudentCourses().contains(course)) {
-            throw new EntityExistsException("Student with id "
-                    + studentId
-                    + " is already enrolled in course with id "
-                    + courseId);
-        }
-        student.getStudentCourses().add(course);
-        userRepository.save(student);
-
-        // Create a new ProgressDBO entry
-        ProgressDBO progress = new ProgressDBO();
-        progress.setCourse(course);
-        progress.setStudent(student);
-        progress.setPoints(0.0); // Initial progress
-        progress.setLastUpdated(LocalDateTime.now());
-
-        // Save the ProgressDBO entry
-        progressRepository.save(progress);
+    // Check if the student is also the tutor of the course
+    if (course.getTutor().getUserId().equals(studentId)) {
+      throw new IllegalArgumentException(
+          "Student with id "
+              + studentId
+              + " cannot enroll in their own course with id "
+              + courseId);
     }
+
+    // Check if the student is already enrolled in the course
+    if (student.getStudentCourses().contains(course)) {
+      throw new EntityExistsException(
+          "Student with id " + studentId + " is already enrolled in course with id " + courseId);
+    }
+    student.getStudentCourses().add(course);
+    userRepository.save(student);
+
+    // Create a new ProgressDBO entry
+    ProgressDBO progress = new ProgressDBO();
+    progress.setCourse(course);
+    progress.setStudent(student);
+    progress.setPoints(0.0); // Initial progress
+    progress.setLastUpdated(LocalDateTime.now());
+
+    // Save the ProgressDBO entry
+    progressRepository.save(progress);
+  }
 
   /**
    * User rates a tutor.
@@ -355,5 +368,18 @@ public class UserServiceImpl implements UserService {
   public List<RatingTutorTO> getTutorRatings(Long tutorId) {
     List<RatingTutorDBO> ratingTutorDBOS = ratingTutorRepository.findByTutor_UserId(tutorId);
     return ratingTutorDBOS.stream().map(ratingTutorTOMapper::toDTO).toList();
+  }
+
+  @Override
+  public List<CourseTO> getCoursesEnrolled(Long studentId) {
+    // Fetch the student by their ID
+    UserDBO user =
+        userRepository
+            .findById(studentId)
+            .orElseThrow(
+                () -> new EntityNotFoundException("User with ID " + studentId + " not found."));
+
+    // Map the student's courses to CourseTO
+    return courseTOMapper.toDTOList(user.getStudentCourses());
   }
 }

@@ -1,50 +1,54 @@
 package de.thu.thutorium.api.transferObjects.common;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import de.thu.thutorium.database.dbObjects.enums.MeetingType;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Validated
 public class MeetingTO {
   /** The tutor who created the meeting. */
-  @NotNull(message = "Tutor cannot be null")
+  private Long meetingId;
+
   private Long tutorId;
+
+  private String tutorName;
 
   /** The course to which this meeting is related. */
   @NotNull(message = "Course ID cannot be null")
   private Long courseId;
 
-  /** The date of the meeting. */
-  @NotNull(message = "Meeting date cannot be null")
+  private String courseName;
+
   private LocalDate meetingDate;
 
   /** The time of the meeting. */
-  @NotNull(message = "Meeting start time cannot be null")
+  @NotNull(message = "Meeting time cannot be null")
+  @FutureOrPresent(message = "The meeting start time must be in the present or future.")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime startTime;
 
   /** The time of the meeting. */
   @NotNull(message = "Meeting end time cannot be null")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
   private LocalDateTime endTime;
 
   /** The duration of the meeting in minutes. */
-  @NotNull(message = "Duration cannot be null")
-  private Integer duration;
+  private Long duration_in_minutes;
 
   /** The types of the meeting. */
   @NotNull(message = "Meeting types cannot be null")
   private MeetingType meetingType;
-
-  @NotEmpty(message = "Participants cannot be empty")
-  private List<Long> participantIds;
 
   /** The address ID where the meeting is being held. */
   private Long addressId;

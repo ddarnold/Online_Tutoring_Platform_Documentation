@@ -1,5 +1,6 @@
 package de.thu.thutorium.services.interfaces;
 
+import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.RatingTutorTO;
 import de.thu.thutorium.api.transferObjects.common.UserTO;
 import jakarta.validation.Valid;
@@ -97,4 +98,7 @@ public interface UserService {
   void unenrollCourse(Long studentId, Long courseId);
 
   List<RatingTutorTO> getTutorRatings(Long tutorId);
+
+  List<CourseTO> getCoursesEnrolled(Long studentId);
+
 }

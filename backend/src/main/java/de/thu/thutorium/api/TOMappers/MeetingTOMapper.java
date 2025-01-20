@@ -18,11 +18,11 @@ import java.util.List;
  * <p>The mapper is configured to be a Spring component using {@code componentModel = "spring"}.
  */
 @Mapper(
-    componentModel = "spring",
-    uses = {
-      AddressTOMapper.class,
-      UniversityTOMapper.class,
-    })
+        componentModel = "spring",
+        uses = {
+                AddressTOMapper.class,
+                UniversityTOMapper.class,
+        })
 public interface MeetingTOMapper {
 
   /**
@@ -32,18 +32,15 @@ public interface MeetingTOMapper {
    * @return a {@link MeetingTO} transfer object with mapped fields
    */
   @Mappings({
-    @Mapping(source = "tutor.userId", target = "tutorId"),
-    @Mapping(source = "course.courseId", target = "courseId"),
-    @Mapping(source = "meetingDate", target = "meetingDate"),
-    @Mapping(source = "startTime", target = "startTime"),
-    @Mapping(source = "meetingLink", target = "meetingLink"),
-    @Mapping(source = "endTime", target = "endTime"),
-    @Mapping(source = "duration", target = "duration"),
-    @Mapping(source = "meetingType", target = "meetingType"),
-    @Mapping(source = "roomNum", target = "roomNum"),
-    @Mapping(source = "address.addressId", target = "addressId"),
-    @Mapping(source = "address.campusName", target = "campusName"),
-    @Mapping(source = "address.university.universityName", target = "universityName"),
+          @Mapping(source = "tutor.userId", target = "tutorId"),
+          @Mapping(source = "meetingId", target = "meetingId"),
+          @Mapping(source = "tutor.fullName", target = "tutorName"),
+          @Mapping(source = "course.courseId", target = "courseId"),
+          @Mapping(source = "course.courseName", target = "courseName"),
+          @Mapping(source = "duration", target = "duration_in_minutes"),
+          @Mapping(source = "address.addressId", target = "addressId"),
+          @Mapping(source = "address.university.universityName", target = "universityName"),
+          @Mapping(source = "address.campusName", target = "campusName"),
   })
   MeetingTO toDTO(MeetingDBO meetingDBO);
 

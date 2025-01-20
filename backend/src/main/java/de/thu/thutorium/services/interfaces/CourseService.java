@@ -2,6 +2,7 @@ package de.thu.thutorium.services.interfaces;
 
 import de.thu.thutorium.api.transferObjects.common.CourseTO;
 import de.thu.thutorium.api.transferObjects.common.RatingCourseTO;
+import de.thu.thutorium.api.transferObjects.common.UserTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -93,4 +94,6 @@ public interface CourseService {
    *     If no courses are found, an empty list is returned.
    */
   List<CourseTO> searchCourses(String courseName);
+
+  List<UserTO> getStudentsEnrolled(Long courseId);
 }
